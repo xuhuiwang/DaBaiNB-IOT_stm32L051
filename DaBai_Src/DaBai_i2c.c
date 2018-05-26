@@ -39,7 +39,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "DaBai_i2c.h"
-#include "main.h"
 
 
 //#include "gpio.h"

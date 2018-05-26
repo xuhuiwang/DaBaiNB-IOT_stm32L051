@@ -39,7 +39,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "DaBai_ADC.h"
-#include "main.h"
+
 
 
 /** @addtogroup ADC_RegularConversion_Polling

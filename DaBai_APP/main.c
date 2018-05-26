@@ -40,6 +40,9 @@
 #include "DaBai_usart.h"
 #include "DaBai_ADC.h"
 #include "DaBai_tim.h"
+#include "DaBai_GPIO.h"
+#include "DaBai_APP.h"
+
 
 /** @addtogroup STM32L0xx_HAL_Examples
   * @{
@@ -53,8 +56,6 @@ __IO uint32_t uwADCxConvertedValue = 0;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 
-static GPIO_InitTypeDef  GPIO_InitStruct;
-/* Private functions ---------------------------------------------------------*/
 
 /**
   * @brief  Main program.
@@ -62,65 +63,46 @@ static GPIO_InitTypeDef  GPIO_InitStruct;
   * @retval None
   */
 	
-	float Sht20Temp = 0;
-	float Sht20RH = 0;
-	uint8_t uartData[5] = {1,2,3,4,5};
+float Sht20Temp = 0;
+float Sht20RH = 0;
+uint8_t uartData[5] = {1,2,3,4,5};
 uint8_t ATCommand[] = "AT\r";
-  uint8_t  readFlag = 0;
+uint8_t  readFlag = 0;
 uint32_t 	Delay1msCnt = 0;
+
 int main(void)
 {
-	 static  uint32_t start_tick = 0;
-   static uint32_t cur_tick = 0;
- /* This sample code shows how to convert an analog input and read the converted
-    data using Polling mode.
-    To proceed, 5 steps are required: */
-
-  /* STM32L0xx HAL library initialization:
-       - Configure the Flash prefetch, Flash preread and Buffer caches
-       - Systick timer is configured by default as source of time base, but user 
-             can eventually implement his proper time base source (a general purpose 
-             timer for example or other time source), keeping in mind that Time base 
-             duration should be kept 1ms since PPP_TIMEOUT_VALUEs are defined and 
-             handled in milliseconds basis.
-       - Low Level Initialization
-     */
-	
-
+	static uint32_t start_tick = 0;
+	static uint32_t cur_tick = 0;
 	
   HAL_Init();
 	/* Configure the System clock to have a frequency of 2 MHz (Up to 32MHZ possible) */
   SystemClock_Config();
+	MX_GPIO_Init();
 	MX_TIM_Init();
 	MX_I2C2_Init();
 	MX_ADC_Init();
 	MX_USART1_UART_Init();
 	MX_LPUART1_UART_Init();
-	
-	GPIO_InitStruct.Pin = (GPIO_PIN_7);
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-  
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct); 
  
 	printf("\r\nDaBai Init OK \r\n");
 	
 	start_tick = HAL_GetTick();
 	while((HAL_GetTick()- start_tick) <300)
 	{
-		// power on beep remind
+		//when power on beep Hint
 	}
 	
   /* Infinite loop */
   while (1)
   {
+		KeyProcess();
 		if(start_tick == 0)
 			start_tick = HAL_GetTick();
 		
 		cur_tick = HAL_GetTick();
    
-	  if((cur_tick - start_tick) > 100 )
+	  if((cur_tick - start_tick) > 500 )
 		{
 			start_tick = 0;
 			cur_tick = 0;
@@ -131,13 +113,6 @@ int main(void)
 			readFlag = 0;
 		}
 		
-    /*##- 5- Wait for the end of conversion #####################################*/  
-    /*  Before starting a new conversion, you need to check the current state of
-         the peripheral; if it’s busy you need to wait for the end of current
-         conversion before starting a new one.
-         For simplicity reasons, this example is just waiting till the end of the
-         conversion, but application may perform other tasks while conversion
-         operation is ongoing. */
     if (HAL_ADC_PollForConversion(&AdcHandle, 10) != HAL_OK)
     {
       /* End Of Conversion flag not set on time */
@@ -150,7 +125,7 @@ int main(void)
         /*##-6- Get the converted value of regular channel  ########################*/
         uwADCxConvertedValue = HAL_ADC_GetValue(&AdcHandle);
     }
-		if(uwADCxConvertedValue > 500 || Sht20Temp > 30)
+		if(uwADCxConvertedValue > 600 || Sht20Temp > 30)
 		{
 			HAL_TIM_PWM_Start(&TimHandle, TIM_CHANNEL_2);
 			//HAL_GPIO_WritePin(GPIOB,GPIO_PIN_7, GPIO_PIN_RESET);
@@ -161,12 +136,11 @@ int main(void)
 		}
 		if(readFlag)
 		{
+			HAL_GPIO_TogglePin(GPIOB,GPIO_PIN_7);
 			//HAL_UART_Log(uartData,5);
-			printf("\r\nDaBai Init OK \r\n");
+			//printf("\r\nDaBai Init OK \r\n");
 			Sht20Temp = SHT20_Convert(SHT20_ReadTemp(),1);
 			Sht20RH = SHT20_Convert(SHT20_ReadRH(),0);
-			HAL_GPIO_TogglePin(GPIOB,GPIO_PIN_7);
-
 			//HAL_LPUART1_Write(ATCommand,3);
 		}
   }
@@ -190,22 +164,52 @@ void SystemClock_Config(void)
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInit;
-  /* Enable MSI Oscillator */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
-  RCC_OscInitStruct.MSIState = RCC_MSI_ON;
-  RCC_OscInitStruct.MSIClockRange = RCC_MSIRANGE_5;
-  RCC_OscInitStruct.MSICalibrationValue=0x00;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct)!= HAL_OK)
+
+	/**Configure LSE Drive Capability */
+  __HAL_RCC_LSEDRIVE_CONFIG(RCC_LSEDRIVE_LOW);
+	
+	  /**Initializes the CPU, AHB and APB busses clocks 
+    */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE|RCC_OSCILLATORTYPE_LSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.LSEState = RCC_LSE_ON;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+	RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL4;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
-    /* Initialization Error */
-    while(1); 
+    _Error_Handler(__FILE__, __LINE__);
   }
-  
-  /* Select MSI as system clock source and configure the HCLK, PCLK1 and PCLK2 
+	
+//	    /**Initializes the CPU, AHB and APB busses clocks 
+//    */
+//  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_MSI;
+//  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
+//  RCC_OscInitStruct.MSIState = RCC_MSI_ON;
+//  RCC_OscInitStruct.MSICalibrationValue = 0;
+//  RCC_OscInitStruct.MSIClockRange = RCC_MSIRANGE_5;
+//  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+//  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+//  {
+//    _Error_Handler(__FILE__, __LINE__);
+//  }
+
+//   /* Enable MSI Oscillator */
+//  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
+//  RCC_OscInitStruct.MSIState = RCC_MSI_ON;
+//  RCC_OscInitStruct.MSIClockRange = RCC_MSIRANGE_5;
+//  RCC_OscInitStruct.MSICalibrationValue=0x00;
+//  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+//  if (HAL_RCC_OscConfig(&RCC_OscInitStruct)!= HAL_OK)
+//  {
+//    /* Initialization Error */
+//    while(1); 
+//  }
+	
+  /* Select PLLCLK as system clock source and configure the HCLK, PCLK1 and PCLK2 
      clocks dividers */
   RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_MSI;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSE;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;  
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;  
@@ -214,29 +218,38 @@ void SystemClock_Config(void)
     /* Initialization Error */
     while(1); 
   }
-  /* Enable Power Control clock */
-  __HAL_RCC_PWR_CLK_ENABLE();
-  
-  /* The voltage scaling allows optimizing the power consumption when the device is 
-     clocked below the maximum system frequency, to update the voltage scaling value 
-     regarding system frequency refer to product datasheet.  */
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
-  
-  /* Disable Power Control clock */
-  __HAL_RCC_PWR_CLK_DISABLE();
+	
+//  /* Enable Power Control clock */
+//  __HAL_RCC_PWR_CLK_ENABLE();
+//  
+//  /* The voltage scaling allows optimizing the power consumption when the device is 
+//     clocked below the maximum system frequency, to update the voltage scaling value 
+//     regarding system frequency refer to product datasheet.  */
+//  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
+//  
+//  /* Disable Power Control clock */
+//  __HAL_RCC_PWR_CLK_DISABLE();
 	
 	PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1|RCC_PERIPHCLK_USART2
                               |RCC_PERIPHCLK_LPUART1|RCC_PERIPHCLK_RTC|RCC_PERIPHCLK_I2C2;
   PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
   PeriphClkInit.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
-  PeriphClkInit.Lpuart1ClockSelection = RCC_LPUART1CLKSOURCE_PCLK1;
-  PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
+  PeriphClkInit.Lpuart1ClockSelection = RCC_LPUART1CLKSOURCE_LSE;
+  PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
-    _Error_Handler(__FILE__, __LINE__);
+    //_Error_Handler(__FILE__, __LINE__);
   }
 
-  
+  /**Configure the Systick interrupt time*/
+  HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/2000);
+
+  /**Configure the Systick */
+  HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
+
+  /* SysTick_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+	
 }
 
 
@@ -250,9 +263,9 @@ void _Error_Handler(char *file, int line)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-  while(1)
-  {
-  }
+//  while(1)
+//  {
+//  }
   /* USER CODE END Error_Handler_Debug */
 }
 
@@ -287,4 +300,4 @@ void assert_failed(uint8_t *file, uint32_t line)
   * @}
   */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+/************************ (C) COPYRIGHT DaBai_IOT Club *****END OF FILE****/

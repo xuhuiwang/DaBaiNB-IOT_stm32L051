@@ -34,7 +34,8 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
+
+#include "stm32l0xx_hal.h"
 
 /** @addtogroup STM32L0xx_HAL_Examples
   * @{
@@ -338,6 +339,8 @@ void HAL_TIM_PWM_MspInit(TIM_HandleTypeDef *htim)
   HAL_GPIO_Init(TIMx_GPIO_PORT_CHANNEL2, &GPIO_InitStruct);
 
 }
+
+
 
 
 /**

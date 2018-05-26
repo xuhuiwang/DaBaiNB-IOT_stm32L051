@@ -1,6 +1,5 @@
 --cpu Cortex-M0+
-".\objects\startup_stm32l051xx.o"
-".\objects\system_stm32l0xx.o"
+".\objects\dabai_app_1.o"
 ".\objects\main.o"
 ".\objects\stm32l0xx_hal_msp.o"
 ".\objects\stm32l0xx_it.o"
@@ -9,6 +8,9 @@
 ".\objects\dabai_usart.o"
 ".\objects\dabai_adc.o"
 ".\objects\dabai_tim.o"
+".\objects\dabai_gpio.o"
+".\objects\startup_stm32l051xx.o"
+".\objects\system_stm32l0xx.o"
 ".\objects\stm32l0xx_hal_adc.o"
 ".\objects\stm32l0xx_hal_adc_ex.o"
 ".\objects\stm32l0xx_hal_gpio.o"

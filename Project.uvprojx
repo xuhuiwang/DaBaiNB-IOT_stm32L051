@@ -337,7 +337,7 @@
               <MiscControls>--C99</MiscControls>
               <Define>STM32L051xx,USE_STM32L0XX_NUCLEO,USE_HAL_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>.\Drivers\STM32L0xx_HAL_Driver\Inc;.\RTE\_STM32L051C8_DaBai_IOT;.\DaBai_Inc;.\Drivers\CMSIS\Device\ST\STM32L0xx\Include;.\Drivers\CMSIS\Include;.\Drivers\STM32L0xx_HAL_Driver\Inc\Legacy</IncludePath>
+              <IncludePath>.\Drivers\STM32L0xx_HAL_Driver\Inc;.\RTE\_STM32L051C8_DaBai_IOT;.\DaBai_Inc;.\Drivers\CMSIS\Device\ST\STM32L0xx\Include;.\Drivers\CMSIS\Include;.\Drivers\STM32L0xx_HAL_Driver\Inc\Legacy;.\APP</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -379,43 +379,23 @@
       </TargetOption>
       <Groups>
         <Group>
-          <GroupName>Example/MDK-ARM</GroupName>
+          <GroupName>DaBai_APP</GroupName>
           <Files>
             <File>
-              <FileName>startup_stm32l051xx.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>.\startup_stm32l051xx.s</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Doc</GroupName>
-          <Files>
-            <File>
-              <FileName>readme.txt</FileName>
-              <FileType>5</FileType>
-              <FilePath>../readme.txt</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Drivers/CMSIS</GroupName>
-          <Files>
-            <File>
-              <FileName>system_stm32l0xx.c</FileName>
+              <FileName>DaBai_APP.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\DaBai_Src\system_stm32l0xx.c</FilePath>
+              <FilePath>.\DaBai_APP\DaBai_APP.c</FilePath>
             </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Example/User</GroupName>
-          <Files>
             <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\DaBai_Src\main.c</FilePath>
+              <FilePath>.\DaBai_APP\main.c</FilePath>
             </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>DaBai_BSP</GroupName>
+          <Files>
             <File>
               <FileName>stm32l0xx_hal_msp.c</FileName>
               <FileType>1</FileType>
@@ -450,6 +430,41 @@
               <FileName>DaBai_tim.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\DaBai_Src\DaBai_tim.c</FilePath>
+            </File>
+            <File>
+              <FileName>DaBai_GPIO.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\DaBai_Src\DaBai_GPIO.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Doc</GroupName>
+          <Files>
+            <File>
+              <FileName>readMe.txt</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\readMe.txt</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Example/MDK-ARM</GroupName>
+          <Files>
+            <File>
+              <FileName>startup_stm32l051xx.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\startup_stm32l051xx.s</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drivers/CMSIS</GroupName>
+          <Files>
+            <File>
+              <FileName>system_stm32l0xx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\DaBai_Src\system_stm32l0xx.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -911,43 +926,23 @@
       </TargetOption>
       <Groups>
         <Group>
-          <GroupName>Example/MDK-ARM</GroupName>
+          <GroupName>DaBai_APP</GroupName>
           <Files>
             <File>
-              <FileName>startup_stm32l051xx.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>.\startup_stm32l051xx.s</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Doc</GroupName>
-          <Files>
-            <File>
-              <FileName>readme.txt</FileName>
-              <FileType>5</FileType>
-              <FilePath>../readme.txt</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Drivers/CMSIS</GroupName>
-          <Files>
-            <File>
-              <FileName>system_stm32l0xx.c</FileName>
+              <FileName>DaBai_APP.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\DaBai_Src\system_stm32l0xx.c</FilePath>
+              <FilePath>.\DaBai_APP\DaBai_APP.c</FilePath>
             </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Example/User</GroupName>
-          <Files>
             <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\DaBai_Src\main.c</FilePath>
+              <FilePath>.\DaBai_APP\main.c</FilePath>
             </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>DaBai_BSP</GroupName>
+          <Files>
             <File>
               <FileName>stm32l0xx_hal_msp.c</FileName>
               <FileType>1</FileType>
@@ -982,6 +977,41 @@
               <FileName>DaBai_tim.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\DaBai_Src\DaBai_tim.c</FilePath>
+            </File>
+            <File>
+              <FileName>DaBai_GPIO.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\DaBai_Src\DaBai_GPIO.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Doc</GroupName>
+          <Files>
+            <File>
+              <FileName>readMe.txt</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\readMe.txt</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Example/MDK-ARM</GroupName>
+          <Files>
+            <File>
+              <FileName>startup_stm32l051xx.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\startup_stm32l051xx.s</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drivers/CMSIS</GroupName>
+          <Files>
+            <File>
+              <FileName>system_stm32l0xx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\DaBai_Src\system_stm32l0xx.c</FilePath>
             </File>
           </Files>
         </Group>

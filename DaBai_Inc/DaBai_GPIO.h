@@ -1,12 +1,16 @@
 /**
   ******************************************************************************
-  * @file    ADC/ADC_RegularConversion_Polling/Inc/main.h
-  * @author  MCD Application Team
-  * @brief   Header for main.c module
+  * File Name          : DABAI_GPIO.h
+  * Description        : This file provides code for the configuration
+  *                      of the DABAI_GPIO instances.
   ******************************************************************************
-  * @attention
+  ** This notice applies to any and all portions of this file
+  * that are not between comment pairs USER CODE BEGIN and
+  * USER CODE END. Other portions of this file, whether 
+  * inserted by the user or by software development tools
+  * are owned by their respective copyright owners.
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
+  * COPYRIGHT(c) 2018 STMicroelectronics
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -32,23 +36,44 @@
   *
   ******************************************************************************
   */
-
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MAIN_H
-#define __MAIN_H
+#ifndef __DABAI_GPIO_H
+#define __DABAI_GPIO_H
+#ifdef __cplusplus
+ extern "C" {
+#endif
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l0xx_hal.h"
-//#include "stm32l0xx_nucleo_32.h"
-
-/* Exported types ------------------------------------------------------------*/
-/* Exported constants --------------------------------------------------------*/
-/* Exported macro ------------------------------------------------------------*/
 
 
-/* Exported functions ------------------------------------------------------- */
-void _Error_Handler(char *file, int line);
 
-#endif /* __MAIN_H */
+#define KEY1_Pin  GPIO_PIN_0
+
+#define KEY2_Pin  GPIO_PIN_12
+#define KEY3_Pin  GPIO_PIN_15
+
+#define LED1			GPIO_PIN_3
+#define LED2			GPIO_PIN_4
+#define LED3			GPIO_PIN_5
+#define LED4			GPIO_PIN_6
+#define LED5			GPIO_PIN_7
+
+
+extern void _Error_Handler(char *, int);
+
+void MX_GPIO_Init(void);
+#ifdef __cplusplus
+}
+#endif
+#endif /*__ DABAI_GPIO_H */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

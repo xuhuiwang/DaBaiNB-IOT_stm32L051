@@ -45,7 +45,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l0xx_hal.h"
-#include "main.h"
+
 
 /* USER CODE BEGIN Includes */
 
@@ -58,6 +58,7 @@
 /* USER CODE END Private defines */
 
 extern void _Error_Handler(char *, int);
+
 extern ADC_HandleTypeDef    AdcHandle;
 
 void MX_ADC_Init(void);

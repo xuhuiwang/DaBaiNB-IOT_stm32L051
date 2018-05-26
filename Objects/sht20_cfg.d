@@ -38,4 +38,3 @@
 .\objects\sht20_cfg.o: .\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_uart_ex.h
 .\objects\sht20_cfg.o: .\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_usart.h
 .\objects\sht20_cfg.o: .\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_usart_ex.h
-.\objects\sht20_cfg.o: .\DaBai_Inc\main.h

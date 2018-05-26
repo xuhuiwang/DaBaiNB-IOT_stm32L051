@@ -112,7 +112,7 @@ void MX_LPUART1_UART_Init(void)
   hlpuart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
   if (HAL_MultiProcessor_Init(&hlpuart1, 0, UART_WAKEUPMETHOD_IDLELINE) != HAL_OK)
   {
-    _Error_Handler(__FILE__, __LINE__);
+    //_Error_Handler(__FILE__, __LINE__);
   }
 
 }

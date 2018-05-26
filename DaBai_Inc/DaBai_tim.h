@@ -45,7 +45,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l0xx_hal.h"
-#include "main.h"
+
 
 /* USER CODE BEGIN Includes */
 
@@ -58,6 +58,9 @@
 
 	/* Timer handler declaration */
 extern TIM_HandleTypeDef    TimHandle;
+
+extern void _Error_Handler(char *, int);
+
 void MX_TIM_Init(void);
 
 

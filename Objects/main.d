@@ -1,5 +1,5 @@
-.\objects\main.o: DaBai_Src\main.c
-.\objects\main.o: .\DaBai_Inc\main.h
+.\objects\main.o: DaBai_APP\main.c
+.\objects\main.o: DaBai_APP\main.h
 .\objects\main.o: .\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal.h
 .\objects\main.o: .\DaBai_Inc\stm32l0xx_hal_conf.h
 .\objects\main.o: .\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_rcc.h
@@ -42,3 +42,5 @@
 .\objects\main.o: .\DaBai_Inc\DaBai_usart.h
 .\objects\main.o: .\DaBai_Inc\DaBai_ADC.h
 .\objects\main.o: .\DaBai_Inc\DaBai_tim.h
+.\objects\main.o: .\DaBai_Inc\DaBai_GPIO.h
+.\objects\main.o: DaBai_APP\DaBai_APP.h
