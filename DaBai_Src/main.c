@@ -77,14 +77,7 @@ int main(void)
 		{
 			readFlag = 0;
 		}
-		
-    /*##- 5- Wait for the end of conversion #####################################*/  
-    /*  Before starting a new conversion, you need to check the current state of
-         the peripheral; if it’s busy you need to wait for the end of current
-         conversion before starting a new one.
-         For simplicity reasons, this example is just waiting till the end of the
-         conversion, but application may perform other tasks while conversion
-         operation is ongoing. */
+
     if (HAL_ADC_PollForConversion(&AdcHandle, 10) != HAL_OK)
     {
       /* End Of Conversion flag not set on time */
@@ -99,7 +92,7 @@ int main(void)
     }
 		if(uwADCxConvertedValue > 500 || Sht20Temp > 29)
 		{
-			HAL_TIM_PWM_Start(&TimHandle, TIM_CHANNEL_2);
+			//HAL_TIM_PWM_Start(&TimHandle, TIM_CHANNEL_2);
 			//HAL_GPIO_WritePin(GPIOB,GPIO_PIN_7, GPIO_PIN_RESET);
 		}
 		else{
@@ -109,10 +102,10 @@ int main(void)
 		if(readFlag)
 		{
 			//HAL_UART_Log(uartData,5);
-			printf("\r\nDaBai Init OK \r\n");
-			Sht20Temp = SHT20_Convert(SHT20_ReadTemp(),1);
-			Sht20RH = SHT20_Convert(SHT20_ReadRH(),0);
-			//HAL_GPIO_TogglePin(GPIOB,GPIO_PIN_7);
+			//printf("\r\nDaBai Init OK \r\n");
+			//Sht20Temp = SHT20_Convert(SHT20_ReadTemp(),1);
+			//Sht20RH = SHT20_Convert(SHT20_ReadRH(),0);
+			HAL_GPIO_TogglePin(GPIOB,LED5);
 
 			//HAL_LPUART1_Write(ATCommand,3);
 		}
@@ -137,22 +130,33 @@ void SystemClock_Config(void)
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInit;
-  /* Enable MSI Oscillator */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
-  RCC_OscInitStruct.MSIState = RCC_MSI_ON;
-  RCC_OscInitStruct.MSIClockRange = RCC_MSIRANGE_5;
-  RCC_OscInitStruct.MSICalibrationValue=0x00;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct)!= HAL_OK)
+//  /* Enable MSI Oscillator */
+//  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
+//  RCC_OscInitStruct.MSIState = RCC_MSI_ON;
+//  RCC_OscInitStruct.MSIClockRange = RCC_MSIRANGE_5;
+//  RCC_OscInitStruct.MSICalibrationValue=0x00;
+//  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+//  if (HAL_RCC_OscConfig(&RCC_OscInitStruct)!= HAL_OK)
+//  {
+//    /* Initialization Error */
+//    while(1); 
+//  }
+	
+	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE|RCC_OSCILLATORTYPE_LSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;//open 8M¾§Õñ
+  RCC_OscInitStruct.LSEState = RCC_LSE_ON;//open 32.768KHz¾§Õñ 
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+	RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL4;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
-    /* Initialization Error */
-    while(1); 
+    _Error_Handler(__FILE__, __LINE__);
   }
   
   /* Select MSI as system clock source and configure the HCLK, PCLK1 and PCLK2 
      clocks dividers */
   RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_MSI;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSE;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;  
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;  
@@ -183,7 +187,16 @@ void SystemClock_Config(void)
     _Error_Handler(__FILE__, __LINE__);
   }
 
-  
+  /**Configure the Systick interrupt time 1ms
+    */
+  HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
+
+    /**Configure the Systick 
+    */
+  HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
+
+  /* SysTick_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 }
 
 

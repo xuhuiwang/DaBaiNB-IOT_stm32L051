@@ -90,12 +90,12 @@ void KeyProcess(void)
 	if(key_State[KEY2] == 1 || key_State[KEY3] == 1)
 	{
 		//HAL_TIM_PWM_Start(&TimHandle, TIM_CHANNEL_2);
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
+		//HAL_GPIO_WritePin(GPIOB, LED5, GPIO_PIN_RESET);
 	}
 	else
 	{
 		//HAL_TIM_PWM_Stop(&TimHandle, TIM_CHANNEL_2);
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET);
+		//HAL_GPIO_WritePin(GPIOB, LED5, GPIO_PIN_SET);
 	}
 
 }
