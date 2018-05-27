@@ -1,36 +1,5 @@
 /**
-  ******************************************************************************
-  * @file    ADC/ADC_RegularConversion_Polling/Src/main.c
-  * @author  MCD Application Team
-  * @brief   This example describes how to use Polling mode to convert data.
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
-  *
-  * Redistribution and use in source and binary forms, with or without modification,
-  * are permitted provided that the following conditions are met:
-  *   1. Redistributions of source code must retain the above copyright notice,
-  *      this list of conditions and the following disclaimer.
-  *   2. Redistributions in binary form must reproduce the above copyright notice,
-  *      this list of conditions and the following disclaimer in the documentation
-  *      and/or other materials provided with the distribution.
-  *   3. Neither the name of STMicroelectronics nor the names of its contributors
-  *      may be used to endorse or promote products derived from this software
-  *      without specific prior written permission.
-  *
-  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  *
-  ******************************************************************************
+
   */
 
 /* Includes ------------------------------------------------------------------*/
@@ -40,11 +9,8 @@
 #include "DaBai_usart.h"
 #include "DaBai_ADC.h"
 #include "DaBai_tim.h"
-
-/** @addtogroup STM32L0xx_HAL_Examples
-  * @{
-  */
-
+#include "DaBai_APP.h"
+#include "DaBai_GPIO.h"
 
 
 /* Variable used to get converted value */
@@ -62,59 +28,40 @@ static GPIO_InitTypeDef  GPIO_InitStruct;
   * @retval None
   */
 	
-	float Sht20Temp = 0;
-	float Sht20RH = 0;
-	uint8_t uartData[5] = {1,2,3,4,5};
+float Sht20Temp = 0;
+float Sht20RH = 0;
+uint8_t uartData[5] = {1,2,3,4,5};
 uint8_t ATCommand[] = "AT\r";
-  uint8_t  readFlag = 0;
+uint8_t  readFlag = 0;
 uint32_t 	Delay1msCnt = 0;
+
+
 int main(void)
 {
-	 static  uint32_t start_tick = 0;
-   static uint32_t cur_tick = 0;
- /* This sample code shows how to convert an analog input and read the converted
-    data using Polling mode.
-    To proceed, 5 steps are required: */
-
-  /* STM32L0xx HAL library initialization:
-       - Configure the Flash prefetch, Flash preread and Buffer caches
-       - Systick timer is configured by default as source of time base, but user 
-             can eventually implement his proper time base source (a general purpose 
-             timer for example or other time source), keeping in mind that Time base 
-             duration should be kept 1ms since PPP_TIMEOUT_VALUEs are defined and 
-             handled in milliseconds basis.
-       - Low Level Initialization
-     */
-	
-
-	
+	static  uint32_t start_tick = 0;
+	static uint32_t cur_tick = 0;
+ 
   HAL_Init();
 	/* Configure the System clock to have a frequency of 2 MHz (Up to 32MHZ possible) */
   SystemClock_Config();
+	MX_GPIO_Init();
 	MX_TIM_Init();
 	MX_I2C2_Init();
 	MX_ADC_Init();
 	MX_USART1_UART_Init();
 	MX_LPUART1_UART_Init();
 	
-	GPIO_InitStruct.Pin = (GPIO_PIN_7);
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-  
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct); 
- 
-	printf("\r\nDaBai Init OK \r\n");
-	
 	start_tick = HAL_GetTick();
 	while((HAL_GetTick()- start_tick) <300)
 	{
 		// power on beep remind
 	}
+	printf("\r\nDaBai Init OK \r\n");
 	
   /* Infinite loop */
   while (1)
   {
+		KeyProcess();
 		if(start_tick == 0)
 			start_tick = HAL_GetTick();
 		
@@ -150,7 +97,7 @@ int main(void)
         /*##-6- Get the converted value of regular channel  ########################*/
         uwADCxConvertedValue = HAL_ADC_GetValue(&AdcHandle);
     }
-		if(uwADCxConvertedValue > 500 || Sht20Temp > 30)
+		if(uwADCxConvertedValue > 500 || Sht20Temp > 29)
 		{
 			HAL_TIM_PWM_Start(&TimHandle, TIM_CHANNEL_2);
 			//HAL_GPIO_WritePin(GPIOB,GPIO_PIN_7, GPIO_PIN_RESET);
@@ -165,7 +112,7 @@ int main(void)
 			printf("\r\nDaBai Init OK \r\n");
 			Sht20Temp = SHT20_Convert(SHT20_ReadTemp(),1);
 			Sht20RH = SHT20_Convert(SHT20_ReadRH(),0);
-			HAL_GPIO_TogglePin(GPIOB,GPIO_PIN_7);
+			//HAL_GPIO_TogglePin(GPIOB,GPIO_PIN_7);
 
 			//HAL_LPUART1_Write(ATCommand,3);
 		}

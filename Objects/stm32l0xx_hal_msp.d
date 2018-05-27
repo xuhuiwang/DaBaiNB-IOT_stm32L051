@@ -1,5 +1,4 @@
 .\objects\stm32l0xx_hal_msp.o: DaBai_Src\stm32l0xx_hal_msp.c
-.\objects\stm32l0xx_hal_msp.o: .\DaBai_Inc\main.h
 .\objects\stm32l0xx_hal_msp.o: .\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal.h
 .\objects\stm32l0xx_hal_msp.o: .\DaBai_Inc\stm32l0xx_hal_conf.h
 .\objects\stm32l0xx_hal_msp.o: .\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_rcc.h

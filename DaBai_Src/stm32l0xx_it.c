@@ -36,7 +36,7 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
+
 #include "stm32l0xx_it.h"
 
 /** @addtogroup STM32L0xx_HAL_Examples

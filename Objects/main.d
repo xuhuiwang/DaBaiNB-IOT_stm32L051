@@ -42,3 +42,5 @@
 .\objects\main.o: .\DaBai_Inc\DaBai_usart.h
 .\objects\main.o: .\DaBai_Inc\DaBai_ADC.h
 .\objects\main.o: .\DaBai_Inc\DaBai_tim.h
+.\objects\main.o: .\DaBai_APP\DaBai_APP.h
+.\objects\main.o: .\DaBai_Inc\DaBai_GPIO.h
