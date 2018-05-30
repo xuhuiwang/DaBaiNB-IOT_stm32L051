@@ -31,7 +31,8 @@ uint8_t uartData[5] = {1,2,3,4,5};
 uint8_t ATCommand[] = "AT\r";
 uint8_t  readFlag = 0;
 uint32_t 	Delay1msCnt = 0;
-uint32_t g_sysTime1ms = 0;
+uint16_t g_sysTime1ms = 0;
+uint16_t g_tempRHTime1ms = 0;
 
 int main(void)
 {
@@ -65,7 +66,12 @@ int main(void)
 			g_sysTime1ms = 0;
 			KeyProcess();
 			HAL_GPIO_TogglePin(GPIOB,LED5);
-			//HAL_UART_Log(uartData,5);
+			//HAL_UART_Log(uartData,5);	
+		}
+		if(g_tempRHTime1ms >2000)
+		{
+			g_tempRHTime1ms = 0;
+			DaBaiSensorTask();
 			printf("\r\nDaBai main loop \r\n");
 		}
   }

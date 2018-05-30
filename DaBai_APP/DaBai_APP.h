@@ -53,7 +53,7 @@
 
 
 void KeyProcess(void);
-
+void DaBaiSensorTask(void);
 
 
 #ifdef __cplusplus
