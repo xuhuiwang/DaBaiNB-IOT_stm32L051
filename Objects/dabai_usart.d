@@ -37,3 +37,6 @@
 .\objects\dabai_usart.o: .\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_uart_ex.h
 .\objects\dabai_usart.o: .\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_usart.h
 .\objects\dabai_usart.o: .\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_usart_ex.h
+.\objects\dabai_usart.o: .\NBxxModule\NB_BC95_28.h
+.\objects\dabai_usart.o: .\NBxxModule\NB_Board.h
+.\objects\dabai_usart.o: .\NBxxModule\nb_types.h

@@ -59,10 +59,16 @@
 #define LED4			GPIO_PIN_6
 #define LED5			GPIO_PIN_7
 
+#define SYS_PW_CTRL_PIN  GPIO_PIN_15
 
+#define POWER_ON	  HAL_GPIO_WritePin(GPIOA, SYS_PW_CTRL_PIN, GPIO_PIN_SET)
+#define POWER_OFF   HAL_GPIO_WritePin(GPIOA, SYS_PW_CTRL_PIN, GPIO_PIN_RESET)
+#define BEPP_ON			HAL_TIM_PWM_Start(&TimHandle, TIM_CHANNEL_2)
+#define BEPP_OFF		HAL_TIM_PWM_Stop(&TimHandle, TIM_CHANNEL_2)
 extern void _Error_Handler(char *, int);
 
 void MX_GPIO_Init(void);
+void PowerOffGpioConfig(void);
 #ifdef __cplusplus
 }
 #endif

@@ -50,13 +50,13 @@ void MX_GPIO_Init(void)
   /*Configure GPIO pins : KEY1 */
   GPIO_InitStruct.Pin = KEY1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : KEY2 KEY3 */
   GPIO_InitStruct.Pin = KEY2_Pin | KEY3_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 	
 	/*Configure GPIO pins : LED1 LED2 LED3 LED4 LED5 */
@@ -66,7 +66,25 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;  
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct); 
 
+	/*Configure GPIO pins :SYS_PW_CTRL */
+	GPIO_InitStruct.Pin = SYS_PW_CTRL_PIN;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;  
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct); 
+	POWER_ON;
 }
 
+
+void PowerOffGpioConfig(void)
+{
+	  GPIO_InitTypeDef GPIO_InitStruct;
+	
+		GPIO_InitStruct.Pin = LED1 | LED2 | LED3 | LED4 |LED5;
+		GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+		GPIO_InitStruct.Pull = GPIO_PULLUP;
+		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;  
+		HAL_GPIO_Init(GPIOB, &GPIO_InitStruct); 
+}
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

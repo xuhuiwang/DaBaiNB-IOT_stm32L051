@@ -337,7 +337,7 @@
               <MiscControls>--C99</MiscControls>
               <Define>STM32L051xx,USE_STM32L0XX_NUCLEO,USE_HAL_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>.\Drivers\STM32L0xx_HAL_Driver\Inc;.\RTE\_STM32L051C8_DaBai_IOT;.\DaBai_Inc;.\Drivers\CMSIS\Device\ST\STM32L0xx\Include;.\Drivers\CMSIS\Include;.\Drivers\STM32L0xx_HAL_Driver\Inc\Legacy;.\DaBai_APP</IncludePath>
+              <IncludePath>.\Drivers\STM32L0xx_HAL_Driver\Inc;.\RTE\_STM32L051C8_DaBai_IOT;.\DaBai_Inc;.\Drivers\CMSIS\Device\ST\STM32L0xx\Include;.\Drivers\CMSIS\Include;.\Drivers\STM32L0xx_HAL_Driver\Inc\Legacy;.\DaBai_APP;.\NBxxModule</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -435,6 +435,11 @@
               <FileName>sht20_cfg.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\DaBai_Src\sht20_cfg.c</FilePath>
+            </File>
+            <File>
+              <FileName>_dma_cfg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\DaBai_Src\_dma_cfg.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -982,6 +987,11 @@
               <FileName>sht20_cfg.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\DaBai_Src\sht20_cfg.c</FilePath>
+            </File>
+            <File>
+              <FileName>_dma_cfg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\DaBai_Src\_dma_cfg.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -38,7 +38,6 @@
 .\objects\main.o: .\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_usart.h
 .\objects\main.o: .\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_usart_ex.h
 .\objects\main.o: .\DaBai_Inc\DaBai_i2c.h
-.\objects\main.o: .\DaBai_Inc\sht20_cfg.h
 .\objects\main.o: .\DaBai_Inc\DaBai_usart.h
 .\objects\main.o: .\DaBai_Inc\DaBai_ADC.h
 .\objects\main.o: .\DaBai_Inc\DaBai_tim.h

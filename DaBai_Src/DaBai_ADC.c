@@ -21,7 +21,8 @@
 /* Private variables ---------------------------------------------------------*/
 /* ADC handler declaration */
 ADC_HandleTypeDef    AdcHandle;
-
+/* Variable used to get converted value */
+__IO uint32_t uwADCxConvertedValue = 0;
 
 
 /* ADC init function */
@@ -102,6 +103,19 @@ void MX_ADC_Init(void)
     
   }
 
+}
+
+uint32_t getLightValue(void)
+{
+	HAL_ADC_PollForConversion(&AdcHandle, 10);
+
+	/* Check if the continuous conversion of regular channel is finished */
+	if ((HAL_ADC_GetState(&AdcHandle) & HAL_ADC_STATE_REG_EOC) == HAL_ADC_STATE_REG_EOC)
+	{
+		/*##-6- Get the converted value of regular channel  ########################*/
+		uwADCxConvertedValue = HAL_ADC_GetValue(&AdcHandle);
+	}
+	return uwADCxConvertedValue;
 }
 
 

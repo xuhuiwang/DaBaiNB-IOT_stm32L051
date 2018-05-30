@@ -39,7 +39,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "DaBai_usart.h"
-
+#include "NB_BC95_28.h"
 
 
 /* USER CODE BEGIN 0 */
@@ -52,7 +52,9 @@ static UART_UserCb  pHalUartCb = NULL;
 
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
+
 UART_HandleTypeDef hlpuart1;
+
 
 /* USART1 init function */
 
@@ -98,19 +100,20 @@ void MX_USART2_UART_Init(void)
 }
 
 /* LPUART1 init function */
+
 void MX_LPUART1_UART_Init(void)
 {
 
   hlpuart1.Instance = LPUART1;
-  hlpuart1.Init.BaudRate = 115200;
-  hlpuart1.Init.WordLength = UART_WORDLENGTH_7B;
+  hlpuart1.Init.BaudRate = 9600;
+  hlpuart1.Init.WordLength = UART_WORDLENGTH_8B;
   hlpuart1.Init.StopBits = UART_STOPBITS_1;
   hlpuart1.Init.Parity = UART_PARITY_NONE;
   hlpuart1.Init.Mode = UART_MODE_TX_RX;
   hlpuart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
   hlpuart1.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
   hlpuart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-  if (HAL_MultiProcessor_Init(&hlpuart1, 0, UART_WAKEUPMETHOD_IDLELINE) != HAL_OK)
+  if (HAL_UART_Init(&hlpuart1) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
@@ -282,6 +285,16 @@ PUTCHAR_PROTOTYPE
  
   return ch;
 }
+
+
+/* USER CODE BEGIN 1 */
+void HAL_UARTDMA_Init(bc95_receive_cb cb,uint32_t baud)
+{
+  baud = baud;
+  //nb_receCb = cb;
+  //HAL_UART_Receive_DMA(&hlpuart1,UartDma_Init(uart_dma_send,LPUART1),RECE_BUF_MAX_LEN);
+}
+
 
 /* USER CODE END 1 */
 

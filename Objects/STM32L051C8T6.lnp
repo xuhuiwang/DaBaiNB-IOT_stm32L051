@@ -9,6 +9,7 @@
 ".\objects\dabai_adc.o"
 ".\objects\dabai_tim.o"
 ".\objects\sht20_cfg.o"
+".\objects\_dma_cfg.o"
 ".\objects\startup_stm32l051xx.o"
 ".\objects\system_stm32l0xx.o"
 ".\objects\stm32l0xx_hal_adc.o"

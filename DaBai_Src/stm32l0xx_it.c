@@ -38,6 +38,10 @@
 /* Includes ------------------------------------------------------------------*/
 
 #include "stm32l0xx_it.h"
+#include "stm32l0xx_hal.h"
+
+
+extern uint32_t g_sysTime1ms;
 
 /** @addtogroup STM32L0xx_HAL_Examples
   * @{
@@ -115,6 +119,7 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   HAL_IncTick();
+	g_sysTime1ms++;
 }
 
 /******************************************************************************/

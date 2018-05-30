@@ -5,7 +5,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "DaBai_i2c.h"
-#include "sht20_cfg.h"
 #include "DaBai_usart.h"
 #include "DaBai_ADC.h"
 #include "DaBai_tim.h"
@@ -13,8 +12,7 @@
 #include "DaBai_GPIO.h"
 
 
-/* Variable used to get converted value */
-__IO uint32_t uwADCxConvertedValue = 0;
+
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
@@ -28,13 +26,12 @@ static GPIO_InitTypeDef  GPIO_InitStruct;
   * @retval None
   */
 	
-float Sht20Temp = 0;
-float Sht20RH = 0;
+
 uint8_t uartData[5] = {1,2,3,4,5};
 uint8_t ATCommand[] = "AT\r";
 uint8_t  readFlag = 0;
 uint32_t 	Delay1msCnt = 0;
-
+uint32_t g_sysTime1ms = 0;
 
 int main(void)
 {
@@ -44,8 +41,8 @@ int main(void)
   HAL_Init();
 	/* Configure the System clock to have a frequency of 2 MHz (Up to 32MHZ possible) */
   SystemClock_Config();
-	MX_GPIO_Init();
 	MX_TIM_Init();
+	MX_GPIO_Init();
 	MX_I2C2_Init();
 	MX_ADC_Init();
 	MX_USART1_UART_Init();
@@ -57,57 +54,19 @@ int main(void)
 		// power on beep remind
 	}
 	printf("\r\nDaBai Init OK \r\n");
-	
+	HAL_TIM_PWM_Stop(&TimHandle, TIM_CHANNEL_2);
   /* Infinite loop */
   while (1)
   {
-		KeyProcess();
-		if(start_tick == 0)
-			start_tick = HAL_GetTick();
+		//KeyProcess();
 		
-		cur_tick = HAL_GetTick();
-   
-	  if((cur_tick - start_tick) > 100 )
+		if(g_sysTime1ms > 50)
 		{
-			start_tick = 0;
-			cur_tick = 0;
-			readFlag = 1;
-		}
-		else
-		{
-			readFlag = 0;
-		}
-
-    if (HAL_ADC_PollForConversion(&AdcHandle, 10) != HAL_OK)
-    {
-      /* End Of Conversion flag not set on time */
-      
-    }
-
-    /* Check if the continuous conversion of regular channel is finished */
-    if ((HAL_ADC_GetState(&AdcHandle) & HAL_ADC_STATE_REG_EOC) == HAL_ADC_STATE_REG_EOC)
-    {
-        /*##-6- Get the converted value of regular channel  ########################*/
-        uwADCxConvertedValue = HAL_ADC_GetValue(&AdcHandle);
-    }
-		if(uwADCxConvertedValue > 500 || Sht20Temp > 29)
-		{
-			//HAL_TIM_PWM_Start(&TimHandle, TIM_CHANNEL_2);
-			//HAL_GPIO_WritePin(GPIOB,GPIO_PIN_7, GPIO_PIN_RESET);
-		}
-		else{
-			HAL_TIM_PWM_Stop(&TimHandle, TIM_CHANNEL_2);
-			//HAL_GPIO_WritePin(GPIOB,GPIO_PIN_7, GPIO_PIN_SET);
-		}
-		if(readFlag)
-		{
-			//HAL_UART_Log(uartData,5);
-			//printf("\r\nDaBai Init OK \r\n");
-			//Sht20Temp = SHT20_Convert(SHT20_ReadTemp(),1);
-			//Sht20RH = SHT20_Convert(SHT20_ReadRH(),0);
+			g_sysTime1ms = 0;
+			KeyProcess();
 			HAL_GPIO_TogglePin(GPIOB,LED5);
-
-			//HAL_LPUART1_Write(ATCommand,3);
+			//HAL_UART_Log(uartData,5);
+			printf("\r\nDaBai main loop \r\n");
 		}
   }
 }
@@ -130,6 +89,8 @@ void SystemClock_Config(void)
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInit;
+	
+	
 //  /* Enable MSI Oscillator */
 //  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
 //  RCC_OscInitStruct.MSIState = RCC_MSI_ON;
@@ -181,7 +142,7 @@ void SystemClock_Config(void)
   PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
   PeriphClkInit.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
   PeriphClkInit.Lpuart1ClockSelection = RCC_LPUART1CLKSOURCE_PCLK1;
-  PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
+  PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);

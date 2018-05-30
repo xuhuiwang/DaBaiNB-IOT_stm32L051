@@ -20,7 +20,7 @@ extern void _Error_Handler(char *, int);
 extern ADC_HandleTypeDef    AdcHandle;
 
 void MX_ADC_Init(void);
-
+uint32_t getLightValue(void);
 #ifdef __cplusplus
 }
 #endif
