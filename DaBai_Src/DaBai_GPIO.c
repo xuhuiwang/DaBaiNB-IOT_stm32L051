@@ -60,12 +60,17 @@ void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 	
 	/*Configure GPIO pins : LED1 LED2 LED3 LED4 LED5 */
-	GPIO_InitStruct.Pin = LED1 | LED2 | LED3 | LED4 |LED5;
+	GPIO_InitStruct.Pin = LED1_PIN | LED2_PIN | LED3_PIN | LED4_PIN |LED5_PIN;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;  
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct); 
-
+	LED1_ON;
+	LED2_ON;
+	LED3_ON;
+	LED4_ON;
+	LED5_ON;
+	
 	/*Configure GPIO pins :SYS_PW_CTRL */
 	GPIO_InitStruct.Pin = SYS_PW_CTRL_PIN;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -80,7 +85,7 @@ void PowerOffGpioConfig(void)
 {
 	  GPIO_InitTypeDef GPIO_InitStruct;
 	
-		GPIO_InitStruct.Pin = LED1 | LED2 | LED3 | LED4 |LED5;
+		GPIO_InitStruct.Pin = LED1_PIN | LED2_PIN | LED3_PIN | LED4_PIN |LED5_PIN;
 		GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
 		GPIO_InitStruct.Pull = GPIO_PULLUP;
 		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;  

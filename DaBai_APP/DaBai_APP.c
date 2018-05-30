@@ -125,7 +125,7 @@ void KeyProcess(void)
 void DaBaiSensorTask(void)
 {
 	g_lightValue = getLightValue();
-	if(g_lightValue > 700 || g_Sht20Temp > 29)
+	if(g_lightValue > 700 || g_Sht20Temp > 31)
 	{
 		HAL_TIM_PWM_Start(&TimHandle, TIM_CHANNEL_2);
 		//HAL_GPIO_WritePin(GPIOB,GPIO_PIN_7, GPIO_PIN_RESET);

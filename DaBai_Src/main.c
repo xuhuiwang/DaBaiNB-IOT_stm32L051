@@ -54,6 +54,11 @@ int main(void)
 	{
 		// power on beep remind
 	}
+	LED1_OFF;
+	LED2_OFF;
+	LED3_OFF;
+	LED4_OFF;
+	LED5_OFF;
 	printf("\r\nDaBai Init OK \r\n");
 	HAL_TIM_PWM_Stop(&TimHandle, TIM_CHANNEL_2);
   /* Infinite loop */
@@ -65,7 +70,7 @@ int main(void)
 		{
 			g_sysTime1ms = 0;
 			KeyProcess();
-			HAL_GPIO_TogglePin(GPIOB,LED5);
+			HAL_GPIO_TogglePin(GPIOB,LED5_PIN);
 			//HAL_UART_Log(uartData,5);	
 		}
 		if(g_tempRHTime1ms >2000)
@@ -184,34 +189,4 @@ void _Error_Handler(char *file, int line)
 }
 
 
-#ifdef  USE_FULL_ASSERT
-
-/**
-  * @brief  Reports the name of the source file and the source line number
-  *         where the assert_param error has occurred.
-  * @param  file: pointer to the source file name
-  * @param  line: assert_param error line source number
-  * @retval None
-  */
-void assert_failed(uint8_t *file, uint32_t line)
-{
-  /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-
-  /* Infinite loop */
-  while (1)
-  {
-  }
-}
-
-#endif
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+/************************ (C) COPYRIGHT DaBai_IOT *****END OF FILE****/

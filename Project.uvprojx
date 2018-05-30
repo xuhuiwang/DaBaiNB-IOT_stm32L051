@@ -389,6 +389,9 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>NBxxModule</GroupName>
+        </Group>
+        <Group>
           <GroupName>DaBai_BSP</GroupName>
           <Files>
             <File>
@@ -939,6 +942,9 @@
               <FilePath>.\DaBai_APP\DaBai_APP.c</FilePath>
             </File>
           </Files>
+        </Group>
+        <Group>
+          <GroupName>NBxxModule</GroupName>
         </Group>
         <Group>
           <GroupName>DaBai_BSP</GroupName>

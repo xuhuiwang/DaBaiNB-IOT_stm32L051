@@ -1,5 +1,5 @@
 Dependencies for Project 'Project', Target 'STM32L051C8 DaBai_IOT': (DO NOT MODIFY !)
-F (.\DaBai_APP\DaBai_APP.c)(0x5B0EAE5D)(-c --cpu Cortex-M0+ -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I .\Drivers\STM32L0xx_HAL_Driver\Inc -I .\RTE\_STM32L051C8_DaBai_IOT -I .\DaBai_Inc -I .\Drivers\CMSIS\Device\ST\STM32L0xx\Include -I .\Drivers\CMSIS\Include -I .\Drivers\STM32L0xx_HAL_Driver\Inc\Legacy -I .\DaBai_APP -I .\NBxxModule --C99-I.\RTE\_STM32L051C8_DaBai_IOT-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.3.0\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32L0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32L0xx\Include-D__UVISION_VERSION="525" -D_RTE_ -DSTM32L051xx -DSTM32L051xx -DUSE_STM32L0XX_NUCLEO -DUSE_HAL_DRIVER-o .\objects\dabai_app.o --omf_browse .\objects\dabai_app.crf --depend .\objects\dabai_app.d)
+F (.\DaBai_APP\DaBai_APP.c)(0x5B0EB67E)(-c --cpu Cortex-M0+ -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I .\Drivers\STM32L0xx_HAL_Driver\Inc -I .\RTE\_STM32L051C8_DaBai_IOT -I .\DaBai_Inc -I .\Drivers\CMSIS\Device\ST\STM32L0xx\Include -I .\Drivers\CMSIS\Include -I .\Drivers\STM32L0xx_HAL_Driver\Inc\Legacy -I .\DaBai_APP -I .\NBxxModule --C99-I.\RTE\_STM32L051C8_DaBai_IOT-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.3.0\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32L0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32L0xx\Include-D__UVISION_VERSION="525" -D_RTE_ -DSTM32L051xx -DSTM32L051xx -DUSE_STM32L0XX_NUCLEO -DUSE_HAL_DRIVER-o .\objects\dabai_app.o --omf_browse .\objects\dabai_app.crf --depend .\objects\dabai_app.d)
 I (DaBai_APP\DaBai_APP.h)(0x5B0EACE8)
 I (.\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal.h)(0x59A57823)
 I (.\DaBai_Inc\stm32l0xx_hal_conf.h)(0x5B02C6A3)
@@ -37,12 +37,12 @@ I (.\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_uart.h)(0x59A57823)
 I (.\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_uart_ex.h)(0x59A57823)
 I (.\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_usart.h)(0x59A57823)
 I (.\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_usart_ex.h)(0x59A57823)
-I (.\DaBai_Inc\DaBai_GPIO.h)(0x5B0EA97F)
+I (.\DaBai_Inc\DaBai_GPIO.h)(0x5B0EB49C)
 I (.\DaBai_Inc\DaBai_tim.h)(0x5B0A4038)
 I (.\DaBai_Inc\DaBai_ADC.h)(0x5B0E9FBF)
 I (.\DaBai_Inc\sht20_cfg.h)(0x5B02D71D)
 I (.\DaBai_Inc\DaBai_i2c.h)(0x5B0A403A)
-F (.\DaBai_Src\main.c)(0x5B0EAF34)(-c --cpu Cortex-M0+ -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I .\Drivers\STM32L0xx_HAL_Driver\Inc -I .\RTE\_STM32L051C8_DaBai_IOT -I .\DaBai_Inc -I .\Drivers\CMSIS\Device\ST\STM32L0xx\Include -I .\Drivers\CMSIS\Include -I .\Drivers\STM32L0xx_HAL_Driver\Inc\Legacy -I .\DaBai_APP -I .\NBxxModule --C99-I.\RTE\_STM32L051C8_DaBai_IOT-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.3.0\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32L0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32L0xx\Include-D__UVISION_VERSION="525" -D_RTE_ -DSTM32L051xx -DSTM32L051xx -DUSE_STM32L0XX_NUCLEO -DUSE_HAL_DRIVER-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
+F (.\DaBai_Src\main.c)(0x5B0EB4BD)(-c --cpu Cortex-M0+ -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I .\Drivers\STM32L0xx_HAL_Driver\Inc -I .\RTE\_STM32L051C8_DaBai_IOT -I .\DaBai_Inc -I .\Drivers\CMSIS\Device\ST\STM32L0xx\Include -I .\Drivers\CMSIS\Include -I .\Drivers\STM32L0xx_HAL_Driver\Inc\Legacy -I .\DaBai_APP -I .\NBxxModule --C99-I.\RTE\_STM32L051C8_DaBai_IOT-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.3.0\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32L0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32L0xx\Include-D__UVISION_VERSION="525" -D_RTE_ -DSTM32L051xx -DSTM32L051xx -DUSE_STM32L0XX_NUCLEO -DUSE_HAL_DRIVER-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
 I (.\DaBai_Inc\main.h)(0x5B0A3981)
 I (.\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal.h)(0x59A57823)
 I (.\DaBai_Inc\stm32l0xx_hal_conf.h)(0x5B02C6A3)
@@ -85,7 +85,7 @@ I (.\DaBai_Inc\DaBai_usart.h)(0x5B0A3ED9)
 I (.\DaBai_Inc\DaBai_ADC.h)(0x5B0E9FBF)
 I (.\DaBai_Inc\DaBai_tim.h)(0x5B0A4038)
 I (.\DaBai_APP\DaBai_APP.h)(0x5B0EACE8)
-I (.\DaBai_Inc\DaBai_GPIO.h)(0x5B0EA97F)
+I (.\DaBai_Inc\DaBai_GPIO.h)(0x5B0EB49C)
 F (.\DaBai_Src\stm32l0xx_hal_msp.c)(0x5B0AC7F3)(-c --cpu Cortex-M0+ -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I .\Drivers\STM32L0xx_HAL_Driver\Inc -I .\RTE\_STM32L051C8_DaBai_IOT -I .\DaBai_Inc -I .\Drivers\CMSIS\Device\ST\STM32L0xx\Include -I .\Drivers\CMSIS\Include -I .\Drivers\STM32L0xx_HAL_Driver\Inc\Legacy -I .\DaBai_APP -I .\NBxxModule --C99-I.\RTE\_STM32L051C8_DaBai_IOT-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.3.0\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32L0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32L0xx\Include-D__UVISION_VERSION="525" -D_RTE_ -DSTM32L051xx -DSTM32L051xx -DUSE_STM32L0XX_NUCLEO -DUSE_HAL_DRIVER-o .\objects\stm32l0xx_hal_msp.o --omf_browse .\objects\stm32l0xx_hal_msp.crf --depend .\objects\stm32l0xx_hal_msp.d)
 I (.\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal.h)(0x59A57823)
 I (.\DaBai_Inc\stm32l0xx_hal_conf.h)(0x5B02C6A3)
@@ -161,8 +161,8 @@ I (.\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_uart.h)(0x59A57823)
 I (.\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_uart_ex.h)(0x59A57823)
 I (.\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_usart.h)(0x59A57823)
 I (.\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_usart_ex.h)(0x59A57823)
-F (.\DaBai_Src\DaBai_GPIO.c)(0x5B0DEF84)(-c --cpu Cortex-M0+ -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I .\Drivers\STM32L0xx_HAL_Driver\Inc -I .\RTE\_STM32L051C8_DaBai_IOT -I .\DaBai_Inc -I .\Drivers\CMSIS\Device\ST\STM32L0xx\Include -I .\Drivers\CMSIS\Include -I .\Drivers\STM32L0xx_HAL_Driver\Inc\Legacy -I .\DaBai_APP -I .\NBxxModule --C99-I.\RTE\_STM32L051C8_DaBai_IOT-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.3.0\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32L0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32L0xx\Include-D__UVISION_VERSION="525" -D_RTE_ -DSTM32L051xx -DSTM32L051xx -DUSE_STM32L0XX_NUCLEO -DUSE_HAL_DRIVER-o .\objects\dabai_gpio.o --omf_browse .\objects\dabai_gpio.crf --depend .\objects\dabai_gpio.d)
-I (.\DaBai_Inc\DaBai_GPIO.h)(0x5B0EA97F)
+F (.\DaBai_Src\DaBai_GPIO.c)(0x5B0EB50D)(-c --cpu Cortex-M0+ -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I .\Drivers\STM32L0xx_HAL_Driver\Inc -I .\RTE\_STM32L051C8_DaBai_IOT -I .\DaBai_Inc -I .\Drivers\CMSIS\Device\ST\STM32L0xx\Include -I .\Drivers\CMSIS\Include -I .\Drivers\STM32L0xx_HAL_Driver\Inc\Legacy -I .\DaBai_APP -I .\NBxxModule --C99-I.\RTE\_STM32L051C8_DaBai_IOT-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.3.0\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32L0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32L0xx\Include-D__UVISION_VERSION="525" -D_RTE_ -DSTM32L051xx -DSTM32L051xx -DUSE_STM32L0XX_NUCLEO -DUSE_HAL_DRIVER-o .\objects\dabai_gpio.o --omf_browse .\objects\dabai_gpio.crf --depend .\objects\dabai_gpio.d)
+I (.\DaBai_Inc\DaBai_GPIO.h)(0x5B0EB49C)
 I (.\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal.h)(0x59A57823)
 I (.\DaBai_Inc\stm32l0xx_hal_conf.h)(0x5B02C6A3)
 I (.\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_rcc.h)(0x59A57823)
