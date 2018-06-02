@@ -219,11 +219,16 @@ const char* AT_NCDP     = "AT+NCDP";
 const char* AT_NUESTATS = "AT+NUESTATS";
 
 const char* AT_NEARFCN  = "AT+NEARFCN";
-const char* AT_NSOCR    = "AT+NSOCR";
-const char* AT_NSOST    = "AT+NSOST";
+
+const char* AT_NSOCR    = "AT+NSOCR";//creat a socket
+const char* AT_NSOST    = "AT+NSOST";//sendTo Command(UDP only)
 const char* AT_NSOSTF   = "AT+NSOSTF";
-const char* AT_NSORF    = "AT+NSORF";
-const char* AT_NSOCL    = "AT+NSOCL";  
+const char* AT_NSORF    = "AT+NSORF";//receive command
+
+const char* AT_NSOCO		= "AT+NSOCO"; //connect command(TCP only)
+const char* AT_NSOSD		= "AT+NSOSD";//send command(TCP only)
+
+const char* AT_NSOCL    = "AT+NSOCL";//Close a socket
 
 // const char*= "+NSONMI";      
 const char*  AT_NPING        = "AT+NPING";
@@ -247,12 +252,14 @@ const char*  AT_NTSETID      = "AT+NTSETID";
 #define CMD_OK_RES              "OK"
 
 #define REMOTE_SERVER_IP        "123.206.108.227"
-#define REMOTE_SERVER_PORT      "8099"
+#define REMOTE_SERVER_PORT      "8088"
 
 
 #define REMOTE_COAP_INFO        "115.29.240.46,5683"
 
 #define LOCAL_UDP_SET           "DGRAM,17,10000,1"
+
+#define LOCAL_TCP_SET           "STREAM,6,56000,1"
 
 #define BAND_850MHZ_ID           5
 #define BAND_850MHZ_STR          "850"
@@ -279,6 +286,9 @@ const NB_FxnTable BC95_FxnTable = {
   .createUdp             = bc95_createUDP,
   .closeUdp              = bc95_closeUDP,
   .sendUdp               = bc95_sendUDP,
+	.createTcp             = bc95_createTCP,
+  .closeTcp              = bc95_closeTCP,
+  .sendTcp               = bc95_sendTCP,
   .coapServer            = bc95_coapServer,
   .coapSentIndication    = bc95_coapSentIndication,
   .coapSetReceMode       = bc95_coapReceIndication,
@@ -328,6 +338,8 @@ typedef struct
   
   char         nb95_udp_id[2];  //存放已经创建的UDP SOCKET ID
   udp_rece_t   nb95_udp_len;    //指示接收到的UDP数据长度
+	char         nb95_tcp_id[2];  //存放已经创建的TCP SOCKET ID
+  udp_rece_t   nb95_tcp_len;    //指示接收到的TCP数据长度
 
 }nb95_status_t;
 
@@ -339,6 +351,7 @@ static uint16_t      g_event_regTable = 0;
 #define    NB_SP_RECE_EVENT       0x0001           //收到串口数据
 #define    NB_TIMEOUT_EVENT       0x0002           //超时事件
 #define    NB_UDPRECE_EVENT       0x0004           //UDP接收事件
+#define    NB_TCPRECE_EVENT       0x0004           //UDP接收事件
 #define    NB_COAP_RE_EVENT       0X0008           //COAP接收事件
 #define    NB_REG_STA_EVENT       0x0010           //NB IOT网络附着事件
 
@@ -374,6 +387,11 @@ typedef enum
   SUB_UDP_CL,
   SUB_UDP_ST,
   SUB_UDP_RE,
+	SUB_TCP_CR,
+  SUB_TCP_CL,
+  SUB_TCP_ST,
+  SUB_TCP_RE,
+	
   SUB_END
 }sub_id_t;
 
@@ -405,6 +423,19 @@ const uint8_t nb95_udpst_process[] = {SUB_NONE,SUB_UDP_ST,SUB_END};
 
 //bc95 UDP
 //const uint8_t nb95_udpre_process[] = {SUB_NONE,UB_UDP_RE,SUB_END};
+
+//******************************************************************************
+// bc95 TCP创建流程 
+//
+const uint8_t nb95_tcpcr_process[] = {SUB_NONE,SUB_TCP_CR,SUB_TCP_CL,SUB_TCP_CR,
+                                      SUB_END};
+
+// bc95 TCP关闭流程
+const uint8_t nb95_tcpcl_process[] = {SUB_NONE,SUB_TCP_CL,SUB_END};
+
+// bc95 TCP发送流程
+const uint8_t nb95_tcpst_process[] = {SUB_NONE,SUB_TCP_ST,SUB_END};
+
 //==============================================================================
 // 函数
 //==============================================================================
@@ -901,6 +932,8 @@ uint8_t bc95_AsyncNotification(char* buf, uint16_t* len)
     isAsync = addr_adjust(buf,position_addr_start,len);
     //isAsync =TRUE;
   }
+	
+#if 0
   if(position_addr_start == strstr(buf,"+NSONMI"))
   {
     //收到服务器端发来的UDP数据
@@ -920,6 +953,27 @@ uint8_t bc95_AsyncNotification(char* buf, uint16_t* len)
     isAsync = addr_adjust(buf,position_addr_start,len);
     //isAsync =TRUE;
     nbset_event(NB_UDPRECE_EVENT);  
+  }
+#endif
+	if(position_addr_start == strstr(buf,"+NSONMI"))
+  {
+    //收到服务器端发来的TCP数据
+    char* pColon = strchr(position_addr_start,':');
+    if(pColon)
+    {
+      pColon++;
+      g_bc95_status.nb95_tcp_len.nb_socket_id = NB_Strtoul(pColon,10);
+    }
+    char* pComma = strchr(pColon,',');
+    if(pComma)
+    {
+      pComma++;
+      g_bc95_status.nb95_tcp_len.nb_data_len = NB_Strtoul(pComma,10);
+    }
+    
+    isAsync = addr_adjust(buf,position_addr_start,len);
+    //isAsync =TRUE;
+    nbset_event(NB_TCPRECE_EVENT);  
   }
   else if(position_addr_start == strstr(buf,"+NNMI"))
   {
@@ -1131,7 +1185,9 @@ int bc95_getSignal(NB_Handle handle)
   NB_SendCmd(hw_handle,&g_at_cmd);
   
   return SUCCESS;
-}//******************************************************************************
+}
+
+//******************************************************************************
 // fn : bc95_createUDP
 //
 // brief : 创建UDP
@@ -1294,6 +1350,175 @@ int bc95_receUDP(NB_Handle handle)
   
   //更改NBiot操作进程，进入 UDP READ状态
   g_nb_state.state = PROCESS_UDP_RE;
+  g_nb_state.sub_state = 1;
+  
+  NB_SendCmd(hw_handle,&g_at_cmd);
+  return SUCCESS;
+}
+
+//******************************************************************************
+// fn : bc95_createTCP
+//
+// brief : 创建TCP
+//
+// param : handle ->nb对象指针
+//
+// return : none
+int bc95_createTCP(NB_Handle handle)
+{
+  HWAttrs_Handle hw_handle = (HWAttrs_Handle)handle->object;
+  
+  if(g_nb_state.state != PROCESS_NONE)
+  {
+    return FAIL;
+  }
+  
+  cmd_param_init(&g_at_cmd,AT_NSOCR,LOCAL_TCP_SET,CMD_SET);
+  
+  g_at_cmd.cmd_action = ACTION_OK_EXIT_ERROR_NEXT;
+  g_at_cmd.cmd_try = 1;
+  //更改NBiot操作进程，进入Init状态
+  g_nb_state.state = PROCESS_TCP_CR;
+  
+  //TCP 的执行流程是通过SUB_TCP_PROCESS数组指定AT指令流程
+  g_nb_state.sub_state = 1;
+  
+  NB_SendCmd(hw_handle,&g_at_cmd);
+  
+  return SUCCESS;
+}
+//******************************************************************************
+// fn : bc95_closeTCP
+//
+// brief : 关闭当前创建TCP
+//
+// param : handle ->nb对象指针
+//
+// return : none
+int bc95_closeTCP(NB_Handle handle)
+{
+  HWAttrs_Handle hw_handle = (HWAttrs_Handle)handle->object;
+  
+  if(g_nb_state.state != PROCESS_NONE)
+  {
+    return FAIL;
+  }
+  
+  if(g_bc95_status.nb95_tcp_id[0] < '0' || g_bc95_status.nb95_tcp_id[0] > '6' )
+  {
+    return FAIL;
+  }
+    
+  cmd_param_init(&g_at_cmd,AT_NSOCL,g_bc95_status.nb95_tcp_id,CMD_SET);
+  
+  //更改NBiot操作进程，进入Close UDP状态
+  g_nb_state.state = PROCESS_TCP_CL;
+  
+  //TCP 的执行流程是通过SUB_TCP_PROCESS数组指定AT指令流程
+  g_nb_state.sub_state = 1;
+  
+  NB_SendCmd(hw_handle,&g_at_cmd);
+  return SUCCESS;
+}
+
+//******************************************************************************
+// fn : bc95_sendTCP
+//
+// brief : 发送TCP数据
+//
+// param : handle -> NB 结构信息指针
+//         len -> 信息长度
+//         msg -> 信息
+//
+// return : FAIL -> 没有创建TCP,SUCCESS->指令执行成功
+int bc95_sendTCP(NB_Handle handle,int len,char* msg)
+{
+  HWAttrs_Handle hw_handle = (HWAttrs_Handle)handle->object;
+  
+  if(g_nb_state.state != PROCESS_NONE)
+  {
+    return FAIL;
+  }
+  
+  //判断SOCKET ID 是否正确
+  if(g_bc95_status.nb95_tcp_id[0] < '0' || g_bc95_status.nb95_tcp_id[0] > '6' )
+  {
+    return FAIL;
+  }
+  
+  uint16_t max_len = (NB_UART_SEND_BUF_MAX_LEN - 40) >> 1;
+  uint16_t str_len = 0;
+  
+  char  buf[NB_UART_SEND_BUF_MAX_LEN - 40];
+  memset(buf,0,NB_UART_SEND_BUF_MAX_LEN - 40);
+  
+  if(len > max_len)
+  {
+    str_len  = max_len;
+  }
+  else
+  {
+    str_len = len;
+  }
+  
+  uint16_t msg_len = snprintf(buf,NB_UART_SEND_BUF_MAX_LEN-40,"%s,%s,%s,%d,",
+                                          g_bc95_status.nb95_tcp_id,
+                                          REMOTE_SERVER_IP,
+                                          REMOTE_SERVER_PORT,
+                                          str_len);
+  
+  for(uint16_t i = 0 ; i < str_len ; i++)
+  {
+    sprintf(&buf[msg_len + (i << 1)],"%02X",(uint8)msg[i]);
+  }
+  
+  cmd_param_init(&g_at_cmd,AT_NSOSD,buf,CMD_SET);
+  g_at_cmd.max_timeout = 2000;
+  
+  //更改NBiot操作进程，进入Close TCP状态
+  g_nb_state.state = PROCESS_TCP_ST;
+  g_nb_state.sub_state = 1;
+  
+  NB_SendCmd(hw_handle,&g_at_cmd);
+  
+  return SUCCESS;
+}
+//******************************************************************************
+// fn : bc95_receTCP
+//
+// brief : 接收TCP数据
+//
+// param : handle -> NB 结构信息指针
+//
+//
+// return : FAIL -> 没有创建TCP,SUCCESS->指令执行成功
+int bc95_receTCP(NB_Handle handle)
+{
+  HWAttrs_Handle hw_handle = (HWAttrs_Handle)handle->object;
+  
+  if(g_nb_state.state != PROCESS_NONE)
+  {
+    return FAIL;
+  }
+  uint16_t max_len = (NB_UART_SEND_BUF_MAX_LEN - 40) >> 1;
+  uint16_t read_len = max_len;
+  
+  
+  if(g_bc95_status.nb95_tcp_len.nb_data_len < max_len)
+  {
+    read_len = g_bc95_status.nb95_tcp_len.nb_data_len;
+  }
+  
+  char buf[10] ;
+  
+  max_len = snprintf(buf,10,"%d,%d",g_bc95_status.nb95_tcp_len.nb_socket_id,
+                         read_len);
+  buf[max_len] = 0;
+  
+  cmd_param_init(&g_at_cmd,AT_NSORF,buf,CMD_SET);
+  
+  //更改NBiot操作进程，进入 TCP READ状态
+  g_nb_state.state = PROCESS_TCP_RE;
   g_nb_state.sub_state = 1;
   
   NB_SendCmd(hw_handle,&g_at_cmd);
@@ -1595,6 +1820,14 @@ int bc95_main(NB_Handle handle)
     if(bc95_receUDP(handle) == SUCCESS)
     {
       g_event_regTable ^= NB_UDPRECE_EVENT;
+    }
+  }
+	 //发送TCP接收指令，将接收数据
+  if(g_event_regTable & NB_TCPRECE_EVENT)
+  {
+    if(bc95_receTCP(handle) == SUCCESS)
+    {
+      g_event_regTable ^= NB_TCPRECE_EVENT;
     }
   }
   //发送COAP接收指令，将接收数据

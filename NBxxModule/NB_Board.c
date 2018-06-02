@@ -196,7 +196,7 @@ uint8 NBModule_CloseUDP(NB_Handle handle)
   return handle->fxnTablePtr->closeUdp(handle);
 }
 //******************************************************************************
-// fn : NBModule_SendData
+// fn : NBModule_SendUdpData
 //
 // brief : 向udp发送数据
 //
@@ -205,7 +205,7 @@ uint8 NBModule_CloseUDP(NB_Handle handle)
 //         msg -> 信息
 //
 // return : none
-uint8 NBModule_SendData(NB_Handle handle,int len,char* msg)
+uint8 NBModule_SendUdpData(NB_Handle handle,int len,char* msg)
 {
   if(handle == null)
   {
@@ -216,6 +216,72 @@ uint8 NBModule_SendData(NB_Handle handle,int len,char* msg)
     return FALSE;
   }
   return handle->fxnTablePtr->sendUdp(handle,len,msg);
+}
+
+
+//******************************************************************************
+// fn : NBModule_CreateTCP
+//
+// brief : 创建TCP
+//
+// param : none
+//
+// return : none
+uint8 NBModule_CreateTCP(NB_Handle handle)
+{
+  if(handle == null)
+  {
+    return FALSE;
+  }
+  if(handle->fxnTablePtr->createTcp == null)
+  {
+    return FALSE;
+  }
+  
+  return handle->fxnTablePtr->createTcp(handle);
+}
+//******************************************************************************
+// fn : NBModule_CloseTCP
+//
+// brief : 关闭指定的tcp
+//
+// param : handle -> NB 结构信息指针
+//         socketId -> 关闭的socket id号
+//
+// return : none
+uint8 NBModule_CloseTCP(NB_Handle handle)
+{
+  if(handle == null)
+  {
+    return FALSE;
+  }
+  if(handle->fxnTablePtr->closeTcp == null)
+  {
+    return FALSE;
+  }
+  return handle->fxnTablePtr->closeTcp(handle);
+}
+//******************************************************************************
+// fn : NBModule_SendTcpData
+//
+// brief : 向tcp发送数据
+//
+// param : handle -> NB 结构信息指针
+//         len -> 信息长度
+//         msg -> 信息
+//
+// return : none
+uint8 NBModule_SendTcpData(NB_Handle handle,int len,char* msg)
+{
+  if(handle == null)
+  {
+    return FALSE;
+  }
+  if(handle->fxnTablePtr->sendTcp == null)
+  {
+    return FALSE;
+  }
+  return handle->fxnTablePtr->sendTcp(handle,len,msg);
 }
 
 //******************************************************************************

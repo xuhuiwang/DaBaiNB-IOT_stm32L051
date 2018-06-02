@@ -152,9 +152,9 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>1525</LineNumber>
+          <LineNumber>592</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134233964</Address>
+          <Address>134235712</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -163,14 +163,14 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>.\NBxxModule\NB_BC95_28.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\STM32L051C8T6\NBxxModule/NB_BC95_28.c\1525</Expression>
+          <Expression>\\STM32L051C8T6\NBxxModule/NB_BC95_28.c\592</Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>793</LineNumber>
+          <LineNumber>597</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134235060</Address>
+          <Address>134235730</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -179,14 +179,14 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>.\NBxxModule\NB_BC95_28.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\STM32L051C8T6\NBxxModule/NB_BC95_28.c\793</Expression>
+          <Expression>\\STM32L051C8T6\NBxxModule/NB_BC95_28.c\597</Expression>
         </Bp>
         <Bp>
           <Number>2</Number>
           <Type>0</Type>
-          <LineNumber>1004</LineNumber>
+          <LineNumber>1851</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134234330</Address>
+          <Address>134234402</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -195,7 +195,23 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>.\NBxxModule\NB_BC95_28.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\STM32L051C8T6\NBxxModule/NB_BC95_28.c\1004</Expression>
+          <Expression>\\STM32L051C8T6\NBxxModule/NB_BC95_28.c\1851</Expression>
+        </Bp>
+        <Bp>
+          <Number>3</Number>
+          <Type>0</Type>
+          <LineNumber>1787</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134234230</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>.\NBxxModule\NB_BC95_28.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\STM32L051C8T6\NBxxModule/NB_BC95_28.c\1787</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -293,6 +309,11 @@
           <count>18</count>
           <WinNumber>1</WinNumber>
           <ItemText>g_at_cmd</ItemText>
+        </Ww>
+        <Ww>
+          <count>19</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>g_nb_state</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>
@@ -670,6 +691,70 @@
           <Number>14</Number>
           <Type>0</Type>
           <LineNumber>1525</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>0</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>0</BreakIfRCount>
+          <Filename>.\NBxxModule\NB_BC95_28.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression></Expression>
+        </Bp>
+        <Bp>
+          <Number>15</Number>
+          <Type>0</Type>
+          <LineNumber>592</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>0</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>0</BreakIfRCount>
+          <Filename>.\NBxxModule\NB_BC95_28.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression></Expression>
+        </Bp>
+        <Bp>
+          <Number>16</Number>
+          <Type>0</Type>
+          <LineNumber>597</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>0</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>0</BreakIfRCount>
+          <Filename>.\NBxxModule\NB_BC95_28.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression></Expression>
+        </Bp>
+        <Bp>
+          <Number>17</Number>
+          <Type>0</Type>
+          <LineNumber>1787</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>0</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>0</BreakIfRCount>
+          <Filename>.\NBxxModule\NB_BC95_28.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression></Expression>
+        </Bp>
+        <Bp>
+          <Number>18</Number>
+          <Type>0</Type>
+          <LineNumber>1851</LineNumber>
           <EnabledFlag>1</EnabledFlag>
           <Address>0</Address>
           <ByteObject>0</ByteObject>

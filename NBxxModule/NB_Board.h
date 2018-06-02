@@ -55,6 +55,12 @@ typedef enum
   MSG_UDP_CLOSE,
   MSG_UDP_SEND,
   MSG_UDP_RECE,
+	
+	MSG_TCP_CREATE,
+  MSG_TCP_CLOSE,
+  MSG_TCP_SEND,
+  MSG_TCP_RECE,
+	
   //
   MSG_COAP,
   MSG_COAP_SEND,
@@ -102,6 +108,17 @@ typedef int (*NB_CloseUdp)(NB_Handle);
 
 //发送UDP数据
 typedef int (*NB_SendUdpData)(NB_Handle,int,char*);
+
+
+
+//创建TCP
+typedef int (*NB_CreateTcp)(NB_Handle);
+
+//关闭TCP
+typedef int (*NB_CloseTcp)(NB_Handle);
+
+//发送TCP数据
+typedef int (*NB_SendTcpData)(NB_Handle,int,char*);
 
 
 //CoAP 信息
@@ -154,6 +171,10 @@ typedef struct
   NB_CreateUdp            createUdp;
   NB_CloseUdp             closeUdp;
   NB_SendUdpData          sendUdp;
+	
+	NB_CreateTcp            createTcp;
+  NB_CloseTcp             closeTcp;
+  NB_SendTcpData          sendTcp;
 //  
   NB_CoAPServer           coapServer;
   NB_CoAPSentIndication   coapSentIndication;
@@ -290,7 +311,7 @@ extern uint8 NBModule_CreateUDP(NB_Handle handle);
 extern uint8 NBModule_CloseUDP(NB_Handle handle);
 
 //******************************************************************************
-// fn : NBModule_SendData
+// fn : NBModule_SendUdpData
 //
 // brief : 向udp发送数据
 //
@@ -299,7 +320,43 @@ extern uint8 NBModule_CloseUDP(NB_Handle handle);
 //         msg -> 信息
 //
 // return : none
-extern uint8 NBModule_SendData(NB_Handle handle,int len,char* msg);
+extern uint8 NBModule_SendUdpData(NB_Handle handle,int len,char* msg);
+
+
+//******************************************************************************
+// fn : NBModule_CreateTCP
+//
+// brief : 创建TCP
+//
+// param : none
+//
+// return : none
+extern uint8 NBModule_CreateTCP(NB_Handle handle);
+
+//******************************************************************************
+// fn : NBModule_CloseTCP
+//
+// brief : 关闭指定的udp
+//
+// param : handle -> NB 结构信息指针
+//         socketId -> 关闭的socket id号
+//
+// return : none
+extern uint8 NBModule_CloseTCP(NB_Handle handle);
+
+//******************************************************************************
+// fn : NBModule_SendUdpData
+//
+// brief : 向tcp发送数据
+//
+// param : handle -> NB 结构信息指针
+//         len -> 信息长度
+//         msg -> 信息
+//
+// return : none
+extern uint8 NBModule_SendUdpData(NB_Handle handle,int len,char* msg);
+
+
 
 //******************************************************************************
 // fn : NBModule_CoAPServer

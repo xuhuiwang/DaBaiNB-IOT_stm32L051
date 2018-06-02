@@ -84,6 +84,12 @@ int main(void)
 		NBModule_Main(&nb_config);
     MX_TimerPoll();
 		
+		if(g_sysTime1ms > 10)
+		{
+			g_sysTime1ms = 0;
+			KeyProcess();
+		}
+		
 		switch(APP_STATE)
     {
     case NB_NONE:
@@ -143,19 +149,12 @@ int main(void)
       break;
     }
 		#endif
-		//KeyProcess();
 		
-		if(g_sysTime1ms > 10)
-		{
-			g_sysTime1ms = 0;
-			KeyProcess();
-			
-			//HAL_UART_Log(uartData,5);	
-		}
 		if(g_tempRHTime1ms >100)
 		{
 			g_tempRHTime1ms = 0;
 			HAL_GPIO_TogglePin(GPIOB,LED5_PIN);
+			//HAL_UART_Log(uartData,5);	
 			//HAL_UART_Transmit_DMA(&hlpuart1,uartData,5); 
 			//HAL_LPUART1_Write(uartData,5);
 			//DaBaiSensorTask();

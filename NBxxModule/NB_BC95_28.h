@@ -80,6 +80,12 @@ typedef enum
   PROCESS_UDP_CL = MSG_UDP_CLOSE,
   PROCESS_UDP_ST = MSG_UDP_SEND,
   PROCESS_UDP_RE = MSG_UDP_RECE,
+	
+	PROCESS_TCP_CR = MSG_TCP_CREATE,
+  PROCESS_TCP_CL = MSG_TCP_CLOSE,
+  PROCESS_TCP_ST = MSG_TCP_SEND,
+  PROCESS_TCP_RE = MSG_TCP_RECE,
+	
   PROCESS_COAP  = MSG_COAP,
   PROCESS_COAP_ST = MSG_COAP_SEND,
   PROCESS_COAP_RE = MSG_COAP_RECE
@@ -96,7 +102,11 @@ typedef enum
   TYPES_UDP_CR = MSG_UDP_CREATE,
   TYPES_UDP_CL = MSG_UDP_CLOSE,
   TYPES_UDP_SEND = MSG_UDP_SEND,
-  TYPES_UDP_RECE = MSG_UDP_RECE
+  TYPES_UDP_RECE = MSG_UDP_RECE,
+	TYPES_TCP_CR = MSG_TCP_CREATE,
+  TYPES_TCP_CL = MSG_TCP_CLOSE,
+  TYPES_TCP_SEND = MSG_TCP_SEND,
+  TYPES_TCP_RECE = MSG_TCP_RECE
 }report_msgType_e;
 
 typedef struct
@@ -256,6 +266,50 @@ extern int bc95_sendUDP(NB_Handle handle,int len,char* msg);
 //                   false-> read
 //
 // return : sucess or fail
+
+//******************************************************************************
+// fn : bc95_createTCP
+//
+// brief : 创建TCP
+//
+// param : handle ->nb对象指针
+//
+// return : none
+extern int bc95_createTCP(NB_Handle handle);
+//******************************************************************************
+// fn : bc95_closeTCP
+//
+// brief : 关闭当前创建TCP
+//
+// param : handle ->nb对象指针
+//
+// return : none
+extern int bc95_closeTCP(NB_Handle handle);
+
+//******************************************************************************
+// fn : bc95_sendTCP
+//
+// brief : 发送TCP数据
+//
+// param : handle -> NB 结构信息指针
+//         len -> 信息长度
+//         msg -> 信息
+//
+// return : none
+extern int bc95_sendTCP(NB_Handle handle,int len,char* msg);
+
+//******************************************************************************
+// fn : bc95_coapServer
+//
+// brief : 查询与设置bc95COAP服务端信息
+//
+// param : handle -> NB 结构信息指针
+//         isSet  -> true -> write,
+//                   false-> read
+//
+// return : sucess or fail
+
+
 extern int bc95_coapServer(NB_Handle handle,Bool isSet,char* coap);
 
 //******************************************************************************

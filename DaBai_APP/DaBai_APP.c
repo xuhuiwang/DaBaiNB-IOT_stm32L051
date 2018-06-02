@@ -89,6 +89,7 @@ void KeyProcess(void)
 				{
 					case KEY1:
 					{ 
+						APP_STATE = NB_SIGN;
 						if(power_off_flag == 1)
 							POWER_OFF;	
 					}break;
