@@ -40,7 +40,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "DaBai_usart.h"
 #include "NB_BC95_28.h"
-
+#include "_dma_cfg.h"
 
 /* USER CODE BEGIN 0 */
 #define UART_BUF_LEN     128
@@ -48,11 +48,13 @@ static uint8_t gBuf[UART_BUF_LEN];
 volatile uint8_t  msgLenIndex = 0;
 
 static UART_UserCb  pHalUartCb = NULL;
+static bc95_receive_cb  nb_receCb = NULL;
+ uint8_t msgBuf[256];//static
+
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
-
 UART_HandleTypeDef hlpuart1;
 
 
@@ -117,23 +119,10 @@ void MX_LPUART1_UART_Init(void)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
-
 }
 
 
-/* USER CODE BEGIN 1 */
-//***************************************************************
-// fn : HAL_UART_RegisterCb
-//
-// brief : 设置串口回调函数指针
-//
-// param : cb -> 回调函数指针
-//
-// return : none
-void HAL_UART_RegisterCb(UART_UserCb cb)
-{
-  pHalUartCb = cb;
-}
+
 //***********************************************
 // fn : HAL_UART_Log
 //
@@ -200,70 +189,114 @@ void HAL_LPUART1_Write(uint8_t *pData,uint16_t size)
 }
 
 
-//***********************************************
-// fn : HAL_UART_Read
+
+//******************************************************************************
+// fn : HAL_UART_RxBufLen
 //
-// brief : 用串口发送指令长度数据
-//
-// param : pData -> 发送数据指针
-//         size  -> 数据长度
-//
-// return : 已经接收到的数据长度
-uint16_t HAL_UART_Read(uint8_t *pData,uint16_t size)
-{
-  uint16_t len = 0;
-  
-  HAL_UART_Receive(&huart2,pData,size,1);
-  
-  len = size - huart1.RxXferCount;
-  return len;
-}
-//***********************************************
-// fn : HAL_UART_Poll
-//
-// brief : 轮询串口接收数据，直到帧结束
+// brief : 返回当前接收缓存区中有效的数据长度
 //
 // param : none
 //
 // return : none
+uint16_t HAL_UART_RxBufLen(void)
+{
+  return UartDma_Avail();
+}
+//******************************************************************************
+// fn : HAL_UART_Close
+//
+// brief : 关闭使用
+//
+// param : none
+//
+// return : none
+void HAL_UART_Close(void)
+{
+  HAL_UART_MspDeInit(&hlpuart1);
+}
+
+
+//******************************************************************************
+// fn : USART1_UART_Write
+//
+// brief : 通过串口向外发送指定数据
+//
+// param : buf -> 数据缓存地址
+//         len -> 数据长度
+//
+// return : none
+void HAL_UART_Write(uint8_t*buf,uint16_t len)
+{
+  buf[len] = 0;
+  printf("\r\n->:%s",buf);
+  UartDma_Write(buf,len);
+}
+//******************************************************************************
+// fn : uart_dma_send
+//
+// brief : 通过串口向外发送指定数据
+//
+// param : buf -> 数据缓存地址
+//         len -> 数据长度
+//
+// return : none
+static void uart_dma_send(uint8_t* buf,uint16_t len)
+{
+  HAL_UART_Transmit_DMA(&hlpuart1,buf,len); 
+}
+//******************************************************************************
+// fn : HAL_UART_Read
+//
+// brief : 通过串口读取数据
+//
+// param : buf -> 数据缓存地址
+//         len -> 数据长度
+//
+// return : none
+uint16_t HAL_UART_Read(uint8_t*buf,uint16_t len)
+{
+  return UartDma_Read(buf,len);
+}
+//******************************************************************************
+// fn : HAL_UART_Poll
+//
+// brief : 轮询串口事件
+//
+// param : none
+//
+// return : 事件。见dma_rece_cfg.h中定义
 uint8_t HAL_UART_Poll(void)
 {
-  uint8_t isEnd = 0;
-  if(HAL_UART_Receive(&huart2, gBuf+msgLenIndex,1,2))
+  uint8_t evt =  UartDma_Poll();
+  uint16_t len = 0;
+  if(evt)
   {
-    if(msgLenIndex)
+    len = HAL_UART_RxBufLen();
+    if(len)
     {
-      HAL_UART2_Write(gBuf,msgLenIndex);
-      
-      //执行回调
-      if(pHalUartCb)
+      len = UartDma_Read(msgBuf,len);
+      msgBuf[len] = 0;
+      printf("\r\n<-:%s",msgBuf);
+      if(nb_receCb)
       {
-        gBuf[msgLenIndex] = 0;
-        pHalUartCb(gBuf,msgLenIndex);
+        nb_receCb((char*)msgBuf,len);
       }
-      msgLenIndex = 0;
-      isEnd = !0;
     }
-
+    
   }
-  else
-  {
-    msgLenIndex++;
-    if(msgLenIndex >= (UART_BUF_LEN - 1) )
-    {
-      HAL_UART2_Write(gBuf,msgLenIndex);
-      //执行回调
-      if(pHalUartCb)
-      {
-        gBuf[msgLenIndex] = 0;
-        pHalUartCb(gBuf,msgLenIndex);
-      }
-      msgLenIndex = 0;
-      isEnd = !0;
-    }
-  }
-  return isEnd;
+  return evt;
 }
+
+
+
+void HAL_UARTDMA_Init(bc95_receive_cb cb,uint32_t baud)
+{
+  baud = baud;
+  nb_receCb = cb;
+  HAL_UART_Receive_DMA(&hlpuart1,UartDma_Init(uart_dma_send,LPUART1),RECE_BUF_MAX_LEN);
+}
+
+
 
 #ifdef __GNUC__
   /* With GCC/RAISONANCE, small printf (option LD Linker->Libraries->Small printf
@@ -287,16 +320,7 @@ PUTCHAR_PROTOTYPE
 }
 
 
-/* USER CODE BEGIN 1 */
-void HAL_UARTDMA_Init(bc95_receive_cb cb,uint32_t baud)
-{
-  baud = baud;
-  //nb_receCb = cb;
-  //HAL_UART_Receive_DMA(&hlpuart1,UartDma_Init(uart_dma_send,LPUART1),RECE_BUF_MAX_LEN);
-}
 
-
-/* USER CODE END 1 */
 
 /**
   * @}

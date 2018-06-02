@@ -1,5 +1,17 @@
 /**
-
+******************************************************************************
+* 文件名程: main.c 
+* 作    者: 大白IOT Cifi
+* 版    本: V1.0
+* 编写日期: 2018-6-04
+* 功    能: 板载串口底层驱动程序
+******************************************************************************
+* 说明：
+* 本例程配套硬石stm32开发板YS-F1Pro使用。
+* 
+* 淘宝：
+* 论坛：http://www.ing10bbs.com
+* 版权归硬石嵌入式开发团队所有，请勿商用。
   */
 
 /* Includes ------------------------------------------------------------------*/
@@ -10,8 +22,8 @@
 #include "DaBai_tim.h"
 #include "DaBai_APP.h"
 #include "DaBai_GPIO.h"
-
-
+#include "NB_Board_Cfg.h"
+#include "timer_user_poll.h"
 
 
 /* Private function prototypes -----------------------------------------------*/
@@ -49,12 +61,15 @@ int main(void)
 	MX_USART1_UART_Init();
 	MX_LPUART1_UART_Init();
 	
+	NBModule_open(&nb_config);
+  APP_STATE = NB_NONE;
+	
 	start_tick = HAL_GetTick();
-	while((HAL_GetTick()- start_tick) <300)
+	while((HAL_GetTick()- start_tick) <250)
 	{
 		// power on beep remind
 	}
-	LED1_OFF;
+	//LED1_OFF;
 	LED2_OFF;
 	LED3_OFF;
 	LED4_OFF;
@@ -64,20 +79,87 @@ int main(void)
   /* Infinite loop */
   while (1)
   {
+		#if 1
+		HAL_UART_Poll();
+		NBModule_Main(&nb_config);
+    MX_TimerPoll();
+		
+		switch(APP_STATE)
+    {
+    case NB_NONE:
+      {
+        
+      }
+      break;
+    case NB_INIT:
+      {
+        printf("\r\n<----BC95 Init---->\r\n");
+        NBModule_Init(&nb_config);
+        APP_STATE = NB_END;
+      }
+      break;
+    case NB_SIGN:
+      {
+         printf("\r\n<----BC95 get signal---->\r\n");
+         NBModule_Sign(&nb_config);
+         APP_STATE = NB_END;
+      }
+      break;
+    case NB_MODULE:
+      {
+        printf("\r\n<----Module info ---->\r\n");
+        NBModule_Info(&nb_config);
+        APP_STATE = NB_END;
+      }
+      break;
+    case NB_UDP_CR:
+      {
+        //do nothing
+        APP_STATE = NB_END;
+      }
+      break;
+    case NB_UDP_CL:
+      {
+        //do nothing
+        APP_STATE = NB_END;
+      }
+      break;
+    case NB_UDP_ST:
+      {
+        //do nothing
+        APP_STATE = NB_END;
+      }
+      break;
+    case NB_UDP_RE:
+      {
+        //do nothing
+        APP_STATE = NB_END; 
+      }
+      break;
+    default:
+      {
+        
+      }
+      break;
+    }
+		#endif
 		//KeyProcess();
 		
-		if(g_sysTime1ms > 50)
+		if(g_sysTime1ms > 10)
 		{
 			g_sysTime1ms = 0;
 			KeyProcess();
-			HAL_GPIO_TogglePin(GPIOB,LED5_PIN);
+			
 			//HAL_UART_Log(uartData,5);	
 		}
-		if(g_tempRHTime1ms >2000)
+		if(g_tempRHTime1ms >100)
 		{
 			g_tempRHTime1ms = 0;
-			DaBaiSensorTask();
-			printf("\r\nDaBai main loop \r\n");
+			HAL_GPIO_TogglePin(GPIOB,LED5_PIN);
+			//HAL_UART_Transmit_DMA(&hlpuart1,uartData,5); 
+			//HAL_LPUART1_Write(uartData,5);
+			//DaBaiSensorTask();
+			//printf("\r\nDaBai main loop \r\n");
 		}
   }
 }
@@ -148,10 +230,10 @@ void SystemClock_Config(void)
   /* Disable Power Control clock */
   __HAL_RCC_PWR_CLK_DISABLE();
 	
-	PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1|RCC_PERIPHCLK_USART2
-                              |RCC_PERIPHCLK_LPUART1|RCC_PERIPHCLK_RTC|RCC_PERIPHCLK_I2C2;
+	PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1
+                              |RCC_PERIPHCLK_LPUART1|RCC_PERIPHCLK_RTC|RCC_PERIPHCLK_I2C2;//|RCC_PERIPHCLK_USART2
   PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
-  PeriphClkInit.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
+  //PeriphClkInit.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
   PeriphClkInit.Lpuart1ClockSelection = RCC_LPUART1CLKSOURCE_PCLK1;
   PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
@@ -166,9 +248,6 @@ void SystemClock_Config(void)
     /**Configure the Systick 
     */
   HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
-
-  /* SysTick_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 }
 
 

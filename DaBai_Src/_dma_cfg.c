@@ -29,7 +29,7 @@
 #define TRUE                  1
 #define FALSE                 0
 
-static dmaCfg_t     dmaCfg;
+ dmaCfg_t     dmaCfg;//static
 static sendData_cb  dmaSendCb;
 static USART_TypeDef* hDmaUart = 0;
 //*****************************************************************************

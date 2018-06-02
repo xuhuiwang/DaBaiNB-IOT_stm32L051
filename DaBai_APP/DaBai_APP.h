@@ -45,12 +45,33 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l0xx_hal.h"
+#include "sht20_cfg.h"
 
 
 #define KEY1		  0
 #define KEY2		  1
 #define KEY3			2
 
+
+
+typedef enum
+{
+  NB_NONE,
+  NB_INIT,          // 初始化操作
+  NB_MODULE,        // 获取NB模块厂商及固件，频段等信息
+  NB_SIGN,
+  NB_UDP_CR,        // 创建UDP
+  NB_UDP_CL,        // 关闭UDP
+  NB_UDP_ST,        // 利用已经创建的UDP发送数据
+  NB_UDP_RE,        // UDP接收信息
+  NB_CoAP_SEVER,    // CoAP远程地址设置与获取
+  NB_CoAP_ST,       // 利用CoAP发送消息
+  NB_CoAP_RE,       // CoAP返回信息
+  NB_RESET,         // 复位NB
+  NB_END
+}NB_STATE_e;
+
+extern volatile NB_STATE_e  APP_STATE;
 
 void KeyProcess(void);
 void DaBaiSensorTask(void);

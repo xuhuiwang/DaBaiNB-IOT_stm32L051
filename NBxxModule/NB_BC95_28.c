@@ -246,8 +246,8 @@ const char*  AT_NTSETID      = "AT+NTSETID";
 
 #define CMD_OK_RES              "OK"
 
-#define REMOTE_SERVER_IP        "115.29.240.46"
-#define REMOTE_SERVER_PORT      "6000"
+#define REMOTE_SERVER_IP        "123.206.108.227"
+#define REMOTE_SERVER_PORT      "8099"
 
 
 #define REMOTE_COAP_INFO        "115.29.240.46,5683"
@@ -283,7 +283,7 @@ const NB_FxnTable BC95_FxnTable = {
   .coapSentIndication    = bc95_coapSentIndication,
   .coapSetReceMode       = bc95_coapReceIndication,
   .coapSentMsg           = bc95_coapSendMsg,
-  .mainThread = bc95_main
+  .mainThread 					 = bc95_main
 };
 
 //******************************************************************************
@@ -828,7 +828,7 @@ uint8_t addr_adjust(char* buf,char* pStart,uint16_t* plen)
   {
     pStart -= 2;
   }
-  if(pEnd = strstr(pStart,"\r\n"))
+  if(pEnd == strstr(pStart,"\r\n"))
   {
     if(pEnd == pStart)
     {
@@ -875,7 +875,7 @@ uint8_t bc95_AsyncNotification(char* buf, uint16_t* len)
   uint8_t isAsync = FALSE;
   char* position_addr_start = NULL;
 
-  if(position_addr_start = strstr(buf,"+CEREG"))
+  if(position_addr_start == strstr(buf,"+CEREG"))
   {
     char* pColon = strchr(position_addr_start,':');
     if(pColon)
@@ -889,7 +889,7 @@ uint8_t bc95_AsyncNotification(char* buf, uint16_t* len)
     nbset_event(NB_REG_STA_EVENT); 
     //isAsync =TRUE;
   }
-  else if(position_addr_start = strstr(buf,"+CSCON"))
+  else if(position_addr_start == strstr(buf,"+CSCON"))
   {
     char* pColon = strchr(position_addr_start,':');
     if(pColon)
@@ -901,7 +901,7 @@ uint8_t bc95_AsyncNotification(char* buf, uint16_t* len)
     isAsync = addr_adjust(buf,position_addr_start,len);
     //isAsync =TRUE;
   }
-  if(position_addr_start = strstr(buf,"+NSONMI"))
+  if(position_addr_start == strstr(buf,"+NSONMI"))
   {
     //收到服务器端发来的UDP数据
     char* pColon = strchr(position_addr_start,':');
@@ -921,7 +921,7 @@ uint8_t bc95_AsyncNotification(char* buf, uint16_t* len)
     //isAsync =TRUE;
     nbset_event(NB_UDPRECE_EVENT);  
   }
-  else if(position_addr_start = strstr(buf,"+NNMI"))
+  else if(position_addr_start == strstr(buf,"+NNMI"))
   {
     isAsync = addr_adjust(buf,position_addr_start,len);
     //isAsync =TRUE;

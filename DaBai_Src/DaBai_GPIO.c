@@ -65,7 +65,15 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;  
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct); 
-	LED1_ON;
+	
+	//debug LPuart
+  GPIO_InitStruct.Pin = LED1_PIN;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+	//debug LPuart
+	
+	//LED1_ON;
 	LED2_ON;
 	LED3_ON;
 	LED4_ON;

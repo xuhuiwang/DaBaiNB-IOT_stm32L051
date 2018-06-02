@@ -390,6 +390,23 @@
         </Group>
         <Group>
           <GroupName>NBxxModule</GroupName>
+          <Files>
+            <File>
+              <FileName>NB_BC95_28.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\NBxxModule\NB_BC95_28.c</FilePath>
+            </File>
+            <File>
+              <FileName>NB_Board.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\NBxxModule\NB_Board.c</FilePath>
+            </File>
+            <File>
+              <FileName>NB_Board_Cfg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\NBxxModule\NB_Board_Cfg.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>DaBai_BSP</GroupName>
@@ -443,6 +460,11 @@
               <FileName>_dma_cfg.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\DaBai_Src\_dma_cfg.c</FilePath>
+            </File>
+            <File>
+              <FileName>timer_user_poll.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\DaBai_Src\timer_user_poll.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -945,6 +967,23 @@
         </Group>
         <Group>
           <GroupName>NBxxModule</GroupName>
+          <Files>
+            <File>
+              <FileName>NB_BC95_28.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\NBxxModule\NB_BC95_28.c</FilePath>
+            </File>
+            <File>
+              <FileName>NB_Board.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\NBxxModule\NB_Board.c</FilePath>
+            </File>
+            <File>
+              <FileName>NB_Board_Cfg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\NBxxModule\NB_Board_Cfg.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>DaBai_BSP</GroupName>
@@ -998,6 +1037,11 @@
               <FileName>_dma_cfg.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\DaBai_Src\_dma_cfg.c</FilePath>
+            </File>
+            <File>
+              <FileName>timer_user_poll.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\DaBai_Src\timer_user_poll.c</FilePath>
             </File>
           </Files>
         </Group>

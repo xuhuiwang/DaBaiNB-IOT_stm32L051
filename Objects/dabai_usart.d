@@ -40,3 +40,4 @@
 .\objects\dabai_usart.o: .\NBxxModule\NB_BC95_28.h
 .\objects\dabai_usart.o: .\NBxxModule\NB_Board.h
 .\objects\dabai_usart.o: .\NBxxModule\nb_types.h
+.\objects\dabai_usart.o: .\DaBai_Inc\_dma_cfg.h

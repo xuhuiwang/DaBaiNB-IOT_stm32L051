@@ -13,9 +13,11 @@
 // NB_IOT与平台相关的配置变量定义
 //******************************************************************************
 
-
+#include "NB_Board_Cfg.h"
 #include "NB_Board.h"
 #include "NB_BC95_28.h"
+#include "DaBai_usart.h"
+#include "timer_user_poll.h"
 
 extern int NB_MsgreportCb(msg_types_t,int ,char*);
 

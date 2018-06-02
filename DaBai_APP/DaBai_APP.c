@@ -12,6 +12,7 @@
 #include "DaBai_tim.h"
 #include "DaBai_ADC.h"
 #include "sht20_cfg.h"
+#include "NB_Board.h"
 
 GPIO_PinState key[3] = {GPIO_PIN_RESET,GPIO_PIN_RESET,GPIO_PIN_RESET};
 uint8_t  key_flag[3]= {0};
@@ -22,6 +23,8 @@ uint32_t g_lightValue = 0;
 float    g_Sht20Temp = 0;
 float    g_Sht20RH = 0;
 
+
+volatile NB_STATE_e  APP_STATE= NB_NONE;
 
 void KeyProcess(void)
 {
@@ -54,11 +57,11 @@ void KeyProcess(void)
 				case KEY1:
 				{ 
 					key_State[KEY1] = 1;
-					if(key_counter[KEY1] > 20)
+					if(key_counter[KEY1] > 100)
 					{
 						power_off_flag = 1;
 						PowerOffGpioConfig();
-						if(key_counter[KEY1] < 25)
+						if(key_counter[KEY1] < 140)
 							BEPP_ON;
 						else
 							BEPP_OFF;
@@ -91,7 +94,8 @@ void KeyProcess(void)
 					}break;
 					case KEY2:
 					{					
-							
+						printf("key2 press\r\n");
+						APP_STATE = NB_INIT;
 					}break;
 
 					case KEY3:
@@ -138,5 +142,118 @@ void DaBaiSensorTask(void)
 	g_Sht20Temp = SHT20_Convert(SHT20_ReadTemp(),1);
 	g_Sht20RH   = SHT20_Convert(SHT20_ReadRH(),0);
 }
+
+
+//******************************************************************************
+// fn : NB_MsgreportCb
+//
+// brief : NB模块消息上报回调
+//
+// param : 
+//
+// return : none
+int  NB_MsgreportCb(msg_types_t types,int len,char* msg)
+{
+  switch(types)
+  {
+  case MSG_INIT:
+    {
+      printf("\r\nINIT=%s\r\n",msg);
+      if(*msg == 'S')
+      {
+        LED1_ON;
+        APP_STATE = NB_SIGN;
+      }
+    }
+    break;
+  case MSG_IMSI:
+    {
+      printf("\r\nIMSI=%s\r\n",msg);
+    }
+    break;
+  case MSG_REG:
+    {
+			printf("\r\nNET=%s\r\n",(*msg) == 1 ?"ON":"0FF");
+    }
+    break;
+  case MSG_SIGN:
+    {
+      printf("\r\n%sdbm\r\n",msg);
+    }
+    break;
+  case MSG_MODULE_INFO:
+    {
+      printf("\r\nMinfo=%s\r\n",msg);
+    }
+    break;
+  case MSG_MID:
+    {
+      printf("\r\nMID=%s\r\n",msg);
+    }
+    break;
+  case MSG_MMODEL:
+    {
+      printf("\r\nModel=%s\r\n",msg);
+    }
+    break;
+  case MSG_MREV:
+    {
+      printf("\r\nREV=%s\r\n",msg);
+    }
+    break;
+  case MSG_BAND:
+    {
+      printf("\r\nFreq=%s\r\n",msg);
+    }
+    break;
+  case MSG_IMEI:
+    {
+      printf("\r\nIMEI=%s\r\n",msg);
+    }
+    break;
+  case MSG_UDP_CREATE:
+    {
+      printf("\r\nUDP_CR=%s\r\n",msg);
+    }
+    break;
+  case MSG_UDP_CLOSE:
+    {
+      printf("\r\nUDP_CL=%s\r\n",msg);
+    }
+    break;
+  case MSG_UDP_SEND:
+    {
+      printf("\r\nUDP_SEND=%s\r\n",msg);
+    }
+    break;
+  case MSG_UDP_RECE:
+    {
+      printf("\r\nUDP_RECE=%s\r\n",msg);
+    }
+    break;
+  case MSG_COAP:
+    {
+      printf("\r\nCOAP=%s\r\n",msg);
+    }
+    break;
+  case MSG_COAP_SEND:
+    {
+      printf("\r\nCOAP_SENT=%s\r\n",msg);
+    }
+    break;
+    
+  case MSG_COAP_RECE:
+    {
+      printf("\r\nCOAP_RECE=%s\r\n",msg);
+    }
+    break;
+  default :
+    {
+      break;
+    }
+  }
+  return 0;
+}
+
 
 /************************ (C) COPYRIGHT DaBai_IOT *****END OF FILE****/
