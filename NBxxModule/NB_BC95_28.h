@@ -83,6 +83,7 @@ typedef enum
 	
 	PROCESS_TCP_CR = MSG_TCP_CREATE,
   PROCESS_TCP_CL = MSG_TCP_CLOSE,
+	PROCESS_TCP_CNT = MSG_TCP_CONNECT,
   PROCESS_TCP_ST = MSG_TCP_SEND,
   PROCESS_TCP_RE = MSG_TCP_RECE,
 	
@@ -105,6 +106,7 @@ typedef enum
   TYPES_UDP_RECE = MSG_UDP_RECE,
 	TYPES_TCP_CR = MSG_TCP_CREATE,
   TYPES_TCP_CL = MSG_TCP_CLOSE,
+	TYPES_TCP_CNT = MSG_TCP_CONNECT,
   TYPES_TCP_SEND = MSG_TCP_SEND,
   TYPES_TCP_RECE = MSG_TCP_RECE
 }report_msgType_e;
@@ -285,6 +287,16 @@ extern int bc95_createTCP(NB_Handle handle);
 //
 // return : none
 extern int bc95_closeTCP(NB_Handle handle);
+
+//******************************************************************************
+// fn : bc95_connectTCP
+//
+// brief : 连接TCP
+//
+// param : handle -> NB 结构信息指针
+//
+// return : none
+extern int bc95_connectTCP(NB_Handle handle);
 
 //******************************************************************************
 // fn : bc95_sendTCP

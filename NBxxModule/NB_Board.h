@@ -58,6 +58,7 @@ typedef enum
 	
 	MSG_TCP_CREATE,
   MSG_TCP_CLOSE,
+	MSG_TCP_CONNECT,
   MSG_TCP_SEND,
   MSG_TCP_RECE,
 	
@@ -117,6 +118,9 @@ typedef int (*NB_CreateTcp)(NB_Handle);
 //关闭TCP
 typedef int (*NB_CloseTcp)(NB_Handle);
 
+//连接TCP
+typedef int (*NB_ConnectTcp)(NB_Handle);
+
 //发送TCP数据
 typedef int (*NB_SendTcpData)(NB_Handle,int,char*);
 
@@ -174,6 +178,7 @@ typedef struct
 	
 	NB_CreateTcp            createTcp;
   NB_CloseTcp             closeTcp;
+	NB_ConnectTcp						connectTcp;
   NB_SendTcpData          sendTcp;
 //  
   NB_CoAPServer           coapServer;
@@ -336,13 +341,23 @@ extern uint8 NBModule_CreateTCP(NB_Handle handle);
 //******************************************************************************
 // fn : NBModule_CloseTCP
 //
-// brief : 关闭指定的udp
+// brief : 关闭指定的tcp
 //
 // param : handle -> NB 结构信息指针
 //         socketId -> 关闭的socket id号
 //
 // return : none
 extern uint8 NBModule_CloseTCP(NB_Handle handle);
+
+//******************************************************************************
+// fn : NBModule_ConnectTcp
+//
+// brief : 连接TCP
+//
+// param : handle -> NB 结构信息指针
+// return : none
+extern uint8 NBModule_ConnectTcp(NB_Handle handle);
+
 
 //******************************************************************************
 // fn : NBModule_SendUdpData
@@ -354,7 +369,7 @@ extern uint8 NBModule_CloseTCP(NB_Handle handle);
 //         msg -> 信息
 //
 // return : none
-extern uint8 NBModule_SendUdpData(NB_Handle handle,int len,char* msg);
+extern uint8 NBModule_SendTcpData(NB_Handle handle,int len,char* msg);
 
 
 

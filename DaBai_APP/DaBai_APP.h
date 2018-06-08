@@ -64,6 +64,11 @@ typedef enum
   NB_UDP_CL,        // 关闭UDP
   NB_UDP_ST,        // 利用已经创建的UDP发送数据
   NB_UDP_RE,        // UDP接收信息
+  NB_TCP_CR,        // 创建TCP
+  NB_TCP_CL,        // 关闭TCP
+	NB_TCP_CNT,				// Connect TCP
+  NB_TCP_ST,        // 利用已经创建的TCP发送数据
+  NB_TCP_RE,        // TCP接收信息
   NB_CoAP_SEVER,    // CoAP远程地址设置与获取
   NB_CoAP_ST,       // 利用CoAP发送消息
   NB_CoAP_RE,       // CoAP返回信息

@@ -252,7 +252,7 @@ const char*  AT_NTSETID      = "AT+NTSETID";
 #define CMD_OK_RES              "OK"
 
 #define REMOTE_SERVER_IP        "123.206.108.227"
-#define REMOTE_SERVER_PORT      "8088"
+#define REMOTE_SERVER_PORT      "9099"
 
 
 #define REMOTE_COAP_INFO        "115.29.240.46,5683"
@@ -288,6 +288,7 @@ const NB_FxnTable BC95_FxnTable = {
   .sendUdp               = bc95_sendUDP,
 	.createTcp             = bc95_createTCP,
   .closeTcp              = bc95_closeTCP,
+	.connectTcp            = bc95_connectTCP,
   .sendTcp               = bc95_sendTCP,
   .coapServer            = bc95_coapServer,
   .coapSentIndication    = bc95_coapSentIndication,
@@ -346,12 +347,12 @@ typedef struct
 //==============================================================================
 static nb95_status_t g_bc95_status;
 
-static uint16_t      g_event_regTable = 0;
+uint16_t      g_event_regTable = 0;//static 
 
 #define    NB_SP_RECE_EVENT       0x0001           //收到串口数据
 #define    NB_TIMEOUT_EVENT       0x0002           //超时事件
 #define    NB_UDPRECE_EVENT       0x0004           //UDP接收事件
-#define    NB_TCPRECE_EVENT       0x0004           //UDP接收事件
+#define    NB_TCPRECE_EVENT       0x0020           //TCP接收事件
 #define    NB_COAP_RE_EVENT       0X0008           //COAP接收事件
 #define    NB_REG_STA_EVENT       0x0010           //NB IOT网络附着事件
 
@@ -360,7 +361,7 @@ static uint16_t      g_event_regTable = 0;
 static cmd_info_t g_at_cmd;
 //==============================================================================
 //NBiot 操作状态
-static  module_state        g_nb_state = {PROCESS_NONE,0}; 
+  module_state        g_nb_state = {PROCESS_NONE,0}; //static
 
 //==============================================================================
 //NB模块操作子状态定义
@@ -369,16 +370,21 @@ typedef enum
 {
   SUB_NONE,
   SUB_SYNC,
+	#ifdef DABI_UDP
   SUB_CMEE,
   SUB_CFUN,
-  SUB_CIMI,
-  SUB_CGSN,
-  SUB_CEREG,
-  SUB_CSCON,
+	SUB_CGSN,
+	
+	SUB_CSCON,
+	SUB_NSMI,
+  SUB_NNMI,
+	#endif
+	SUB_CEREG,
+  SUB_CIMI, 
+
   SUB_CGATT,
   SUB_CGATT_QUERY,
-  SUB_NSMI,
-  SUB_NNMI,
+
   SUB_CGMI,
   SUB_CGMM,
   SUB_CGMR,
@@ -389,6 +395,7 @@ typedef enum
   SUB_UDP_RE,
 	SUB_TCP_CR,
   SUB_TCP_CL,
+	SUB_TCP_CNT,
   SUB_TCP_ST,
   SUB_TCP_RE,
 	
@@ -398,10 +405,9 @@ typedef enum
 //******************************************************************************
 // bc95 初始化流程 
 //
-const uint8_t nb95_init_process[] = {SUB_NONE,SUB_SYNC,SUB_CMEE, SUB_CFUN,
-                                     SUB_CIMI,SUB_CGSN,SUB_CEREG,SUB_CSCON,
-                                     SUB_CGATT,SUB_CGATT_QUERY,SUB_NSMI,
-                                     SUB_NNMI,SUB_END};
+const uint8_t nb95_init_process[] = {SUB_NONE,SUB_SYNC,
+                                     SUB_CIMI,
+                                     SUB_CGATT,SUB_CGATT_QUERY,SUB_END};
 
 //******************************************************************************
 // bc95 获取信息流程
@@ -427,8 +433,8 @@ const uint8_t nb95_udpst_process[] = {SUB_NONE,SUB_UDP_ST,SUB_END};
 //******************************************************************************
 // bc95 TCP创建流程 
 //
-const uint8_t nb95_tcpcr_process[] = {SUB_NONE,SUB_TCP_CR,SUB_TCP_CL,SUB_TCP_CR,
-                                      SUB_END};
+const uint8_t nb95_tcpcr_process[] = {SUB_NONE,SUB_TCP_CR,SUB_TCP_CNT,
+                                      SUB_TCP_ST,SUB_END};
 
 // bc95 TCP关闭流程
 const uint8_t nb95_tcpcl_process[] = {SUB_NONE,SUB_TCP_CL,SUB_END};
@@ -596,6 +602,8 @@ static Bool cmd_next()
     
     switch(nb95_init_process[g_nb_state.sub_state])
     {
+			
+		#ifdef DABI_UDP	
     case SUB_CMEE:
       {
         cmd_param_init(&g_at_cmd,AT_CMEE,"1",CMD_SET);
@@ -607,26 +615,43 @@ static Bool cmd_next()
         g_at_cmd.max_timeout = 10000;          //10S 
       }
       break;
+		case SUB_CGSN:
+      {
+        cmd_param_init(&g_at_cmd,AT_CGSN,"1",CMD_SET);
+      }
+      break;
+
+    case SUB_CSCON:
+      {
+        cmd_param_init(&g_at_cmd,AT_CSCON,"1",CMD_SET);
+      }
+      break;	
+		case SUB_NSMI:
+      {
+        //设置coap 消息发送完通知
+        cmd_param_init(&g_at_cmd,AT_NSMI,"1",CMD_SET);
+      }
+      break;
+    case SUB_NNMI:
+      {
+        //设置coap接收消息，给予指示
+        cmd_param_init(&g_at_cmd,AT_NNMI,"2",CMD_SET);
+      }
+      break;
+		
+		#endif	
+		case SUB_CEREG:
+		{
+			cmd_param_init(&g_at_cmd,AT_CEREG,"1",CMD_SET);
+		}
+		break;
+		
     case SUB_CIMI:
       {
         cmd_param_init(&g_at_cmd,AT_CIMI,NULL,CMD_EXCUTE);
       }
       break;
-    case SUB_CGSN:
-      {
-        cmd_param_init(&g_at_cmd,AT_CGSN,"1",CMD_SET);
-      }
-      break;
-    case SUB_CEREG:
-      {
-        cmd_param_init(&g_at_cmd,AT_CEREG,"1",CMD_SET);
-      }
-      break;
-    case SUB_CSCON:
-      {
-        cmd_param_init(&g_at_cmd,AT_CSCON,"1",CMD_SET);
-      }
-      break;
+
     case SUB_CGATT:
       {
         cmd_param_init(&g_at_cmd,AT_CGATT,"1",CMD_SET);
@@ -644,18 +669,7 @@ static Bool cmd_next()
                                              //并进行出错尝试
       }
       break;
-    case SUB_NSMI:
-      {
-        //设置coap 消息发送完通知
-        cmd_param_init(&g_at_cmd,AT_NSMI,"1",CMD_SET);
-      }
-      break;
-    case SUB_NNMI:
-      {
-        //设置coap接收消息，给予指示
-        cmd_param_init(&g_at_cmd,AT_NNMI,"2",CMD_SET);
-      }
-      break;
+
     }
     
   }
@@ -859,7 +873,7 @@ uint8_t addr_adjust(char* buf,char* pStart,uint16_t* plen)
   {
     pStart -= 2;
   }
-  if(pEnd == strstr(pStart,"\r\n"))
+  if((pEnd = strstr(pStart,"\r\n")) != NULL)
   {
     if(pEnd == pStart)
     {
@@ -906,9 +920,9 @@ uint8_t bc95_AsyncNotification(char* buf, uint16_t* len)
   uint8_t isAsync = FALSE;
   char* position_addr_start = NULL;
 
-  if(position_addr_start == strstr(buf,"+CEREG"))
+  if((position_addr_start = strstr(buf,"+CEREG:")) != NULL)
   {
-    char* pColon = strchr(position_addr_start,':');
+    char* pColon = strchr(position_addr_start,',');
     if(pColon)
     {
       //g_bc95_status.nb95_connection_status = NB_Strtoul(pColon,10);
@@ -920,7 +934,7 @@ uint8_t bc95_AsyncNotification(char* buf, uint16_t* len)
     nbset_event(NB_REG_STA_EVENT); 
     //isAsync =TRUE;
   }
-  else if(position_addr_start == strstr(buf,"+CSCON"))
+  else if((position_addr_start = strstr(buf,"+CSCON")) != NULL)
   {
     char* pColon = strchr(position_addr_start,':');
     if(pColon)
@@ -934,7 +948,7 @@ uint8_t bc95_AsyncNotification(char* buf, uint16_t* len)
   }
 	
 #if 0
-  if(position_addr_start == strstr(buf,"+NSONMI"))
+  else if((position_addr_start = strstr(buf,"+NSONMI")) != NULL)
   {
     //收到服务器端发来的UDP数据
     char* pColon = strchr(position_addr_start,':');
@@ -955,7 +969,7 @@ uint8_t bc95_AsyncNotification(char* buf, uint16_t* len)
     nbset_event(NB_UDPRECE_EVENT);  
   }
 #endif
-	if(position_addr_start == strstr(buf,"+NSONMI"))
+	else if((position_addr_start = strstr(buf,"+NSONMI")) != NULL)
   {
     //收到服务器端发来的TCP数据
     char* pColon = strchr(position_addr_start,':');
@@ -975,7 +989,7 @@ uint8_t bc95_AsyncNotification(char* buf, uint16_t* len)
     //isAsync =TRUE;
     nbset_event(NB_TCPRECE_EVENT);  
   }
-  else if(position_addr_start == strstr(buf,"+NNMI"))
+  else if((position_addr_start = strstr(buf,"+NNMI")) != NULL)
   {
     isAsync = addr_adjust(buf,position_addr_start,len);
     //isAsync =TRUE;
@@ -1421,6 +1435,48 @@ int bc95_closeTCP(NB_Handle handle)
   return SUCCESS;
 }
 
+
+
+
+//******************************************************************************
+// fn : bc95_connectTCP
+//
+// brief : 连接TCP
+//
+// param : handle -> NB 结构信息指针
+//
+// return : FAIL -> 没有创建TCP,SUCCESS->指令执行成功
+int bc95_connectTCP(NB_Handle handle)
+{
+  HWAttrs_Handle hw_handle = (HWAttrs_Handle)handle->object;
+  
+  if(g_nb_state.state != PROCESS_NONE)
+  {
+    return FAIL;
+  }
+ 
+  char  buf[NB_UART_SEND_BUF_MAX_LEN - 40];
+  memset(buf,0,NB_UART_SEND_BUF_MAX_LEN - 40);
+  
+  uint16_t msg_len = snprintf(buf,NB_UART_SEND_BUF_MAX_LEN-40,"%s,%s,%s",
+                                          g_bc95_status.nb95_tcp_id,
+                                          REMOTE_SERVER_IP,
+                                          REMOTE_SERVER_PORT);
+  
+  cmd_param_init(&g_at_cmd,AT_NSOCO,buf,CMD_SET);
+  g_at_cmd.max_timeout = 2000;
+  
+  //更改NBiot操作进程，进入Connect TCP状态
+  g_nb_state.state = PROCESS_TCP_CNT;
+  g_nb_state.sub_state = 1;
+  
+  NB_SendCmd(hw_handle,&g_at_cmd);
+  
+  return SUCCESS;
+}
+
+
+
 //******************************************************************************
 // fn : bc95_sendTCP
 //
@@ -1439,13 +1495,7 @@ int bc95_sendTCP(NB_Handle handle,int len,char* msg)
   {
     return FAIL;
   }
-  
-  //判断SOCKET ID 是否正确
-  if(g_bc95_status.nb95_tcp_id[0] < '0' || g_bc95_status.nb95_tcp_id[0] > '6' )
-  {
-    return FAIL;
-  }
-  
+ 
   uint16_t max_len = (NB_UART_SEND_BUF_MAX_LEN - 40) >> 1;
   uint16_t str_len = 0;
   
@@ -1460,12 +1510,12 @@ int bc95_sendTCP(NB_Handle handle,int len,char* msg)
   {
     str_len = len;
   }
-  
-  uint16_t msg_len = snprintf(buf,NB_UART_SEND_BUF_MAX_LEN-40,"%s,%s,%s,%d,",
-                                          g_bc95_status.nb95_tcp_id,
-                                          REMOTE_SERVER_IP,
-                                          REMOTE_SERVER_PORT,
-                                          str_len);
+	
+	char dataLen[10] = {0};
+  sprintf(dataLen,"%d",len);
+	
+  uint16_t msg_len = snprintf(buf,NB_UART_SEND_BUF_MAX_LEN-40,"%s,%s,",
+                                          "1",dataLen);
   
   for(uint16_t i = 0 ; i < str_len ; i++)
   {
@@ -1891,10 +1941,28 @@ void nbsend_msg_app(NB_Handle handle, char**buf,Bool isOk)
     {
     case SUB_SYNC:
       break;
+		#ifdef DABI_UDP
     case SUB_CMEE:
       break;
     case SUB_CFUN:
       break;
+		case SUB_CGSN:
+		{
+			char* pColon = strchr(buf[0],':');
+			if(pColon)
+			{
+				pColon++;
+				memcpy(g_bc95_status.nb95_IMEI,pColon,15);
+				g_bc95_status.nb95_IMEI[15] = 0;
+				handle->AppReceCB((msg_types_t)TYPES_CGSN,15,(char*)g_bc95_status.nb95_IMEI);
+			}
+		}
+		break;
+		case SUB_CEREG:
+			break;
+		case SUB_CSCON:
+			break;
+		#endif
     case SUB_CIMI:
       {
         memcpy(g_bc95_status.nb95_IMSI,buf[0],15);
@@ -1902,22 +1970,7 @@ void nbsend_msg_app(NB_Handle handle, char**buf,Bool isOk)
         handle->AppReceCB((msg_types_t)TYPES_CIMI,strlen(buf[0]),buf[0]);
       }
       break;
-    case SUB_CGSN:
-      {
-        char* pColon = strchr(buf[0],':');
-        if(pColon)
-        {
-          pColon++;
-          memcpy(g_bc95_status.nb95_IMEI,pColon,15);
-          g_bc95_status.nb95_IMEI[15] = 0;
-          handle->AppReceCB((msg_types_t)TYPES_CGSN,15,(char*)g_bc95_status.nb95_IMEI);
-        }
-      }
-      break;
-    case SUB_CEREG:
-      break;
-    case SUB_CSCON:
-      break;
+
     case SUB_CGATT:
       break;
     case SUB_CGATT_QUERY:
@@ -2087,6 +2140,112 @@ void nbsend_msg_app(NB_Handle handle, char**buf,Bool isOk)
       index =  NB_HexStrToNum(tmp_buf);
       
       handle->AppReceCB((msg_types_t)PROCESS_UDP_RE,index,tmp_buf);
+    }
+    
+  }
+	else if(g_nb_state.state == PROCESS_TCP_CR)
+  {
+    switch(nb95_tcpcr_process[g_nb_state.sub_state])
+    {
+    case SUB_TCP_CR:
+      {
+        memcpy(g_bc95_status.nb95_tcp_id,buf[0],2);
+        
+        if(g_nb_state.sub_state == 1)
+        {
+          handle->AppReceCB((msg_types_t)PROCESS_TCP_CR,1,"S");
+        }
+      }
+      break;
+		 case SUB_TCP_CNT:
+      {
+        memcpy(g_bc95_status.nb95_tcp_id,buf[0],2);
+        
+        if(g_nb_state.sub_state == 1)
+        {
+          handle->AppReceCB((msg_types_t)PROCESS_TCP_CNT,1,"S");
+        }
+      }
+      break;	
+    case SUB_TCP_CL:
+      {
+        
+      }
+      break;
+    case SUB_END:
+      {
+        handle->AppReceCB((msg_types_t)PROCESS_TCP_CR,1,"S");
+      }
+      break;
+    }
+  }
+  else if(g_nb_state.state == PROCESS_TCP_CL)
+  {
+    switch(nb95_tcpcl_process[g_nb_state.sub_state])
+    {
+    case SUB_TCP_CL:
+      {
+        g_bc95_status.nb95_tcp_id[0] = 0;
+        g_bc95_status.nb95_tcp_id[1] = 0;
+      }
+      break;
+    case SUB_END:
+      {
+        handle->AppReceCB((msg_types_t)PROCESS_TCP_CL,1,"S");
+      }
+      break;
+    } 
+
+  }
+	else if(g_nb_state.state == PROCESS_TCP_CNT)
+  {
+    switch(nb95_tcpst_process[g_nb_state.sub_state])
+    {
+    case SUB_TCP_CNT:
+      {
+        handle->AppReceCB((msg_types_t)PROCESS_TCP_CL,1,"S");
+      }
+      break;
+    }
+  }
+  else if(g_nb_state.state == PROCESS_TCP_ST)
+  {
+    switch(nb95_tcpst_process[g_nb_state.sub_state])
+    {
+    case SUB_TCP_ST:
+      {
+        handle->AppReceCB((msg_types_t)PROCESS_TCP_CL,1,"S");
+      }
+      break;
+    }
+  }
+  else if(g_nb_state.state == PROCESS_TCP_RE)
+  {
+    if(g_nb_state.sub_state == 1)
+    {
+      //
+      char* param[6];
+      uint16_t index = 0;
+      char* tmp_buf = buf[0];
+      while(( param[index] = strtok(tmp_buf,",")) != null)
+      {
+        index++;
+        tmp_buf = null;
+        if(index >= 6)
+        {
+          break;
+        }
+      }
+      if(index != 6)
+      {
+        handle->AppReceCB((msg_types_t)PROCESS_TCP_RE,1,"F");
+        return;
+      }
+      
+      tmp_buf = param[4];
+      index =  NB_HexStrToNum(tmp_buf);
+      
+      handle->AppReceCB((msg_types_t)PROCESS_TCP_RE,index,tmp_buf);
     }
     
   }

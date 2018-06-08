@@ -262,6 +262,29 @@ uint8 NBModule_CloseTCP(NB_Handle handle)
   return handle->fxnTablePtr->closeTcp(handle);
 }
 //******************************************************************************
+// fn : NBModule_ConnectTcp
+//
+// brief : 向tcp发送数据
+//
+// param : handle -> NB 结构信息指针
+//         len -> 信息长度
+//         msg -> 信息
+//
+// return : none
+uint8 NBModule_ConnectTcp(NB_Handle handle)
+{
+  if(handle == null)
+  {
+    return FALSE;
+  }
+  if(handle->fxnTablePtr->connectTcp == null)
+  {
+    return FALSE;
+  }
+  return handle->fxnTablePtr->connectTcp(handle);
+}
+
+//******************************************************************************
 // fn : NBModule_SendTcpData
 //
 // brief : 向tcp发送数据

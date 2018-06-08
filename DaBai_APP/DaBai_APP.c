@@ -89,19 +89,20 @@ void KeyProcess(void)
 				{
 					case KEY1:
 					{ 
-						APP_STATE = NB_SIGN;
+						APP_STATE = NB_INIT;
 						if(power_off_flag == 1)
 							POWER_OFF;	
 					}break;
 					case KEY2:
 					{					
-						printf("key2 press\r\n");
-						APP_STATE = NB_INIT;
+						printf("key2 pressed\r\n");
+						APP_STATE = NB_SIGN;
 					}break;
 
 					case KEY3:
 					{
-
+						printf("key3 pressed\r\n");
+						APP_STATE = NB_TCP_CR;//NB_TCP_ST;
 					}break;
 					
 					default:
@@ -180,6 +181,7 @@ int  NB_MsgreportCb(msg_types_t types,int len,char* msg)
   case MSG_SIGN:
     {
       printf("\r\n%sdbm\r\n",msg);
+			APP_STATE = NB_TCP_CR;
     }
     break;
   case MSG_MODULE_INFO:
@@ -230,6 +232,35 @@ int  NB_MsgreportCb(msg_types_t types,int len,char* msg)
   case MSG_UDP_RECE:
     {
       printf("\r\nUDP_RECE=%s\r\n",msg);
+    }
+    break;
+	case MSG_TCP_CREATE:
+    {
+      printf("\r\nTCP_CR=%s\r\n",msg);
+			APP_STATE = NB_TCP_CNT;
+    }
+    break;
+  case MSG_TCP_CLOSE:
+    {
+      printf("\r\nTCP_CL=%s\r\n",msg);
+    }
+    break;
+		
+	case MSG_TCP_CONNECT:
+    {
+      printf("\r\nTCP_CONNECT=%s\r\n",msg);
+			APP_STATE = NB_TCP_ST;
+    }
+    break;	
+		
+  case MSG_TCP_SEND:
+    {
+      printf("\r\nTCP_SEND=%s\r\n",msg);
+    }
+    break;
+  case MSG_TCP_RECE:
+    {
+      printf("\r\nTCP_RECE=%s\r\n",msg);
     }
     break;
   case MSG_COAP:

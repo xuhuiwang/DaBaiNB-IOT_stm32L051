@@ -118,25 +118,38 @@ int main(void)
         APP_STATE = NB_END;
       }
       break;
-    case NB_UDP_CR:
+    case NB_TCP_CR:
       {
-        //do nothing
+        printf("\r\n<----Create tcp ---->\r\n");
+        NBModule_CreateTCP(&nb_config);
         APP_STATE = NB_END;
       }
       break;
-    case NB_UDP_CL:
+    case NB_TCP_CL:
       {
-        //do nothing
+        printf("\r\n<----Close udp ---->\r\n");
+        NBModule_CloseTCP(&nb_config);
         APP_STATE = NB_END;
       }
       break;
-    case NB_UDP_ST:
+    case NB_TCP_CNT:
       {
-        //do nothing
+        printf("\r\n<---- Connect tcp ---->\r\n");
+        NBModule_ConnectTcp(&nb_config);
+        
         APP_STATE = NB_END;
       }
       break;
-    case NB_UDP_RE:
+		case NB_TCP_ST:
+      {
+        printf("\r\n<---- Send tcp ---->\r\n");
+        char* userPacket = "0123456";
+        NBModule_SendTcpData(&nb_config,sizeof("0123456"),userPacket);
+        
+        APP_STATE = NB_END;
+      }
+      break;
+    case NB_TCP_RE:
       {
         //do nothing
         APP_STATE = NB_END; 
