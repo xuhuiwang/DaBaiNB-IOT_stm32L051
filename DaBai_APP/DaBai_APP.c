@@ -261,6 +261,7 @@ int  NB_MsgreportCb(msg_types_t types,int len,char* msg)
   case MSG_TCP_RECE:
     {
       printf("\r\nTCP_RECE=%s\r\n",msg);
+			APP_STATE = NB_TCP_CL;
     }
     break;
   case MSG_COAP:

@@ -433,11 +433,13 @@ const uint8_t nb95_udpst_process[] = {SUB_NONE,SUB_UDP_ST,SUB_END};
 //******************************************************************************
 // bc95 TCP创建流程 
 //
-const uint8_t nb95_tcpcr_process[] = {SUB_NONE,SUB_TCP_CR,SUB_TCP_CNT,
-                                      SUB_TCP_ST,SUB_END};
+const uint8_t nb95_tcpcr_process[] = {SUB_NONE,SUB_TCP_CR,SUB_END};
 
 // bc95 TCP关闭流程
 const uint8_t nb95_tcpcl_process[] = {SUB_NONE,SUB_TCP_CL,SUB_END};
+
+// bc95 连接TCP流程
+const uint8_t nb95_tcpcnt_process[] = {SUB_NONE,SUB_TCP_CNT,SUB_END};
 
 // bc95 TCP发送流程
 const uint8_t nb95_tcpst_process[] = {SUB_NONE,SUB_TCP_ST,SUB_END};
@@ -739,7 +741,42 @@ static Bool cmd_next()
     g_nb_state.sub_state++;
     return FALSE;
   }
-  else if(g_nb_state.state == PROCESS_UDP_RE)
+	else if(g_nb_state.state == PROCESS_TCP_CR)
+  {
+    g_nb_state.sub_state++;
+    if(nb95_tcpcr_process[g_nb_state.sub_state]  == SUB_END)
+    {
+      return FALSE;
+    }
+    switch(nb95_tcpcr_process[g_nb_state.sub_state])
+    {
+    case SUB_TCP_CR:
+      {
+        cmd_param_init(&g_at_cmd,AT_NSOCR,LOCAL_TCP_SET,CMD_SET);
+      }
+      break;
+    }
+  }
+  else if(g_nb_state.state == PROCESS_TCP_CL)
+  {
+    g_nb_state.sub_state++;
+//    if(nb95_udpcl_process[g_nb_state.sub_state]  == SUB_END)
+//    {
+//      return FALSE;
+//    }
+    return FALSE;
+  }
+	else if(g_nb_state.state == PROCESS_TCP_CNT)
+  {
+    g_nb_state.sub_state++;
+    return FALSE;
+  }
+  else if(g_nb_state.state == PROCESS_TCP_ST)
+  {
+    g_nb_state.sub_state++;
+    return FALSE;
+  }
+  else if(g_nb_state.state == PROCESS_TCP_RE)
   {
     g_nb_state.sub_state++;
     return FALSE;
@@ -1525,7 +1562,7 @@ int bc95_sendTCP(NB_Handle handle,int len,char* msg)
   cmd_param_init(&g_at_cmd,AT_NSOSD,buf,CMD_SET);
   g_at_cmd.max_timeout = 2000;
   
-  //更改NBiot操作进程，进入Close TCP状态
+  //更改NBiot操作进程，进入Send TCP状态
   g_nb_state.state = PROCESS_TCP_ST;
   g_nb_state.sub_state = 1;
   
@@ -1967,7 +2004,7 @@ void nbsend_msg_app(NB_Handle handle, char**buf,Bool isOk)
       {
         memcpy(g_bc95_status.nb95_IMSI,buf[0],15);
         g_bc95_status.nb95_IMSI[15] = 0;
-        handle->AppReceCB((msg_types_t)TYPES_CIMI,strlen(buf[0]),buf[0]);
+        handle->AppReceCB((msg_types_t)PROCESS_INIT,strlen(buf[0]),buf[0]);
       }
       break;
 
@@ -2157,16 +2194,6 @@ void nbsend_msg_app(NB_Handle handle, char**buf,Bool isOk)
         }
       }
       break;
-		 case SUB_TCP_CNT:
-      {
-        memcpy(g_bc95_status.nb95_tcp_id,buf[0],2);
-        
-        if(g_nb_state.sub_state == 1)
-        {
-          handle->AppReceCB((msg_types_t)PROCESS_TCP_CNT,1,"S");
-        }
-      }
-      break;	
     case SUB_TCP_CL:
       {
         
@@ -2199,11 +2226,11 @@ void nbsend_msg_app(NB_Handle handle, char**buf,Bool isOk)
   }
 	else if(g_nb_state.state == PROCESS_TCP_CNT)
   {
-    switch(nb95_tcpst_process[g_nb_state.sub_state])
+    switch(nb95_tcpcnt_process[g_nb_state.sub_state])
     {
     case SUB_TCP_CNT:
       {
-        handle->AppReceCB((msg_types_t)PROCESS_TCP_CL,1,"S");
+        handle->AppReceCB((msg_types_t)PROCESS_TCP_CNT,1,"S");
       }
       break;
     }
@@ -2214,7 +2241,7 @@ void nbsend_msg_app(NB_Handle handle, char**buf,Bool isOk)
     {
     case SUB_TCP_ST:
       {
-        handle->AppReceCB((msg_types_t)PROCESS_TCP_CL,1,"S");
+        handle->AppReceCB((msg_types_t)PROCESS_TCP_ST,1,"S");
       }
       break;
     }

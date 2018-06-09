@@ -143,8 +143,8 @@ int main(void)
 		case NB_TCP_ST:
       {
         printf("\r\n<---- Send tcp ---->\r\n");
-        char* userPacket = "0123456";
-        NBModule_SendTcpData(&nb_config,sizeof("0123456"),userPacket);
+        char* userPacket = "DaBaiIOT";
+        NBModule_SendTcpData(&nb_config,sizeof("DaBaiIOT"),userPacket);
         
         APP_STATE = NB_END;
       }
