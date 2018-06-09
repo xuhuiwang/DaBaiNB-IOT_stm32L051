@@ -52,6 +52,8 @@
 
 DMA_HandleTypeDef hdma_lpuart_rx;
 DMA_HandleTypeDef hdma_lpuart_tx;
+DMA_HandleTypeDef hdma_adc;
+
 
 void HAL_MspInit(void)
 {
@@ -64,9 +66,12 @@ void HAL_MspInit(void)
 	__HAL_RCC_GPIOA_CLK_ENABLE();
 	__HAL_RCC_GPIOB_CLK_ENABLE();
 	__HAL_RCC_GPIOC_CLK_ENABLE();
+	__HAL_RCC_GPIOH_CLK_ENABLE();
 	__HAL_RCC_RTC_ENABLE();
 	  /* DMA controller clock enable */
   __HAL_RCC_DMA1_CLK_ENABLE();
+	  /* ADC1 Periph clock enable */
+  __HAL_RCC_ADC1_CLK_ENABLE();
 	
 //	HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
   /* System interrupt init*/
@@ -80,12 +85,17 @@ void HAL_MspInit(void)
 	HAL_NVIC_SetPriority(LPUART1_IRQn, 0, 0);
 	HAL_NVIC_EnableIRQ(LPUART1_IRQn);
 	
+  /* DMA1_Channel1_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
+
 #ifdef LPUARTDMA_EN	
 	/* DMA interrupt init */
   /* DMA1_Channel2_IRQn¡¢DMA1_Channel3_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Channel2_3_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel2_3_IRQn);
 #endif	
+
 
   /* SysTick_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(SysTick_IRQn, 1, 0);
@@ -136,7 +146,25 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
 		GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
 		GPIO_InitStruct.Pull = GPIO_NOPULL;
 		HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+		
+		/* ADC1 DMA Init */
+    hdma_adc.Instance 									= DMA1_Channel1;
+    hdma_adc.Init.Request							 	= DMA_REQUEST_0;
+    hdma_adc.Init.Direction 						= DMA_PERIPH_TO_MEMORY;
+    hdma_adc.Init.PeriphInc						  = DMA_PINC_DISABLE;
+    hdma_adc.Init.MemInc 								= DMA_MINC_ENABLE;
+    hdma_adc.Init.PeriphDataAlignment 	= DMA_PDATAALIGN_HALFWORD;
+    hdma_adc.Init.MemDataAlignment 			= DMA_MDATAALIGN_HALFWORD;
+    hdma_adc.Init.Mode 									= DMA_CIRCULAR;//Ñ­»·Ä£Ê½
+    hdma_adc.Init.Priority 							= DMA_PRIORITY_HIGH;
+		
+		HAL_DMA_DeInit(&hdma_adc);
+    if (HAL_DMA_Init(&hdma_adc) != HAL_OK)
+    {
+      //_Error_Handler(__FILE__, __LINE__);
+    }
 
+    __HAL_LINKDMA(hadc,DMA_Handle,hdma_adc);
 }
 
 /**
@@ -158,6 +186,8 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef *hadc)
     PB1     ------> ADC_IN9 
     */
     HAL_GPIO_DeInit(GPIOB, GPIO_PIN_0|GPIO_PIN_1);
+	    /* ADC1 DMA DeInit */
+    HAL_DMA_DeInit(hadc->DMA_Handle);
 }
 
 

@@ -19,7 +19,7 @@ uint8_t  key_flag[3]= {0};
 uint32_t key_counter[3] = {0};
 uint8_t  key_State[3] = {0};
 uint8_t  power_off_flag = 0;
-uint32_t g_lightValue = 0;
+uint16_t g_lightValue = 0;
 float    g_Sht20Temp = 0;
 float    g_Sht20RH = 0;
 

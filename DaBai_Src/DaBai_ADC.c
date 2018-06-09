@@ -24,6 +24,7 @@ ADC_HandleTypeDef    AdcHandle;
 /* Variable used to get converted value */
 __IO uint32_t uwADCxConvertedValue = 0;
 
+uint16_t   gADCxConvertedData[ADC_DATA_BUFFER_SIZE];
 
 /* ADC init function */
  /* ### - 1 - Initialize ADC peripheral #################################### */
@@ -63,10 +64,12 @@ void MX_ADC_Init(void)
   AdcHandle.Init.ScanConvMode          = ADC_SCAN_DIRECTION_FORWARD;
   AdcHandle.Init.DataAlign             = ADC_DATAALIGN_RIGHT;
   AdcHandle.Init.ContinuousConvMode    = ENABLE;
-  AdcHandle.Init.DiscontinuousConvMode = DISABLE;
+  //AdcHandle.Init.DiscontinuousConvMode = DISABLE;
   AdcHandle.Init.ExternalTrigConvEdge  = ADC_EXTERNALTRIGCONVEDGE_NONE;
+	//AdcHandle.Init.ExternalTrigConv      = ADC_SOFTWARE_START;//add 20180609
   AdcHandle.Init.EOCSelection          = ADC_EOC_SINGLE_CONV;
-  AdcHandle.Init.DMAContinuousRequests = DISABLE;
+	//AdcHandle.Init.Overrun 							 = ADC_OVR_DATA_PRESERVED;//add 20180609
+  AdcHandle.Init.DMAContinuousRequests = ENABLE;
 
   /* Initialize ADC peripheral according to the passed parameters */
   if (HAL_ADC_Init(&AdcHandle) != HAL_OK)
@@ -81,14 +84,14 @@ void MX_ADC_Init(void)
     
   }
 
-  /* ### - 3 - Channel configuration ######################################## */
+  /* ### - Channel configuration ######################################## */
 	  /* Select Channel 8 to be converted */
-//  sConfig.Channel = ADC_CHANNEL_8; 
-//  sConfig.Rank = ADC_RANK_CHANNEL_NUMBER;	
-//  if (HAL_ADC_ConfigChannel(&AdcHandle, &sConfig) != HAL_OK)
-//  {
-//    
-//  }
+  sConfig.Channel = ADC_CHANNEL_8; 
+  sConfig.Rank = ADC_RANK_CHANNEL_NUMBER;	
+  if (HAL_ADC_ConfigChannel(&AdcHandle, &sConfig) != HAL_OK)
+  {
+    
+  }
   /* Select Channel 9 to be converted */
   sConfig.Channel = ADC_CHANNEL_9;    
   if (HAL_ADC_ConfigChannel(&AdcHandle, &sConfig) != HAL_OK)
@@ -96,26 +99,46 @@ void MX_ADC_Init(void)
     
   }
 
- /*##- 4- Start the conversion process #######################################*/  
-  if (HAL_ADC_Start(&AdcHandle) != HAL_OK)
-  {
-    /* Start Conversation Error */
-    
-  }
-
+// /*##- 4- Start the conversion process #######################################*/  
+//  if (HAL_ADC_Start(&AdcHandle) != HAL_OK)
+//  {
+//    /* Start Conversation Error */
+//    
+//  }
+	
+	  /* Start conversion in DMA mode ################################# */
+	HAL_ADC_Start_DMA(&AdcHandle,(uint32_t *)gADCxConvertedData,ADC_DATA_BUFFER_SIZE);
 }
 
-uint32_t getLightValue(void)
+uint16_t getLightValue(void)
 {
-	HAL_ADC_PollForConversion(&AdcHandle, 10);
-
-	/* Check if the continuous conversion of regular channel is finished */
-	if ((HAL_ADC_GetState(&AdcHandle) & HAL_ADC_STATE_REG_EOC) == HAL_ADC_STATE_REG_EOC)
+	uint8_t i = 0;
+	uint32_t sum = 0;
+	uint16_t averValue = 0;
+	for(i = 1; i < ADC_DATA_BUFFER_SIZE; i+=(ADC_DATA_BUFFER_SIZE/10))
 	{
-		/*##-6- Get the converted value of regular channel  ########################*/
-		uwADCxConvertedValue = HAL_ADC_GetValue(&AdcHandle);
+		sum += gADCxConvertedData[i]; 
 	}
-	return uwADCxConvertedValue;
+	averValue = (uint16_t)((sum / 8));
+	return averValue;
+}
+//电池电量低于10%需要充电
+uint8_t GetBatVoltage(void)
+{
+	uint8_t i = 0;
+	uint32_t sum = 0;
+	uint8_t preVBat = 0;//显示为电池电量的百分比
+	
+	for(i = 0; i < ADC_DATA_BUFFER_SIZE; i+=(ADC_DATA_BUFFER_SIZE/10))
+	{
+		sum += gADCxConvertedData[i]; 
+	}
+	preVBat = (((sum / 10) - FULL_3V3_ADC_VALUE)*100) / (FULL_4V2_ADC_VALUE - FULL_3V3_ADC_VALUE) ;
+
+	if(preVBat > 100)
+		preVBat =100;
+	
+	return preVBat; 
 }
 
 

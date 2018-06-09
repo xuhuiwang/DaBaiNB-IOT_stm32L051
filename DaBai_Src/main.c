@@ -45,6 +45,9 @@ uint8_t  readFlag = 0;
 uint32_t 	Delay1msCnt = 0;
 uint16_t g_sysTime1ms = 0;
 uint16_t g_tempRHTime1ms = 0;
+uint8_t gBatVoltage = 0;
+
+
 
 int main(void)
 {
@@ -74,8 +77,8 @@ int main(void)
 	LED3_OFF;
 	LED4_OFF;
 	LED5_OFF;
+	BEEP_OFF;
 	printf("\r\nDaBai Init OK \r\n");
-	HAL_TIM_PWM_Stop(&TimHandle, TIM_CHANNEL_2);
   /* Infinite loop */
   while (1)
   {
@@ -171,6 +174,15 @@ int main(void)
 			//HAL_UART_Transmit_DMA(&hlpuart1,uartData,5); 
 			//HAL_LPUART1_Write(uartData,5);
 			//DaBaiSensorTask();
+			gBatVoltage = GetBatVoltage();
+			if(gBatVoltage < 10)
+			{
+				BEEP_ON;
+			}
+			else
+			{
+				BEEP_OFF;
+			}
 			//printf("\r\nDaBai main loop \r\n");
 		}
   }

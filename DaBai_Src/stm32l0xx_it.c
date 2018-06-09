@@ -20,7 +20,7 @@ extern uint16_t g_tempRHTime1ms;
 extern DMA_HandleTypeDef hdma_lpuart_rx;
 extern DMA_HandleTypeDef hdma_lpuart_tx;
 extern UART_HandleTypeDef hlpuart1;
-
+extern DMA_HandleTypeDef hdma_adc;
 /******************************************************************************/
 /*                 STM32L0xx Peripherals Interrupt Handlers                   */
 /*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */
@@ -99,6 +99,20 @@ void SysTick_Handler(void)
   HAL_IncTick();
 	g_sysTime1ms++;
 	g_tempRHTime1ms++;
+}
+
+/**
+* @brief This function handles DMA1 channel 1 interrupt.
+*/
+void DMA1_Channel1_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
+
+  /* USER CODE END DMA1_Channel1_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_adc);
+  /* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
+
+  /* USER CODE END DMA1_Channel1_IRQn 1 */
 }
 
 void DMA1_Channel2_3_IRQHandler(void)
