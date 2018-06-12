@@ -52,7 +52,7 @@
 #define KEY2		  1
 #define KEY3			2
 
-
+typedef enum {NO = 0, YES = !NO} Yes_No_Status;
 
 typedef enum
 {
@@ -78,10 +78,17 @@ typedef enum
 
 extern volatile NB_STATE_e  APP_STATE;
 
-void KeyProcess(void);
-void DaBaiSensorTask(void);
+extern volatile Yes_No_Status g_USB_insert;
+extern volatile Yes_No_Status g_chargeing_flag;
 
+extern uint32_t m_fullBatTimeCnt;//记录充电时达到100%以上的时间
+extern uint8_t g_BatVoltage;
+extern uint16_t g_BeepFreq;
 
+void DaBai_10msTask(void);
+void DaBai_100msTask(void);
+void DaBai_500msTask(void);
+void DaBai_1000msTask(void);
 #ifdef __cplusplus
 }
 #endif

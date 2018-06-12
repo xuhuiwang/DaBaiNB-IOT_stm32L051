@@ -25,6 +25,10 @@
 #include "NB_Board_Cfg.h"
 #include "timer_user_poll.h"
 
+#define TASKTIME_10MS  		10
+#define TASKTIME_100MS  	100
+#define TASKTIME_500MS  	500
+#define TASKTIME_1000MS   1000
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
@@ -43,12 +47,10 @@ uint8_t uartData[5] = {1,2,3,4,5};
 uint8_t ATCommand[] = "AT\r";
 uint8_t  readFlag = 0;
 uint32_t 	Delay1msCnt = 0;
-uint16_t g_sysTime1ms = 0;
-uint16_t g_tempRHTime1ms = 0;
-uint8_t gBatVoltage = 0;
-
-
-
+uint16_t g_TaskTime10ms = 0;
+uint16_t g_TaskTime100ms = 0;
+uint16_t g_TaskTime500ms = 0;
+uint16_t g_TaskTime1000ms = 0;
 int main(void)
 {
 	static  uint32_t start_tick = 0;
@@ -72,25 +74,41 @@ int main(void)
 	{
 		// power on beep remind
 	}
-	//LED1_OFF;
+	LED1_OFF;
 	LED2_OFF;
 	LED3_OFF;
 	LED4_OFF;
-	LED5_OFF;
-	BEEP_OFF;
+	CHG_LED5_OFF;
 	printf("\r\nDaBai Init OK \r\n");
+	
   /* Infinite loop */
   while (1)
   {
-		#if 1
+		LED1_OFF;
+		LED2_OFF;
+		LED3_OFF;
+		LED4_OFF;
+		
 		HAL_UART_Poll();
 		NBModule_Main(&nb_config);
     MX_TimerPoll();
 		
-		if(g_sysTime1ms > 10)
+		if(g_TaskTime10ms > TASKTIME_10MS)
 		{
-			g_sysTime1ms = 0;
-			KeyProcess();
+			g_TaskTime10ms = 0;
+			DaBai_10msTask();
+		}
+		if(g_TaskTime100ms >TASKTIME_100MS)
+		{
+			g_TaskTime100ms = 0;
+			DaBai_100msTask();
+		}
+		
+		if(g_TaskTime500ms >TASKTIME_500MS)
+		{
+			g_TaskTime500ms = 0;
+			g_BeepFreq = 0;
+			DaBai_500msTask();
 		}
 		
 		switch(APP_STATE)
@@ -164,28 +182,16 @@ int main(void)
       }
       break;
     }
-		#endif
 		
-		if(g_tempRHTime1ms >100)
-		{
-			g_tempRHTime1ms = 0;
-			HAL_GPIO_TogglePin(GPIOB,LED5_PIN);
-			//HAL_UART_Log(uartData,5);	
-			//HAL_UART_Transmit_DMA(&hlpuart1,uartData,5); 
-			//HAL_LPUART1_Write(uartData,5);
-			//DaBaiSensorTask();
-			gBatVoltage = GetBatVoltage();
-			if(gBatVoltage < 10)
-			{
-				BEEP_ON;
-			}
-			else
-			{
-				BEEP_OFF;
-			}
-			//printf("\r\nDaBai main loop \r\n");
-		}
+		SetBeepFreq(g_BeepFreq);
+		
+	/**uart debug start**/	
+	//HAL_UART_Log(uartData,5);	
+	//HAL_UART_Transmit_DMA(&hlpuart1,uartData,5); 
+	//HAL_LPUART1_Write(uartData,5);
+	/**uart debug end**/
   }
+	
 }
 
 /**

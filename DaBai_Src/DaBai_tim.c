@@ -12,7 +12,7 @@
 
 
 /* Private typedef -----------------------------------------------------------*/
-#define  PERIOD_VALUE       (uint32_t)(700 - 1)  /* Period Value  */
+#define  PERIOD_VALUE       (uint32_t)(1000 - 1)  /* Period Value  */
 #define  PULSE2_VALUE       (uint32_t)(PERIOD_VALUE/2) /* Capture Compare 2 Value  */
 
 
@@ -76,7 +76,29 @@ void MX_TIM_Init(void)
   }
 }
 
+void SetBeepFreq(uint16_t freq_param)//freq < BEEP_MAX_FREQ Hz
+{
+	int32_t period = 0;
 
+	freq_param = (freq_param < BEEP_MAX_FREQ ? freq_param : BEEP_MAX_FREQ);
+	
+	if(freq_param >= 400)
+	{ 
+		TIM2->CR1 |= TIM_CR1_CEN; /* Enable the TIM Counter */
+		period = 1000000 / freq_param;//1000000ÎªTIM3µÄÔ¤·ÖÆµ 
+
+	}
+	else
+	{
+		TIM2->CR1 &= (uint16_t)(~((uint16_t)TIM_CR1_CEN));//TIM1 Disable 
+	}
+	if(TIM2->CNT >= TIM2->ARR)
+	{
+		TIM2->CNT = 0;
+	}
+	TIM2->ARR = period;
+	TIM2->CCR2 = period>>1; 
+}
 
 
 

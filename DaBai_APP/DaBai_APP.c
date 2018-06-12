@@ -14,83 +14,112 @@
 #include "sht20_cfg.h"
 #include "NB_Board.h"
 
-GPIO_PinState key[3] = {GPIO_PIN_RESET,GPIO_PIN_RESET,GPIO_PIN_RESET};
-uint8_t  key_flag[3]= {0};
-uint32_t key_counter[3] = {0};
-uint8_t  key_State[3] = {0};
-uint8_t  power_off_flag = 0;
+GPIO_PinState m_key[3] = {GPIO_PIN_RESET,GPIO_PIN_RESET,GPIO_PIN_RESET};
+volatile uint8_t  m_key_flag[3]= {0};
+volatile uint32_t m_key_counter[3] = {0};
+volatile uint8_t  m_key_State[3] = {0};
+
+GPIO_PinState m_chargeState = GPIO_PIN_RESET;
+volatile uint8_t m_charge_flag = {0};
+volatile uint8_t m_charge_counter = {0};
+volatile Yes_No_Status g_USB_insert = NO;
+volatile Yes_No_Status g_chargeing_flag = NO;
+
+uint32_t m_fullBatTimeCnt = 0;//记录充电时达到100%以上的时间
+
+uint8_t  g_power_off_flag = 0;
 uint16_t g_lightValue = 0;
 float    g_Sht20Temp = 0;
 float    g_Sht20RH = 0;
-
+uint16_t g_BeepFreq = 0;
+uint8_t g_BatVoltage = 0;
+uint8_t g_BatVoltageLow = 0;//电量低于10%标志位
+uint8_t m_fullBatFlag = 0;
 
 volatile NB_STATE_e  APP_STATE= NB_NONE;
 
-void KeyProcess(void)
+
+//蜂鸣器反转函数
+void BeepToggle(void)
+{
+	static uint8_t m_lock = 0;
+	
+	if(m_lock == 0)
+	{
+		m_lock = 1;
+		g_BeepFreq = 1000;//1KHz
+	}
+	else if(m_lock == 1)
+	{
+		m_lock = 0;
+		g_BeepFreq = 0;
+	}
+}
+
+
+void KeyTask(void)
 {
 	uint8_t i = 0;
-	key_State[KEY1] = 0,key_State[KEY2] = 0,key_State[KEY3] = 0;
+	m_key_State[KEY1] = 0,m_key_State[KEY2] = 0,m_key_State[KEY3] = 0;
 	
 	/*读取按键状态*/
-	if(HAL_GPIO_ReadPin(GPIOA, KEY1_Pin) == GPIO_PIN_SET)
-		key[KEY1] = GPIO_PIN_RESET;
+	if(HAL_GPIO_ReadPin(GPIOA, KEY1_PIN) == GPIO_PIN_SET)
+		m_key[KEY1] = GPIO_PIN_RESET;
 	else
-		key[KEY1] = GPIO_PIN_SET;
+		m_key[KEY1] = GPIO_PIN_SET;
 	
-	key[KEY2] = HAL_GPIO_ReadPin(GPIOB, KEY2_Pin);
-	key[KEY3] = HAL_GPIO_ReadPin(GPIOB, KEY3_Pin);
+	m_key[KEY2] = HAL_GPIO_ReadPin(GPIOB, KEY2_PIN);
+	m_key[KEY3] = HAL_GPIO_ReadPin(GPIOB, KEY3_PIN);
 		
 	for(i = 0; i < 3; i++)//分别对3个按键的状态进行处理
 	{
-		key_flag[i] <<= 1;
-		if( key[i] == GPIO_PIN_RESET )//按键被按下
+		m_key_flag[i] <<= 1;
+		if( m_key[i] == GPIO_PIN_RESET )//按键被按下
 		{
-			key_flag[i] |= 0x01;
+			m_key_flag[i] |= 0x01;
 		}
 		
-		if( key_flag[i] == 0xff )//按键消斗，按键被稳定按下，这时key_flag等于0xff,直到按键松开
+		if( m_key_flag[i] == 0xff )//按键消斗，按键被稳定按下，这时m_key_flag等于0xff,直到按键松开
 		{
-			key_counter[i]++;//记录按键被按下标志，数值越大被按下时间越长
-			if(key_counter[i] == 0) key_counter[i] = 1;//按的时间过长不至于被清零
+			m_key_counter[i]++;//记录按键被按下标志，数值越大被按下时间越长
+			if(m_key_counter[i] == 0) m_key_counter[i] = 1;//按的时间过长不至于被清零
 			switch(i)
 			{
 				case KEY1:
 				{ 
-					key_State[KEY1] = 1;
-					if(key_counter[KEY1] > 100)
+					m_key_State[KEY1] = 1;
+					if(m_key_counter[KEY1] > 100)
 					{
-						power_off_flag = 1;
+						g_power_off_flag = 1;
 						PowerOffGpioConfig();
-						if(key_counter[KEY1] < 140)
-							BEPP_ON;
-						else
-							BEPP_OFF;
+						if(m_key_counter[KEY1] < 130)
+							g_BeepFreq = 2000;
 					}
 				}break;
 				case KEY2:
 				{
-					key_State[KEY2] = 1;
+					m_key_State[KEY2] = 1;
 				}break;
 
 				case KEY3:
 				{
-					key_State[KEY3] = 1;
+					m_key_State[KEY3] = 1;
 				}break;
 
 				default:
 				{}break;
 			}
 		}
-		else if(key_flag[i] == 0x00)//松手消斗
+		else if(m_key_flag[i] == 0x00)//松手消斗
 		{	
-			if( key_counter[i] >= 1 )//相当于松手检测
+			if( m_key_counter[i] >= 1 )//相当于松手检测
 			{
 				switch(i)
 				{
 					case KEY1:
 					{ 
 						APP_STATE = NB_INIT;
-						if(power_off_flag == 1)
+						if(g_power_off_flag == 1)
 							POWER_OFF;	
 					}break;
 					case KEY2:
@@ -109,41 +138,135 @@ void KeyProcess(void)
 					{}break;
 				}	
 				
-				key_counter[i] = 0;
+				m_key_counter[i] = 0;
 			}
 		}
 	}
 	
-	if(key_State[KEY2] == 1 || key_State[KEY3] == 1)
+	if(m_key_State[KEY2] == 1 || m_key_State[KEY3] == 1)
 	{
-		//HAL_TIM_PWM_Start(&TimHandle, TIM_CHANNEL_2);
 		//HAL_GPIO_WritePin(GPIOB, LED5, GPIO_PIN_RESET);
 	}
 	else
 	{
-		//HAL_TIM_PWM_Stop(&TimHandle, TIM_CHANNEL_2);
 		//HAL_GPIO_WritePin(GPIOB, LED5, GPIO_PIN_SET);
 	}
 
 }
 
 
-void DaBaiSensorTask(void)
+
+void ChargeTask(void)
 {
-	g_lightValue = getLightValue();
-	if(g_lightValue > 700 || g_Sht20Temp > 31)
+	uint8_t i;
+	
+	m_chargeState	= HAL_GPIO_ReadPin(GPIOA, CHG_DETECT_PIN);//USB接口插入检测
+
+	if( m_chargeState == GPIO_PIN_SET )////USB插入
 	{
-		HAL_TIM_PWM_Start(&TimHandle, TIM_CHANNEL_2);
-		//HAL_GPIO_WritePin(GPIOB,GPIO_PIN_7, GPIO_PIN_RESET);
+		m_charge_counter++;
+		if(m_charge_counter == 0) m_charge_counter = 1;//防止充电时间过长不至于加到最大值被清零
+		
+		g_USB_insert = YES;//USB接口插入
+  	g_chargeing_flag = YES;//在给电池充电
 	}
 	else
 	{
-		HAL_TIM_PWM_Stop(&TimHandle, TIM_CHANNEL_2);
-		//HAL_GPIO_WritePin(GPIOB,GPIO_PIN_7, GPIO_PIN_SET);
+		if( m_charge_counter >= 1 )//USB拔出检测
+		{ 
+			m_charge_counter = 0;
+			g_USB_insert = NO;
+			g_chargeing_flag = NO;
+			m_fullBatFlag = 0;
+		}
+	}
+
+	if(g_USB_insert == YES)//USB插入
+	{
+		if(g_chargeing_flag == YES)//电池在充电
+		{		
+			if(m_fullBatTimeCnt < 10000)//15分钟
+			{
+				HAL_GPIO_TogglePin(GPIOB,CHG_LED5_PIN);//在充电时1s闪烁一次
+			}	
+			else//电池电量达到100%后的15分钟
+			{
+				g_chargeing_flag = NO;
+				m_fullBatFlag = 1;
+			}
+
+		}
+		if(m_fullBatFlag == 1)//电池充满电
+		{
+			CHG_LED5_ON;//充满电，一直亮
+			BeepToggle();
+		}
+	}
+
+}
+
+void BatManageTask(void)
+{
+	g_BatVoltageLow = 0;
+	
+	ChargeTask();
+	
+	g_BatVoltage = GetBatVoltage();
+	
+	if(g_USB_insert == NO && g_BatVoltage >= 10)//电池电量大于10%
+	{
+		CHG_LED5_OFF;
+	}	
+	else if(g_USB_insert == NO && g_BatVoltage >= 7)//7%<=电池电量<10%
+	{
+		g_BatVoltageLow = 1;//电量低标志位
+	}
+	else if(g_USB_insert == NO && g_BatVoltage < 7)//电池电量<7%
+	{
+			POWER_OFF;
+	}
+}
+
+void DaBaiSensorTask(void)
+{
+	
+	g_lightValue = getLightValue();
+	if(g_lightValue > 700 || g_Sht20Temp > 31)
+	{
+		g_BeepFreq = 1500;	
 	}
 	g_Sht20Temp = SHT20_Convert(SHT20_ReadTemp(),1);
 	g_Sht20RH   = SHT20_Convert(SHT20_ReadRH(),0);
 }
+
+
+
+void DaBai_10msTask(void)
+{
+	KeyTask();
+}
+
+void DaBai_100msTask(void)
+{
+	
+	if(g_BatVoltageLow == 1)
+	{
+		BeepToggle();
+		HAL_GPIO_TogglePin(GPIOB,CHG_LED5_PIN);
+	}
+}
+
+void DaBai_500msTask(void)
+{
+	DaBaiSensorTask();
+	BatManageTask();
+}
+
+void DaBai_1000msTask(void)
+{
+
+}
+
 
 
 //******************************************************************************

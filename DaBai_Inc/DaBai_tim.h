@@ -15,8 +15,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l0xx_hal.h"
 
-#define BEEP_OFF		HAL_TIM_PWM_Stop(&TimHandle, TIM_CHANNEL_2)
-#define BEEP_ON			HAL_TIM_PWM_Start(&TimHandle, TIM_CHANNEL_2)
+#define BEEP_MAX_FREQ			2730
+
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
@@ -29,7 +29,7 @@
 	/* Timer handler declaration */
 extern TIM_HandleTypeDef    TimHandle;
 void MX_TIM_Init(void);
-
+void SetBeepFreq(uint16_t freq_param);
 
 
 #ifdef __cplusplus

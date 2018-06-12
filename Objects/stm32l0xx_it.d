@@ -37,3 +37,6 @@
 .\objects\stm32l0xx_it.o: .\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_uart_ex.h
 .\objects\stm32l0xx_it.o: .\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_usart.h
 .\objects\stm32l0xx_it.o: .\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_usart_ex.h
+.\objects\stm32l0xx_it.o: .\DaBai_APP\DaBai_APP.h
+.\objects\stm32l0xx_it.o: .\DaBai_Inc\sht20_cfg.h
+.\objects\stm32l0xx_it.o: .\DaBai_Inc\DaBai_i2c.h

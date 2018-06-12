@@ -12,11 +12,13 @@
 
 #include "stm32l0xx_it.h"
 #include "stm32l0xx_hal.h"
+#include "DaBai_APP.h"
 
 /* External variables --------------------------------------------------------*/
-extern uint16_t g_sysTime1ms;
-extern uint16_t g_tempRHTime1ms;
-
+extern uint16_t g_TaskTime10ms;
+extern uint16_t g_TaskTime100ms;
+extern uint16_t g_TaskTime1000ms;
+extern uint16_t g_TaskTime500ms;
 extern DMA_HandleTypeDef hdma_lpuart_rx;
 extern DMA_HandleTypeDef hdma_lpuart_tx;
 extern UART_HandleTypeDef hlpuart1;
@@ -97,8 +99,28 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   HAL_IncTick();
-	g_sysTime1ms++;
-	g_tempRHTime1ms++;
+	g_TaskTime10ms++;
+	g_TaskTime100ms++;
+	g_TaskTime500ms++;
+	g_TaskTime1000ms++;
+	if(g_USB_insert == YES)//USB插入
+	{
+		if(g_chargeing_flag == YES)//电池在充电
+		{
+			if(g_BatVoltage == 100)
+			{
+				m_fullBatTimeCnt ++;
+			}
+			else
+			{
+				m_fullBatTimeCnt = 0;
+			}
+		}
+	}
+	else
+	{
+		m_fullBatTimeCnt = 0;
+	}
 }
 
 /**
