@@ -1,12 +1,12 @@
 //******************************************************************************
-//                                www.ghostyu.com
+//                                https://dabairobot.taobao.com
 //
-//                 Copyright (c) 2017-2018, WUXI Ghostyu Co.,Ltd.
+//                 Copyright (c) 2017-2018, DaBai_IOT CLUB
 //                                All rights reserved.
 //
 //  FileName : sht20_cfg.c
-//  Date     : 2017-12-23 13:47
-//  Version  : V0001
+//  Date     : 2018-06-04
+//  Version  : V1.0
 // 历史记录  : 1.第一次创建
 //
 // 说明：
@@ -114,11 +114,13 @@ extern float SHT20_Convert(uint16_t value,uint8_t isTemp)
   float tmp = 0.0;
   if(isTemp)
   {
-    tmp = -46.85 + (175.72* value)/(1 << 16);
+    //tmp = -46.85 + (175.72* value)/(1 << 16);//原计算
+		tmp = -47.0 + (176.0* value)/65536;//减少计算量
   }
   else
   {
-    tmp = -6 + (125.0 *value)/(1<<16);
+    //tmp = -6 + (125.0 *value)/(1<<16);//原计算
+		 tmp = -6 + (125.0 *value)/65536;//减少计算量
   }
   return tmp;
 }

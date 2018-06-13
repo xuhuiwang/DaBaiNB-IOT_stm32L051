@@ -1,16 +1,16 @@
 //******************************************************************************
-//                                www.ghostyu.com
+//                                https://dabairobot.taobao.com
 //
-//                 Copyright (c) 2017-2018, WUXI Ghostyu Co.,Ltd.
+//                 Copyright (c) 2017-2018, DaBai_IOT CLUB
 //                                All rights reserved.
 //
 //  FileName : timer_user_poll.c
-//  Date     : 2017-12-04 16:11
-//  Version  : V0001
+//  Date     : 2018-06-04
+//  Version  : V1.0
 // 历史记录  : 1.第一次创建
 //
 // 说明：
-// BC95系列NB-IOT模块的AT指令产生及对指令响应进行解析
+// BC95\28系列NB-IOT模块的AT指令产生及对指令响应进行解析
 //******************************************************************************
 #include "timer_user_poll.h"
 #include "nb_bc95_28.h"

@@ -1,12 +1,12 @@
 //******************************************************************************
-//                                www.ghostyu.com
-//
-//                 Copyright (c) 2017-2018, WUXI Ghostyu Co.,Ltd.
+//                                https://dabairobot.taobao.com
+//https://dabairobot.taobao.com
+//                 Copyright (c) 2017-2018, DaBai_IOT CLUB
 //                                All rights reserved.
 //
 //  FileName : NB_Board.c
-//  Date     : 2017-12-11 11:18
-//  Version  : V0001
+//  Date     : 2018-06-04
+//  Version  : V1.0
 // 历史记录  : 第一次创建
 //******************************************************************************
 #include "NB_Board.h"

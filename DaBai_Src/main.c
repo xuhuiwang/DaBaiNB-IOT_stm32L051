@@ -1,17 +1,73 @@
 /**
 ******************************************************************************
 * 文件名程: main.c 
-* 作    者: 大白IOT Cifi
+* 作    者: DaBai_IOT Cifi
 * 版    本: V1.0
 * 编写日期: 2018-6-04
-* 功    能: 板载串口底层驱动程序
+* 功    能: BC95、BC28 AT指令驱动程序
 ******************************************************************************
 * 说明：
-* 本例程配套硬石stm32开发板YS-F1Pro使用。
+* 本例程配套大白stm32开发板DaBai_L051_V1.0使用。
 * 
-* 淘宝：
-* 论坛：http://www.ing10bbs.com
-* 版权归硬石嵌入式开发团队所有，请勿商用。
+大白淘宝网址：https://dabairobot.taobao.com
+
+下面是对本开发板基本操作的说明：
+
+//////////////////////////////////////////////////////
+1、供电说明：
+在接入电池后，系统不会自动开机，需要短按key1(S1)按键才会开机。
+在不接入电池时，可以直接用USB线供电，插入USB线后，系统会自动上电开机。
+
+//////////////////////////////////////////////////////
+2、开关机逻辑：
+		开机：短按key1(S1)按键，系统会开机，蜂鸣器会响0.3s,5个LED灯全亮0.3s,随后系统运行指示灯LED1以1Hz的频率闪烁
+		关机：长按key1(S1)按键1s以上，蜂鸣器会响1s左右，蜂鸣器鸣响结束后松开key1(S1)按键，系统会自动关机
+
+//////////////////////////////////////////////////////
+3、电池管理任务：
+		充电：充电的时候电量指示灯LED5会1s闪烁一次，充满电后LED5常亮并且蜂鸣器鸣响5次提示
+		放电：放电的时候 
+						 电池电量 >= 10% ： LED5熄灭
+			 7% <= 电池电量 < 10%  ： LED5以5Hz频率闪烁，并且蜂鸣器以5Hz频率报警
+						 电池电量 < 7%   ： 蜂鸣器响1s后自动关机
+
+//////////////////////////////////////////////////////
+4、传感器：
+	光敏：当g_lightValue > 700时（光线越暗g_lightValue数值越大），蜂鸣器响
+	温度：当温度值g_Sht20Temp > 31摄氏度时（g_Sht20Temp的数值就是表示实际的温度），蜂鸣器响
+	湿度：当湿度值g_Sht20RH > 70时（湿度越大g_Sht20RH的数值就越大），蜂鸣器响
+
+//////////////////////////////////////////////////////
+5、按键和灯接口：
+	key4(S4)按键是MCU的复位按键。
+	key1(S1)、key2(S2)、key3(S3)都可以作为MCU的按键输入接口来使用
+	当key2(S2)、key3(S3)不作为MCU的按键接口使用时，可当作普通的IO口来使用
+	
+	LED5作为电池电量和充电相关的指示灯，请勿用这个灯作为其他状态的指示
+	LED1、LED2、LED3、LED4用户可以用来自定义状态指示灯。
+	当LED1、LED2、LED3、LED4不作为MCU的LED灯接口来使用时，可以当作普通的IO口来使用
+
+//////////////////////////////////////////////////////
+6、BC95和BC28指令：
+		由于BC95和BC28的AT指令完全相同，所以本工程文件的一些函数命名方式都是按照之前的BC95来命名的，
+		对BC28模块完全适用，开发者不必担心这个问题
+		
+7、网络连接：
+	本例程提供的是：使用AT指令，让BC28通过TCP协议连接大白的测试服务器，发送数据，
+	服务器收到后返回发送出去的数据。
+	网络传输数据操作步骤：
+	1、BC28核心板插入NB物联网卡，核心板插入STM32板底座。
+	2、插入STM32板的MicroUSB线，电脑打开串口助手，选择这个USB的串口号和波特率（115200bps）,打开此串口。
+	3、系统开机后，短按一下key1(S1)按键，
+		程序会自动初始化BC28模块，并且进行以下流程的操作：
+		(1)、
+	后续还会推出基于coap协议的网络连接，用于连接IOT平台。
+	
+
+
+//////////////////////////////////////////////////////
+
+* 版权归大白物联网所有。
   */
 
 /* Includes ------------------------------------------------------------------*/
@@ -36,28 +92,29 @@ void SystemClock_Config(void);
 static GPIO_InitTypeDef  GPIO_InitStruct;
 /* Private functions ---------------------------------------------------------*/
 
-/**
-  * @brief  Main program.
-  * @param  None
-  * @retval None
-  */
+
 	
 
 uint8_t uartData[5] = {1,2,3,4,5};
-uint8_t ATCommand[] = "AT\r";
 uint8_t  readFlag = 0;
 uint32_t 	Delay1msCnt = 0;
 uint16_t g_TaskTime10ms = 0;
 uint16_t g_TaskTime100ms = 0;
 uint16_t g_TaskTime500ms = 0;
 uint16_t g_TaskTime1000ms = 0;
+
+
+/**
+  * @brief  Main program.
+  * @param  None
+  * @retval None
+  */
 int main(void)
 {
 	static  uint32_t start_tick = 0;
 	static uint32_t cur_tick = 0;
  
   HAL_Init();
-	/* Configure the System clock to have a frequency of 2 MHz (Up to 32MHZ possible) */
   SystemClock_Config();
 	MX_TIM_Init();
 	MX_GPIO_Init();
@@ -70,7 +127,7 @@ int main(void)
   APP_STATE = NB_NONE;
 	
 	start_tick = HAL_GetTick();
-	while((HAL_GetTick()- start_tick) <250)
+	while((HAL_GetTick()- start_tick) <300)
 	{
 		// power on beep remind
 	}
@@ -83,12 +140,7 @@ int main(void)
 	
   /* Infinite loop */
   while (1)
-  {
-		LED1_OFF;
-		LED2_OFF;
-		LED3_OFF;
-		LED4_OFF;
-		
+  {	
 		HAL_UART_Poll();
 		NBModule_Main(&nb_config);
     MX_TimerPoll();
@@ -98,19 +150,23 @@ int main(void)
 			g_TaskTime10ms = 0;
 			DaBai_10msTask();
 		}
-		if(g_TaskTime100ms >TASKTIME_100MS)
+		if(g_TaskTime100ms > TASKTIME_100MS)
 		{
 			g_TaskTime100ms = 0;
 			DaBai_100msTask();
 		}
 		
-		if(g_TaskTime500ms >TASKTIME_500MS)
+		if(g_TaskTime500ms > TASKTIME_500MS)
 		{
 			g_TaskTime500ms = 0;
 			g_BeepFreq = 0;
 			DaBai_500msTask();
 		}
-		
+		if(g_TaskTime1000ms > TASKTIME_1000MS)
+		{
+			g_TaskTime1000ms = 0;
+			DaBai_1000msTask();
+		}
 		switch(APP_STATE)
     {
     case NB_NONE:
@@ -120,14 +176,14 @@ int main(void)
       break;
     case NB_INIT:
       {
-        printf("\r\n<----BC95 Init---->\r\n");
+        printf("\r\n<----BC95\28 Init---->\r\n");
         NBModule_Init(&nb_config);
         APP_STATE = NB_END;
       }
       break;
     case NB_SIGN:
       {
-         printf("\r\n<----BC95 get signal---->\r\n");
+         printf("\r\n<----BC95\28 get signal---->\r\n");
          NBModule_Sign(&nb_config);
          APP_STATE = NB_END;
       }
@@ -197,14 +253,8 @@ int main(void)
 /**
   * @brief  System Clock Configuration
   *         The system Clock is configured as follow : 
-  *            System Clock source            = MSI
-  *            SYSCLK(Hz)                     = 2000000
-  *            HCLK(Hz)                       = 2000000
-  *            AHB Prescaler                  = 1
-  *            APB1 Prescaler                 = 1
-  *            APB2 Prescaler                 = 1
-  *            Flash Latency(WS)              = 0
-  *            Main regulator output voltage  = Scale3 mode
+  *            System Clock source            = HSE
+  *            SYSCLK(Hz)                     = 8000000
   * @retval None
   */
 void SystemClock_Config(void)
@@ -212,19 +262,6 @@ void SystemClock_Config(void)
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInit;
-	
-	
-//  /* Enable MSI Oscillator */
-//  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
-//  RCC_OscInitStruct.MSIState = RCC_MSI_ON;
-//  RCC_OscInitStruct.MSIClockRange = RCC_MSIRANGE_5;
-//  RCC_OscInitStruct.MSICalibrationValue=0x00;
-//  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
-//  if (HAL_RCC_OscConfig(&RCC_OscInitStruct)!= HAL_OK)
-//  {
-//    /* Initialization Error */
-//    while(1); 
-//  }
 	
 	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE|RCC_OSCILLATORTYPE_LSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;//open 8M晶振
@@ -237,7 +274,7 @@ void SystemClock_Config(void)
     _Error_Handler(__FILE__, __LINE__);
   }
   
-  /* Select MSI as system clock source and configure the HCLK, PCLK1 and PCLK2 
+  /* Select HSE as system clock source and configure the HCLK, PCLK1 and PCLK2 
      clocks dividers */
   RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSE;
@@ -261,9 +298,9 @@ void SystemClock_Config(void)
   __HAL_RCC_PWR_CLK_DISABLE();
 	
 	PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1
-                              |RCC_PERIPHCLK_LPUART1|RCC_PERIPHCLK_RTC|RCC_PERIPHCLK_I2C2;//|RCC_PERIPHCLK_USART2
+                              |RCC_PERIPHCLK_LPUART1|RCC_PERIPHCLK_USART2|RCC_PERIPHCLK_RTC|RCC_PERIPHCLK_I2C2;//
   PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
-  //PeriphClkInit.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
+  PeriphClkInit.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
   PeriphClkInit.Lpuart1ClockSelection = RCC_LPUART1CLKSOURCE_PCLK1;
   PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)

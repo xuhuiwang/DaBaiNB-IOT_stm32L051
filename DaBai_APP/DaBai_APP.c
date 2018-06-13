@@ -35,11 +35,21 @@ uint16_t g_BeepFreq = 0;
 uint8_t g_BatVoltage = 0;
 uint8_t g_BatVoltageLow = 0;//电量低于10%标志位
 uint8_t m_fullBatFlag = 0;
+uint8_t m_fullBatHint = 0;
 
 volatile NB_STATE_e  APP_STATE= NB_NONE;
 
 
-//蜂鸣器反转函数
+/*************************************
+fn : BeepToggle
+
+brief : 蜂鸣器反转函数
+param : none
+
+return : none
+
+*************************************/
+
 void BeepToggle(void)
 {
 	static uint8_t m_lock = 0;
@@ -55,7 +65,15 @@ void BeepToggle(void)
 		g_BeepFreq = 0;
 	}
 }
+/*************************************
+fn : KeyTask
 
+brief : 按键处理任务
+param : none
+
+return : none
+
+*************************************/
 
 void KeyTask(void)
 {
@@ -88,7 +106,7 @@ void KeyTask(void)
 				case KEY1:
 				{ 
 					m_key_State[KEY1] = 1;
-					if(m_key_counter[KEY1] > 100)
+					if(m_key_counter[KEY1] > 100)//长按key1按键1s以上
 					{
 						g_power_off_flag = 1;
 						PowerOffGpioConfig();
@@ -145,16 +163,25 @@ void KeyTask(void)
 	
 	if(m_key_State[KEY2] == 1 || m_key_State[KEY3] == 1)
 	{
-		//HAL_GPIO_WritePin(GPIOB, LED5, GPIO_PIN_RESET);
+
 	}
 	else
 	{
-		//HAL_GPIO_WritePin(GPIOB, LED5, GPIO_PIN_SET);
+
 	}
 
 }
 
+/*************************************
+fn : ChargeTask
 
+brief : 电池充电任务
+1、充电的时候LED5电量指示灯会1s闪烁一次，充满电后LED5常亮
+param : none
+
+return : none
+
+*************************************/
 
 void ChargeTask(void)
 {
@@ -178,6 +205,7 @@ void ChargeTask(void)
 			g_USB_insert = NO;
 			g_chargeing_flag = NO;
 			m_fullBatFlag = 0;
+			m_fullBatHint = 0;
 		}
 	}
 
@@ -185,11 +213,11 @@ void ChargeTask(void)
 	{
 		if(g_chargeing_flag == YES)//电池在充电
 		{		
-			if(m_fullBatTimeCnt < 10000)//15分钟
+			if(m_fullBatTimeCnt < 5000)//15分钟
 			{
 				HAL_GPIO_TogglePin(GPIOB,CHG_LED5_PIN);//在充电时1s闪烁一次
 			}	
-			else//电池电量达到100%后的15分钟
+			else//电池电量达到100%后的15分钟，多充一会，让电量达到最高
 			{
 				g_chargeing_flag = NO;
 				m_fullBatFlag = 1;
@@ -199,14 +227,35 @@ void ChargeTask(void)
 		if(m_fullBatFlag == 1)//电池充满电
 		{
 			CHG_LED5_ON;//充满电，一直亮
-			BeepToggle();
+
+			if(m_fullBatHint <  10)//充满电蜂鸣器鸣响5次提示
+			{	
+				m_fullBatHint++;
+				BeepToggle();
+			}
 		}
 	}
 
 }
 
+/*************************************
+fn : BatManageTask
+
+brief : 电池管理任务
+1、充电的时候LED5电量指示灯会1s闪烁一次，充满电后LED5常亮
+2、放电的时候 ：
+		     电池电量 >= 10% ： LED5熄灭
+	 7% <= 电池电量 < 10%  ： LED5以5Hz频率闪烁，并且蜂鸣器5Hz频率报警
+		     电池电量 < 7%   ： 蜂鸣器响1s后自动关机
+param : none
+
+return : none
+
+*************************************/
+
 void BatManageTask(void)
 {
+	uint16_t start_tick = 0;
 	g_BatVoltageLow = 0;
 	
 	ChargeTask();
@@ -223,6 +272,13 @@ void BatManageTask(void)
 	}
 	else if(g_USB_insert == NO && g_BatVoltage < 7)//电池电量<7%
 	{
+		g_power_off_flag = 1;
+		start_tick = HAL_GetTick();
+		while((HAL_GetTick()- start_tick) <1000)
+		{
+			g_BeepFreq = 2000;
+			SetBeepFreq(g_BeepFreq);
+		}
 			POWER_OFF;
 	}
 }
@@ -231,7 +287,7 @@ void DaBaiSensorTask(void)
 {
 	
 	g_lightValue = getLightValue();
-	if(g_lightValue > 700 || g_Sht20Temp > 31)
+	if(g_lightValue > 700 || g_Sht20Temp > 31 || g_Sht20RH > 70)
 	{
 		g_BeepFreq = 1500;	
 	}
@@ -240,15 +296,31 @@ void DaBaiSensorTask(void)
 }
 
 
+/*************************************
+fn : DaBai_10msTask
 
+brief : 10ms任务
+param : none
+
+return : none
+
+*************************************/
 void DaBai_10msTask(void)
 {
 	KeyTask();
 }
+/*************************************
+fn : DaBai_100msTask
 
+brief : 100ms任务
+param : none
+
+return : none
+
+*************************************/
 void DaBai_100msTask(void)
 {
-	
+	//HAL_GPIO_TogglePin(GPIOB,LED1_PIN);
 	if(g_BatVoltageLow == 1)
 	{
 		BeepToggle();
@@ -256,11 +328,32 @@ void DaBai_100msTask(void)
 	}
 }
 
+/*************************************
+fn : DaBai_500msTask
+
+brief : 500ms任务
+param : none
+
+return : none
+
+*************************************/
+
 void DaBai_500msTask(void)
 {
+	HAL_GPIO_TogglePin(GPIOB,LED4_PIN);
 	DaBaiSensorTask();
 	BatManageTask();
 }
+
+/*************************************
+fn : DaBai_1000msTask
+
+brief : 1000ms任务
+param : none
+
+return : none
+
+*************************************/
 
 void DaBai_1000msTask(void)
 {

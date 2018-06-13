@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * File Name          : tim.c
+  * File Name          : DaBai_tim.c
   * Description        : This file provides code for the configuration
-  *                      of the tim instances.
+  *                      of the DaBai_tim instances.
   ******************************************************************************
   */
 

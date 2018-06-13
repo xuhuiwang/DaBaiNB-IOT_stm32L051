@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * File Name          : I2C.c
+  * File Name          : DaBai_I2C.c
   * Description        : This file provides code for the configuration
-  *                      of the I2C instances.
+  *                      of the DaBai_I2C instances.
   ******************************************************************************
   ** This notice applies to any and all portions of this file
   * that are not between comment pairs USER CODE BEGIN and

@@ -1,17 +1,17 @@
 //******************************************************************************
-//                                www.ghostyu.com
+//                                https://dabairobot.taobao.com
 //
-//                 Copyright (c) 2017-2018, WUXI Ghostyu Co.,Ltd.
+//                 Copyright (c) 2017-2018, DaBai_IOT CLUB
 //                                All rights reserved.
 //
-//  FileName : NB_BC95.h
-//  Date     : 2017-12-04 16:11
+//  FileName : NB_BC95_28.h
+//  Date     : 2018-06-04
 //  Version  : V0001
 // 历史记录  : 第一次创建
 //******************************************************************************
 
-#ifndef NB_BC95_H
-#define NB_BC95_H
+#ifndef NB_BC95_28_H
+#define NB_BC95_28_H
 
 #ifdef __cplusplus
 extern "C"
@@ -22,7 +22,7 @@ extern "C"
 #include "NB_Board.h"
   
 //******************************************************************************
-//BC95系列模块，主要是基于 UART与用户进行交互。下面所有关于BC95的操作都是围绕
+//BC95系列模块，主要是基于 UART与用户进行交互。下面所有关于BC95\28的操作都是围绕
 //UART。
 //
   
@@ -71,7 +71,7 @@ typedef cmd_info_t* CmdHandle;
 // brief :表示当前要对bc95进行的操作
 typedef enum
 {
-  PROCESS_NONE,     //表示bc95模块当前操作为空闲，可以进行下一行为操作
+  PROCESS_NONE,     //表示bc95\28模块当前操作为空闲，可以进行下一行为操作
   PROCESS_INIT = MSG_INIT,
   PROCESS_MODULE_INFO = MSG_MODULE_INFO,
   PROCESS_SIGN = MSG_SIGN,
@@ -151,7 +151,7 @@ typedef struct
 }time_fxnTable;
 
 
-//bc95对象结构说明
+//bc95\28对象结构说明
 typedef struct
 {
   const uint32     baudrate;
@@ -371,4 +371,4 @@ extern int bc95_main(NB_Handle handle);
 #ifdef __cplusplus
 }
 #endif
-#endif   //NB_BC95_H
+#endif   //NB_BC95_28_H

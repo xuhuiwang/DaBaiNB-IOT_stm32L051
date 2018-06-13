@@ -1,11 +1,11 @@
 //******************************************************************************
-//                                www.ghostyu.com
+//                                https://dabairobot.taobao.com
 //
-//                 Copyright (c) 2017-2018, WUXI Ghostyu Co.,Ltd.
+//                 Copyright (c) 2017-2018, DaBai_IOT CLUB
 //                                All rights reserved.
 //
 //  FileName : timer_user_poll.h
-//  Date     : 2017-12-04 16:11
+//  Date     : 2018-06-04
 //  Version  : V0001
 // 历史记录  : 第一次创建
 //******************************************************************************

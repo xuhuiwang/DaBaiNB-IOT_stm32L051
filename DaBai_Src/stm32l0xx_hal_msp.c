@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    ADC/ADC_RegularConversion_Polling/Src/stm32l0xx_hal_msp.c
+  * @file    stm32l0xx_hal_msp.c
   * @author  MCD Application Team
   * @brief   HAL MSP module.
   ******************************************************************************

@@ -1,16 +1,16 @@
 //******************************************************************************
-//                                www.ghostyu.com
+//                               https://dabairobot.taobao.com
 //
-//                 Copyright (c) 2017-2018, WUXI Ghostyu Co.,Ltd.
+//                 Copyright (c) 2017-2018, DaBai_IOT 
 //                                All rights reserved.
 //
-//  FileName : NB_BC95.c
-//  Date     : 2017-12-04 16:11
-//  Version  : V0001
+//  FileName : NB_BC95_28.c
+//  Date     : 2018-6-04
+//  Version  : V1.0
 // 历史记录  : 1.第一次创建
 //
 // 说明：
-// BC95系列NB-IOT模块的AT指令产生及对指令响应进行解析
+// BC95\28系列NB-IOT模块的AT指令产生及对指令响应进行解析
 //******************************************************************************
 #include <string.h>
 #include <stdio.h>
@@ -19,7 +19,7 @@
 #include "NB_BC95_28.h"
 #include "NB_Board.h"
 
-// BC95-B5 AT指令语法
+// BC95\28-B5 AT指令语法
 //--------------------|------------------------|-------------------------------------
 //  Test Command        AT+<cmd>=?               Check possible sub-parameter values
 //  Read Command        AT+<cmd>?                Check current sub-parameter values
@@ -42,7 +42,7 @@
 // <CR><LF>OK<CR><LF>
 //  
   
-//BC95_B5支持的AT指令说明
+//BC95\28_B5支持的AT指令说明
 /* AT Command Description Implementation Status */
   
 /* 3GPP Commands (27.007)*/
@@ -274,7 +274,7 @@ const char*  AT_NTSETID      = "AT+NTSETID";
 #define BAND_700MHZ_STR          "700"
 
 //******************************************************************************
-// 定义NB_FxnTable 变量将BC95操作函数结合在一起
+// 定义NB_FxnTable 变量将BC95\28操作函数结合在一起
 //
 const NB_FxnTable BC95_FxnTable = {
   .openFxn               = bc95_open,
@@ -405,8 +405,7 @@ typedef enum
 //******************************************************************************
 // bc95 初始化流程 
 //
-const uint8_t nb95_init_process[] = {SUB_NONE,SUB_SYNC,
-                                     SUB_CIMI,
+const uint8_t nb95_init_process[] = {SUB_NONE,SUB_SYNC,SUB_CIMI,                               
                                      SUB_CGATT,SUB_CGATT_QUERY,SUB_END};
 
 //******************************************************************************
