@@ -57,10 +57,28 @@
 	服务器收到后返回发送出去的数据。
 	网络传输数据操作步骤：
 	1、BC28核心板插入NB物联网卡，核心板插入STM32板底座。
-	2、插入STM32板的MicroUSB线，电脑打开串口助手，选择这个USB的串口号和波特率（115200bps）,打开此串口。
+	2、插入STM32板的MicroUSB线，电脑打开串口助手，选择这个USB的串口号和波特率（115200bps）,
+	打开此串口，这个串口可以看到单片机向BC28核心板发送的数据和核心板返回的数据。
 	3、系统开机后，短按一下key1(S1)按键，
-		程序会自动初始化BC28模块，并且进行以下流程的操作：
-		(1)、
+		程序会自动初始化BC28模块，并且自动进行以下流程的操作：
+		(1)、读取sim卡信息。  
+				命令：AT+CIMI
+		(2)、查看网络附着状态，如果没有网络信号，会每秒钟自动查看网络状态，连续查看十次。
+				命令：AT+CGATT?
+		(3)、如果入网成功，下一步会自动查看信号强度。
+				命令：AT+CSQ
+		(4)、查看信号质量没问题后，开始创建TCP Socket。
+				命令：AT+NSOCR=STREAM,6,56000,1
+		(5)、连接大白自己搭建的TCP服务器。
+				命令：AT+NSOCO=1,123.206.108.227,9099
+		(6)、发送TCP数据。  			
+				命令：AT+NSOSD=1,9,4461426169494F5400  ("DaBaiIOT"字符串的十六进制显示为：4461426169494F5400)
+		(7)、读取发送的数据。
+				命令：AT+NSORF=1,9
+		(8)、关闭TCP连接。
+			  命令：AT+NSOCL=1
+
+
 	后续还会推出基于coap协议的网络连接，用于连接IOT平台。
 	
 
@@ -176,14 +194,14 @@ int main(void)
       break;
     case NB_INIT:
       {
-        printf("\r\n<----BC95\28 Init---->\r\n");
+        printf("\r\n<----BC28 Init---->\r\n");
         NBModule_Init(&nb_config);
         APP_STATE = NB_END;
       }
       break;
     case NB_SIGN:
       {
-         printf("\r\n<----BC95\28 get signal---->\r\n");
+         printf("\r\n<----BC28 get signal---->\r\n");
          NBModule_Sign(&nb_config);
          APP_STATE = NB_END;
       }
@@ -204,7 +222,7 @@ int main(void)
       break;
     case NB_TCP_CL:
       {
-        printf("\r\n<----Close udp ---->\r\n");
+        printf("\r\n<----Close tcp ---->\r\n");
         NBModule_CloseTCP(&nb_config);
         APP_STATE = NB_END;
       }

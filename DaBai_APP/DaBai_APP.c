@@ -136,6 +136,7 @@ void KeyTask(void)
 				{
 					case KEY1:
 					{ 
+						printf("key1 pressed\r\n");
 						APP_STATE = NB_INIT;
 						if(g_power_off_flag == 1)
 							POWER_OFF;	
@@ -143,13 +144,13 @@ void KeyTask(void)
 					case KEY2:
 					{					
 						printf("key2 pressed\r\n");
-						APP_STATE = NB_SIGN;
+						//APP_STATE = NB_SIGN;
 					}break;
 
 					case KEY3:
 					{
 						printf("key3 pressed\r\n");
-						APP_STATE = NB_TCP_CR;//NB_TCP_ST;
+						//APP_STATE = NB_TCP_CR;//NB_TCP_ST;
 					}break;
 					
 					default:
