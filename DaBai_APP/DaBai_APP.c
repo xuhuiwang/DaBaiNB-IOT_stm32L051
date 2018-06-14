@@ -35,7 +35,7 @@ uint16_t g_BeepFreq = 0;
 uint8_t g_BatVoltage = 0;
 uint8_t g_BatVoltageLow = 0;//电量低于10%标志位
 uint8_t m_fullBatFlag = 0;
-uint8_t m_fullBatHint = 0;
+uint8_t m_fullBatHintCnt = 0;
 
 volatile NB_STATE_e  APP_STATE= NB_NONE;
 
@@ -50,14 +50,14 @@ return : none
 
 *************************************/
 
-void BeepToggle(void)
+void BeepToggle(uint16_t beepFrequency)
 {
 	static uint8_t m_lock = 0;
 	
 	if(m_lock == 0)
 	{
 		m_lock = 1;
-		g_BeepFreq = 1000;//1KHz
+		g_BeepFreq = beepFrequency;//1KHz
 	}
 	else if(m_lock == 1)
 	{
@@ -111,7 +111,7 @@ void KeyTask(void)
 						g_power_off_flag = 1;
 						PowerOffGpioConfig();
 						if(m_key_counter[KEY1] < 130)
-							g_BeepFreq = 2000;
+							g_BeepFreq = BEEP_FREQ_2000Hz;
 					}
 				}break;
 				case KEY2:
@@ -206,7 +206,7 @@ void ChargeTask(void)
 			g_USB_insert = NO;
 			g_chargeing_flag = NO;
 			m_fullBatFlag = 0;
-			m_fullBatHint = 0;
+			m_fullBatHintCnt = 0;
 		}
 	}
 
@@ -214,7 +214,7 @@ void ChargeTask(void)
 	{
 		if(g_chargeing_flag == YES)//电池在充电
 		{		
-			if(m_fullBatTimeCnt < 5000)//15分钟
+			if(m_fullBatTimeCnt < 900000)//15分钟
 			{
 				HAL_GPIO_TogglePin(GPIOB,CHG_LED5_PIN);//在充电时1s闪烁一次
 			}	
@@ -229,10 +229,10 @@ void ChargeTask(void)
 		{
 			CHG_LED5_ON;//充满电，一直亮
 
-			if(m_fullBatHint <  10)//充满电蜂鸣器鸣响5次提示
+			if(m_fullBatHintCnt <  10)//充满电蜂鸣器鸣响5次提示
 			{	
-				m_fullBatHint++;
-				BeepToggle();
+				m_fullBatHintCnt++;
+				BeepToggle(BEEP_FREQ_1000Hz);
 			}
 		}
 	}
@@ -277,7 +277,7 @@ void BatManageTask(void)
 		start_tick = HAL_GetTick();
 		while((HAL_GetTick()- start_tick) <1000)
 		{
-			g_BeepFreq = 2000;
+			g_BeepFreq = BEEP_FREQ_2000Hz;
 			SetBeepFreq(g_BeepFreq);
 		}
 			POWER_OFF;
@@ -288,9 +288,9 @@ void DaBaiSensorTask(void)
 {
 	
 	g_lightValue = getLightValue();
-	if(g_lightValue > 700 || g_Sht20Temp > 31 || g_Sht20RH > 70)
+	if(g_lightValue > 700 || g_Sht20Temp > 31 || g_Sht20RH > 70)//传感器数值超出设定的阈值
 	{
-		g_BeepFreq = 1500;	
+		g_BeepFreq = BEEP_FREQ_1500Hz;	
 	}
 	g_Sht20Temp = SHT20_Convert(SHT20_ReadTemp(),1);
 	g_Sht20RH   = SHT20_Convert(SHT20_ReadRH(),0);
@@ -324,7 +324,7 @@ void DaBai_100msTask(void)
 	//HAL_GPIO_TogglePin(GPIOB,LED1_PIN);
 	if(g_BatVoltageLow == 1)
 	{
-		BeepToggle();
+		BeepToggle(BEEP_FREQ_1000Hz);
 		HAL_GPIO_TogglePin(GPIOB,CHG_LED5_PIN);
 	}
 }
@@ -341,9 +341,9 @@ return : none
 
 void DaBai_500msTask(void)
 {
-	HAL_GPIO_TogglePin(GPIOB,LED4_PIN);
+	HAL_GPIO_TogglePin(GPIOB,LED1_PIN);
 	DaBaiSensorTask();
-	BatManageTask();
+	BatManageTask();//电池管理任务，切勿关闭此函数，否则电池不易管理，无法查看电池状态
 }
 
 /*************************************
@@ -380,7 +380,7 @@ int  NB_MsgreportCb(msg_types_t types,int len,char* msg)
       printf("\r\nINIT=%s\r\n",msg);
       if(*msg == 'S')
       {
-        LED1_ON;
+        LED2_ON;
         APP_STATE = NB_SIGN;
       }
     }

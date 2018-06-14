@@ -76,6 +76,12 @@ typedef enum
   NB_END
 }NB_STATE_e;
 
+#define BEEP_FREQ_1000Hz  1000
+#define BEEP_FREQ_1500Hz  1500
+#define BEEP_FREQ_2000Hz  2000
+#define BEEP_FREQ_2500Hz  2500
+
+
 extern volatile NB_STATE_e  APP_STATE;
 
 extern volatile Yes_No_Status g_USB_insert;
