@@ -28,17 +28,43 @@ volatile Yes_No_Status g_chargeing_flag = NO;
 uint32_t m_fullBatTimeCnt = 0;//记录充电时达到100%以上的时间
 
 uint8_t  g_power_off_flag = 0;
+
+uint8_t g_BatVoltage = 0;
 uint16_t g_lightValue = 0;
 float    g_Sht20Temp = 0;
 float    g_Sht20RH = 0;
 uint16_t g_BeepFreq = 0;
-uint8_t g_BatVoltage = 0;
+float    g_longitude = 0;//经度
+float    g_latitude = 0;//纬度
+
+
 uint8_t g_BatVoltageLow = 0;//电量低于10%标志位
 uint8_t m_fullBatFlag = 0;
 uint8_t m_fullBatHintCnt = 0;
+uint32_t m_coapSendTimes = 0;
 
 volatile NB_STATE_e  APP_STATE= NB_NONE;
 
+
+void Fill_u16_To_u8(uint16_t x, char* h, char* l)
+{
+	*h = (char)(x >> 8);
+	*l = (char)(x >> 0);
+}
+
+void Fill_int16_To_int8(int16_t x, char* h, char* l)
+{
+	*h = (char)(x >> 8);
+	*l = (char)(x >> 0);
+}
+
+void Fill_u32_To_u8(uint32_t x, char* hh, char* hl, char* lh, char* ll)
+{
+	*hh = (char)(x >> 24);
+	*hl = (char)(x >> 16);
+	*lh = (char)(x >> 8);
+	*ll = (char)(x >> 0);
+}
 
 /*************************************
 fn : BeepToggle
@@ -503,7 +529,8 @@ int  NB_MsgreportCb(msg_types_t types,int len,char* msg)
     break;
   case MSG_COAP_SEND:
     {
-      printf("\r\nCOAP_SENT = %s\r\n",msg);
+			m_coapSendTimes++;
+      printf("\r\nCOAP_SENT = %s ,times = %d\r\n",msg,m_coapSendTimes);
     }
     break;
     

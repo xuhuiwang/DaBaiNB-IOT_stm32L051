@@ -121,7 +121,7 @@ uint16_t g_TaskTime100ms = 0;
 uint16_t g_TaskTime500ms = 0;
 uint16_t g_TaskTime1000ms = 0;
 uint32_t g_TaskTime60s  = 0;
-char userPacket[25]= {0};
+char userPacket[40]= {0};
 
 /**
   * @brief  Main program.
@@ -266,8 +266,34 @@ int main(void)
       break;
     case NB_CoAP_ST:
       {
-				sprintf(userPacket,"%02X,%3d,%4d,%.1f,%.1f",0X5A,g_BatVoltage,g_lightValue,g_Sht20Temp,g_Sht20RH);//
-        bc95_coapSendMsg(&nb_config,sizeof(userPacket),userPacket);
+				uint8_t  m_batVol;
+				int16_t m_temp,m_RH;
+				uint16_t m_light;
+				uint32_t m_longitude,m_latitude;
+				
+				m_batVol = g_BatVoltage;
+				m_temp = (int16_t)g_Sht20Temp;
+				m_RH   = (int16_t)g_Sht20RH;
+				m_light = g_lightValue;
+				m_longitude = (uint32_t)g_longitude*1000000;
+				m_latitude  = (uint32_t)g_latitude*1000000; 
+				
+//				m_batVol = 1;
+//				m_temp = -2;
+//				m_RH   = 0x03;
+//				m_light = 0x04;
+//				m_longitude = 0x05;
+//				m_latitude  = 0x06;
+				
+				userPacket[0] = m_batVol;
+				Fill_int16_To_int8(m_temp,&userPacket[1],&userPacket[2]);
+				Fill_int16_To_int8(m_RH,&userPacket[3],&userPacket[4]);
+				Fill_u16_To_u8(m_light,&userPacket[5],&userPacket[6]);
+				Fill_u32_To_u8(m_longitude,&userPacket[7],&userPacket[8],&userPacket[9],&userPacket[10]);
+				Fill_u32_To_u8(m_latitude,&userPacket[11],&userPacket[12],&userPacket[13],&userPacket[14]);		
+				userPacket[15] = 	g_USB_insert;
+			
+				bc95_coapSendMsg(&nb_config,sizeof(userPacket),userPacket);
         APP_STATE = NB_END;
       }
       break;

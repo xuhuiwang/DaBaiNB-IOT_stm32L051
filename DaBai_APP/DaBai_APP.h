@@ -97,6 +97,13 @@ extern uint16_t g_BeepFreq;
 extern uint16_t g_lightValue;
 extern float    g_Sht20Temp;
 extern float    g_Sht20RH;
+extern float g_longitude;//¾­¶È
+extern float g_latitude;//Î³¶È
+
+
+void Fill_u16_To_u8(uint16_t x, char* h, char* l);
+void Fill_int16_To_int8(int16_t x, char* h, char* l);
+void Fill_u32_To_u8(uint32_t x, char* hh, char* hl, char* lh, char* ll);
 
 void DaBai_10msTask(void);
 void DaBai_100msTask(void);

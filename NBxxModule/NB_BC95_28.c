@@ -2399,3 +2399,8 @@ uint16_t NB_HexStrToNum(char* str)
   
   return (i >> 1);
 }
+
+
+
+
+
