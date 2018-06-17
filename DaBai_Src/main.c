@@ -29,7 +29,7 @@
 		放电：放电的时候 
 						 电池电量 >= 10% ： LED5熄灭
 			 7% <= 电池电量 < 10%  ： LED5以5Hz频率闪烁，并且蜂鸣器以5Hz频率报警
-						 电池电量 < 7%   ： 蜂鸣器响1s后自动关机
+						 电池电量 < 7%   ： 蜂鸣器高频响2s后自动关机
 
 //////////////////////////////////////////////////////
 4、传感器：
@@ -246,6 +246,25 @@ int main(void)
       {
         //do nothing
         APP_STATE = NB_END; 
+      }
+      break;
+			 case NB_CoAP_SEVER:
+      {
+        printf("\r\n<---- CoAP Server set ---->\r\n");
+        NBModule_CoAPServer(&nb_config,1,NULL);
+        APP_STATE = NB_END;
+      }
+      break;
+    case NB_CoAP_ST:
+      {
+        char* userPacket = "DaBaiCOAP";
+        bc95_coapSendMsg(&nb_config,sizeof("DaBaiCOAP"),userPacket);
+        APP_STATE = NB_END;
+      }
+      break;
+    case NB_CoAP_RE:
+      {
+        
       }
       break;
     default:

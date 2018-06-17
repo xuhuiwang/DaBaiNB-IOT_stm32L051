@@ -144,6 +144,7 @@ void KeyTask(void)
 					case KEY2:
 					{					
 						printf("key2 pressed\r\n");
+						APP_STATE = NB_CoAP_SEVER;
 						//APP_STATE = NB_SIGN;
 					}break;
 
@@ -275,7 +276,7 @@ void BatManageTask(void)
 	{
 		g_power_off_flag = 1;
 		start_tick = HAL_GetTick();
-		while((HAL_GetTick()- start_tick) <1000)
+		while((HAL_GetTick()- start_tick) <2000)
 		{
 			g_BeepFreq = BEEP_FREQ_2000Hz;
 			SetBeepFreq(g_BeepFreq);
@@ -288,7 +289,7 @@ void DaBaiSensorTask(void)
 {
 	
 	g_lightValue = getLightValue();
-	if(g_lightValue > 700 || g_Sht20Temp > 31 || g_Sht20RH > 70)//传感器数值超出设定的阈值
+	if(g_lightValue > 700 || g_Sht20Temp > 40 || g_Sht20RH > 80)//传感器数值超出设定的阈值
 	{
 		g_BeepFreq = BEEP_FREQ_1500Hz;	
 	}
@@ -377,7 +378,7 @@ int  NB_MsgreportCb(msg_types_t types,int len,char* msg)
   {
   case MSG_INIT:
     {
-      printf("\r\nINIT=%s\r\n",msg);
+      printf("\r\nINIT = %s\r\n",msg);
       if(*msg == 'S')
       {
         LED2_ON;
@@ -387,12 +388,12 @@ int  NB_MsgreportCb(msg_types_t types,int len,char* msg)
     break;
   case MSG_IMSI:
     {
-      printf("\r\nIMSI=%s\r\n",msg);
+      printf("\r\nIMSI = %s\r\n",msg);
     }
     break;
   case MSG_REG:
     {
-			printf("\r\nNET=%s\r\n",(*msg) == 1 ?"ON":"0FF");
+			printf("\r\nNET = %s\r\n",(*msg) == 1 ?"ON":"0FF");
     }
     break;
   case MSG_SIGN:
@@ -403,98 +404,99 @@ int  NB_MsgreportCb(msg_types_t types,int len,char* msg)
     break;
   case MSG_MODULE_INFO:
     {
-      printf("\r\nMinfo=%s\r\n",msg);
+      printf("\r\nMinfo = %s\r\n",msg);
     }
     break;
   case MSG_MID:
     {
-      printf("\r\nMID=%s\r\n",msg);
+      printf("\r\nMID = %s\r\n",msg);
     }
     break;
   case MSG_MMODEL:
     {
-      printf("\r\nModel=%s\r\n",msg);
+      printf("\r\nModel = %s\r\n",msg);
     }
     break;
   case MSG_MREV:
     {
-      printf("\r\nREV=%s\r\n",msg);
+      printf("\r\nREV = %s\r\n",msg);
     }
     break;
   case MSG_BAND:
     {
-      printf("\r\nFreq=%s\r\n",msg);
+      printf("\r\nFreq = %s\r\n",msg);
     }
     break;
   case MSG_IMEI:
     {
-      printf("\r\nIMEI=%s\r\n",msg);
+      printf("\r\nIMEI = %s\r\n",msg);
     }
     break;
   case MSG_UDP_CREATE:
     {
-      printf("\r\nUDP_CR=%s\r\n",msg);
+      printf("\r\nUDP_CR = %s\r\n",msg);
     }
     break;
   case MSG_UDP_CLOSE:
     {
-      printf("\r\nUDP_CL=%s\r\n",msg);
+      printf("\r\nUDP_CL = %s\r\n",msg);
     }
     break;
   case MSG_UDP_SEND:
     {
-      printf("\r\nUDP_SEND=%s\r\n",msg);
+      printf("\r\nUDP_SEND = %s\r\n",msg);
     }
     break;
   case MSG_UDP_RECE:
     {
-      printf("\r\nUDP_RECE=%s\r\n",msg);
+      printf("\r\nUDP_RECE = %s\r\n",msg);
     }
     break;
 	case MSG_TCP_CREATE:
     {
-      printf("\r\nTCP_CR=%s\r\n",msg);
+      printf("\r\nTCP_CR = %s\r\n",msg);
 			APP_STATE = NB_TCP_CNT;
     }
     break;
   case MSG_TCP_CLOSE:
     {
-      printf("\r\nTCP_CL=%s\r\n",msg);
+      printf("\r\nTCP_CL = %s\r\n",msg);
     }
     break;
 		
 	case MSG_TCP_CONNECT:
     {
-      printf("\r\nTCP_CONNECT=%s\r\n",msg);
+      printf("\r\nTCP_CONNECT = %s\r\n",msg);
 			APP_STATE = NB_TCP_ST;
     }
     break;	
 		
   case MSG_TCP_SEND:
     {
-      printf("\r\nTCP_SEND=%s\r\n",msg);
+      printf("\r\nTCP_SEND = %s\r\n",msg);
     }
     break;
   case MSG_TCP_RECE:
     {
-      printf("\r\nTCP_RECE=%s\r\n",msg);
+      printf("\r\nTCP_RECE = %s\r\n",msg);
 			APP_STATE = NB_TCP_CL;
     }
     break;
   case MSG_COAP:
     {
-      printf("\r\nCOAP=%s\r\n",msg);
+      printf("\r\nCOAP = %s\r\n",msg);
+			APP_STATE = NB_CoAP_ST;
     }
     break;
   case MSG_COAP_SEND:
     {
-      printf("\r\nCOAP_SENT=%s\r\n",msg);
+      printf("\r\nCOAP_SENT = %s\r\n",msg);
     }
     break;
     
   case MSG_COAP_RECE:
     {
-      printf("\r\nCOAP_RECE=%s\r\n",msg);
+      printf("\r\nCOAP_RECE = %s\r\n",msg);
     }
     break;
   default :

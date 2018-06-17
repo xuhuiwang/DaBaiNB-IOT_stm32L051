@@ -206,15 +206,20 @@ const char* AT_CMGC     = "AT+CMGC";
 const char* AT_CSODCP   = "AT+CSODCP";
 const char* AT_CRTDCP   = "AT+CRTDCP";
 */
-const char* AT_NMGS     = "AT+NMGS";
-const char* AT_NMGR     = "AT+NMGR";
-const char* AT_NNMI     = "AT+NNMI";
-const char* AT_NSMI     = "AT+NSMI";
-const char* AT_NQMGR    = "AT+NQMGR";
-const char* AT_NQMGS    = "AT+NQMGS";
-const char* AT_NMSTATUS = "AT+NMSTATUS";
-const char* AT_NRB      = "AT+NRB";
-const char* AT_NCDP     = "AT+NCDP";
+
+//Huawei's IoT Platform Commands
+const char* AT_NMGS     		= "AT+NMGS";//send a message
+const char* AT_NMGR     		= "AT+NMGR";//get a message
+const char* AT_NNMI     		= "AT+NNMI";//new message indications
+const char* AT_NSMI    		 	= "AT+NSMI";//send message indications
+const char* AT_NQMGR    		= "AT+NQMGR";//query the status of message received
+const char* AT_NQMGS   		  = "AT+NQMGS";//query the status of message sent
+const char* AT_NMSTATUS 		= "AT+NMSTATUS";//message registration status
+const char* AT_NRB      		= "AT+NRB";
+const char* AT_NCDP     		= "AT+NCDP";//Configure and query CDP server settings
+const char* AT_QLWULDATA   	= "AT+QLWULDATA";//send data
+const char* AT_QLWULDATAEX 	= "AT+QLWULDATAEX";//send CON/NON message
+const char* AT_QLWULDATASTATUS 	= "AT+QLWULDATASTATUS";//query CON messages sent status
 
 const char* AT_NUESTATS = "AT+NUESTATS";
 
@@ -251,11 +256,11 @@ const char*  AT_NTSETID      = "AT+NTSETID";
 
 #define CMD_OK_RES              "OK"
 
-#define REMOTE_SERVER_IP        "123.206.108.227"
-#define REMOTE_SERVER_PORT      "9099"
+#define REMOTE_SERVER_IP        "123.206.108.227"//大白的测试服务器IP地址
+#define REMOTE_SERVER_PORT      "9099"//大白的测试服务器端口
 
 
-#define REMOTE_COAP_INFO        "115.29.240.46,5683"
+#define REMOTE_COAP_INFO        "180.101.147.115,5683"//华为的IOT平台的IP地址
 
 #define LOCAL_UDP_SET           "DGRAM,17,10000,1"
 
@@ -1031,7 +1036,7 @@ uint8_t bc95_AsyncNotification(char* buf, uint16_t* len)
     //isAsync =TRUE;
     nbset_event(NB_COAP_RE_EVENT);  
   }
-  
+
   return isAsync;
 }
 //******************************************************************************
@@ -1646,7 +1651,7 @@ extern int bc95_coapServer(NB_Handle handle,Bool isSet,char* coap)
   {
     cmd_param_init(&g_at_cmd,AT_NCDP,"?",CMD_READ);
   }
-  //更改NBiot操作进程，进入 UDP READ状态
+  //更改NBiot操作进程，进入PROCESS_COAP状态
   g_nb_state.state = PROCESS_COAP;
   g_nb_state.sub_state = 1;
   
@@ -1723,13 +1728,14 @@ int bc95_coapSendMsg(NB_Handle handle,int len,char*msg)
   
   for(uint16_t i = 0 ; i < str_len ; i++)
   {
-    sprintf(&buf[msg_len + (i << 1)],"%02X",(uint8)msg[i]);
+    sprintf(&buf[msg_len + (i << 1)],"%02X,%s",(uint8)msg[i],"0X0101");
   }
   
-  cmd_param_init(&g_at_cmd,AT_NMGS,buf,CMD_SET);
+  //cmd_param_init(&g_at_cmd,AT_NMGS,buf,CMD_SET);
+	cmd_param_init(&g_at_cmd,AT_QLWULDATAEX,buf,CMD_SET);
   g_at_cmd.max_timeout = 2000;
   
-  //更改NBiot操作进程，进入Close UDP状态
+  //更改NBiot操作进程，进入PROCESS_COAP_ST状态
   g_nb_state.state = PROCESS_COAP_ST;
   g_nb_state.sub_state = 1;
   
@@ -1967,7 +1973,7 @@ void nbsend_msg_app(NB_Handle handle, char**buf,Bool isOk)
   //出错，则上报此流程执行失败
   if(isOk == FALSE)
   {
-    handle->AppReceCB((msg_types_t)g_nb_state.state,1,"F");
+    handle->AppReceCB((msg_types_t)g_nb_state.state,1,"FALSE");
     return;
   }
   
@@ -2012,7 +2018,7 @@ void nbsend_msg_app(NB_Handle handle, char**buf,Bool isOk)
     case SUB_CGATT_QUERY:
       break;
     case SUB_END:
-      handle->AppReceCB((msg_types_t)PROCESS_INIT,1,"S");
+      handle->AppReceCB((msg_types_t)PROCESS_INIT,1,"SUCCESS");
       break;
     }
   }
@@ -2075,7 +2081,7 @@ void nbsend_msg_app(NB_Handle handle, char**buf,Bool isOk)
 
     case SUB_END:
       {
-        handle->AppReceCB((msg_types_t)PROCESS_MODULE_INFO,1,"S");
+        handle->AppReceCB((msg_types_t)PROCESS_MODULE_INFO,1,"SUCCESS");
       }
       break;
     }
@@ -2104,7 +2110,7 @@ void nbsend_msg_app(NB_Handle handle, char**buf,Bool isOk)
         
         if(g_nb_state.sub_state == 1)
         {
-          handle->AppReceCB((msg_types_t)PROCESS_UDP_CR,1,"S");
+          handle->AppReceCB((msg_types_t)PROCESS_UDP_CR,1,"SUCCESS");
         }
       }
       break;
@@ -2115,7 +2121,7 @@ void nbsend_msg_app(NB_Handle handle, char**buf,Bool isOk)
       break;
     case SUB_END:
       {
-        handle->AppReceCB((msg_types_t)PROCESS_UDP_CR,1,"S");
+        handle->AppReceCB((msg_types_t)PROCESS_UDP_CR,1,"SUCCESS");
       }
       break;
     }
@@ -2132,7 +2138,7 @@ void nbsend_msg_app(NB_Handle handle, char**buf,Bool isOk)
       break;
     case SUB_END:
       {
-        handle->AppReceCB((msg_types_t)PROCESS_UDP_CL,1,"S");
+        handle->AppReceCB((msg_types_t)PROCESS_UDP_CL,1,"SUCCESS");
       }
       break;
     } 
@@ -2144,7 +2150,7 @@ void nbsend_msg_app(NB_Handle handle, char**buf,Bool isOk)
     {
     case SUB_UDP_ST:
       {
-        handle->AppReceCB((msg_types_t)PROCESS_UDP_ST,1,"S");
+        handle->AppReceCB((msg_types_t)PROCESS_UDP_ST,1,"SUCCESS");
       }
       break;
     }
@@ -2168,7 +2174,7 @@ void nbsend_msg_app(NB_Handle handle, char**buf,Bool isOk)
       }
       if(index != 6)
       {
-        handle->AppReceCB((msg_types_t)PROCESS_UDP_RE,1,"F");
+        handle->AppReceCB((msg_types_t)PROCESS_UDP_RE,1,"FALSE");
         return;
       }
       
@@ -2189,7 +2195,7 @@ void nbsend_msg_app(NB_Handle handle, char**buf,Bool isOk)
         
         if(g_nb_state.sub_state == 1)
         {
-          handle->AppReceCB((msg_types_t)PROCESS_TCP_CR,1,"S");
+          handle->AppReceCB((msg_types_t)PROCESS_TCP_CR,1,"SUCCESS");
         }
       }
       break;
@@ -2200,7 +2206,7 @@ void nbsend_msg_app(NB_Handle handle, char**buf,Bool isOk)
       break;
     case SUB_END:
       {
-        handle->AppReceCB((msg_types_t)PROCESS_TCP_CR,1,"S");
+        handle->AppReceCB((msg_types_t)PROCESS_TCP_CR,1,"SUCCESS");
       }
       break;
     }
@@ -2217,7 +2223,7 @@ void nbsend_msg_app(NB_Handle handle, char**buf,Bool isOk)
       break;
     case SUB_END:
       {
-        handle->AppReceCB((msg_types_t)PROCESS_TCP_CL,1,"S");
+        handle->AppReceCB((msg_types_t)PROCESS_TCP_CL,1,"SUCCESS");
       }
       break;
     } 
@@ -2229,7 +2235,7 @@ void nbsend_msg_app(NB_Handle handle, char**buf,Bool isOk)
     {
     case SUB_TCP_CNT:
       {
-        handle->AppReceCB((msg_types_t)PROCESS_TCP_CNT,1,"S");
+        handle->AppReceCB((msg_types_t)PROCESS_TCP_CNT,1,"SUCCESS");
       }
       break;
     }
@@ -2240,7 +2246,7 @@ void nbsend_msg_app(NB_Handle handle, char**buf,Bool isOk)
     {
     case SUB_TCP_ST:
       {
-        handle->AppReceCB((msg_types_t)PROCESS_TCP_ST,1,"S");
+        handle->AppReceCB((msg_types_t)PROCESS_TCP_ST,1,"SUCCESS");
       }
       break;
     }
@@ -2264,7 +2270,7 @@ void nbsend_msg_app(NB_Handle handle, char**buf,Bool isOk)
       }
       if(index != 6)
       {
-        handle->AppReceCB((msg_types_t)PROCESS_TCP_RE,1,"F");
+        handle->AppReceCB((msg_types_t)PROCESS_TCP_RE,1,"FALSE");
         return;
       }
       
@@ -2282,7 +2288,7 @@ void nbsend_msg_app(NB_Handle handle, char**buf,Bool isOk)
       char* tmp_buf = NULL;
       if(strstr(buf[0],"OK"))
       {
-        tmp_buf = "S";
+        tmp_buf = "SUCCESS";
       }
       else
       {
@@ -2300,7 +2306,7 @@ void nbsend_msg_app(NB_Handle handle, char**buf,Bool isOk)
   {
     if(g_nb_state.sub_state == 1)
     {
-      handle->AppReceCB((msg_types_t)PROCESS_COAP_ST,1,"S");
+      handle->AppReceCB((msg_types_t)PROCESS_COAP_ST,1,"SUCCESS");
     }
   }
   else if(g_nb_state.state == PROCESS_COAP_RE)
