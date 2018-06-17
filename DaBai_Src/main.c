@@ -33,9 +33,9 @@
 
 //////////////////////////////////////////////////////
 4、传感器：
-	光敏：当g_lightValue > 700时（光线越暗g_lightValue数值越大），蜂鸣器响
-	温度：当温度值g_Sht20Temp > 31摄氏度时（g_Sht20Temp的数值就是表示实际的温度），蜂鸣器响
-	湿度：当湿度值g_Sht20RH > 70时（湿度越大g_Sht20RH的数值就越大），蜂鸣器响
+	光敏：当g_lightValue > LIGHT_THRESHOLD 时（光线越暗g_lightValue数值越大），蜂鸣器1Hz的频率响一次
+	温度：当温度值g_Sht20Temp > TEMP_THRESHOLD 摄氏度时（g_Sht20Temp的数值就是表示实际的温度），蜂鸣器1Hz的频率响一次
+	湿度：当湿度值g_Sht20RH > RH_THRESHOLD 时（湿度越大g_Sht20RH的数值就越大），蜂鸣器1Hz的频率响一次
 
 //////////////////////////////////////////////////////
 5、按键和灯接口：
@@ -104,6 +104,8 @@
 #define TASKTIME_100MS  	100
 #define TASKTIME_500MS  	500
 #define TASKTIME_1000MS   1000
+#define TASKTIME_60S      60000
+
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
@@ -118,7 +120,8 @@ uint16_t g_TaskTime10ms = 0;
 uint16_t g_TaskTime100ms = 0;
 uint16_t g_TaskTime500ms = 0;
 uint16_t g_TaskTime1000ms = 0;
-
+uint32_t g_TaskTime60s  = 0;
+char userPacket[25]= {0};
 
 /**
   * @brief  Main program.
@@ -183,6 +186,12 @@ int main(void)
 			g_TaskTime1000ms = 0;
 			DaBai_1000msTask();
 		}
+		if(g_TaskTime60s > TASKTIME_60S)
+		{
+			g_TaskTime60s = 0;
+			DaBai_60sTask();
+		}
+		
 		switch(APP_STATE)
     {
     case NB_NONE:
@@ -257,8 +266,8 @@ int main(void)
       break;
     case NB_CoAP_ST:
       {
-        char* userPacket = "DaBaiCOAP";
-        bc95_coapSendMsg(&nb_config,sizeof("DaBaiCOAP"),userPacket);
+				sprintf(userPacket,"%02X,%3d,%4d,%.1f,%.1f",0X5A,g_BatVoltage,g_lightValue,g_Sht20Temp,g_Sht20RH);//
+        bc95_coapSendMsg(&nb_config,sizeof(userPacket),userPacket);
         APP_STATE = NB_END;
       }
       break;

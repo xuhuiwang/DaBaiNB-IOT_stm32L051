@@ -81,6 +81,9 @@ typedef enum
 #define BEEP_FREQ_2000Hz  2000
 #define BEEP_FREQ_2500Hz  2500
 
+#define LIGHT_THRESHOLD   2000
+#define TEMP_THRESHOLD    40
+#define RH_THRESHOLD   		80
 
 extern volatile NB_STATE_e  APP_STATE;
 
@@ -91,10 +94,15 @@ extern uint32_t m_fullBatTimeCnt;//记录充电时达到100%以上的时间
 extern uint8_t g_BatVoltage;
 extern uint16_t g_BeepFreq;
 
+extern uint16_t g_lightValue;
+extern float    g_Sht20Temp;
+extern float    g_Sht20RH;
+
 void DaBai_10msTask(void);
 void DaBai_100msTask(void);
 void DaBai_500msTask(void);
 void DaBai_1000msTask(void);
+void DaBai_60sTask(void);
 #ifdef __cplusplus
 }
 #endif

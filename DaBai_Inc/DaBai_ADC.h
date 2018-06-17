@@ -25,7 +25,7 @@
 */
 #define FULL_VOLTAGE  		4.2
 #define EMPTY_VOLTAGE		3.0
-#define FULL_4V2_ADC_VALUE  3733 //实测3733为4.14V，防止有的电池电压充不高，APP显示电量一直充不满
+#define FULL_4V2_ADC_VALUE  3720 //实测3720为4.1V，防止有的电池电压充不高，APP显示电量一直充不满
  //减去30是为了让 (采集到的电池电压 - FULL_3V3_ADC_VALUE) >0
  //当电压低于3.3V时，ADC的值始终为2988左右
 #define FULL_3V3_ADC_VALUE  (2988-30)

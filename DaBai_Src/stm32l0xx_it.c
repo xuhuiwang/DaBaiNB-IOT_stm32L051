@@ -17,8 +17,9 @@
 /* External variables --------------------------------------------------------*/
 extern uint16_t g_TaskTime10ms;
 extern uint16_t g_TaskTime100ms;
-extern uint16_t g_TaskTime1000ms;
 extern uint16_t g_TaskTime500ms;
+extern uint16_t g_TaskTime1000ms;
+extern uint16_t g_TaskTime60s;
 extern DMA_HandleTypeDef hdma_lpuart_rx;
 extern DMA_HandleTypeDef hdma_lpuart_tx;
 extern UART_HandleTypeDef hlpuart1;
@@ -103,6 +104,7 @@ void SysTick_Handler(void)
 	g_TaskTime100ms++;
 	g_TaskTime500ms++;
 	g_TaskTime1000ms++;
+	g_TaskTime60s++;
 	if(g_USB_insert == YES)//USB插入
 	{
 		if(g_chargeing_flag == YES)//电池在充电

@@ -153,40 +153,7 @@
           <Name>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0STM32L0xx_64 -FS08000000 -FL010000 -FP0($$Device:STM32L051C8Tx$CMSIS\Flash\STM32L0xx_64.FLM))</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
-      <Breakpoint>
-        <Bp>
-          <Number>0</Number>
-          <Type>0</Type>
-          <LineNumber>1035</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134237048</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\NBxxModule\NB_BC95_28.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\STM32L051C8T6\NBxxModule/NB_BC95_28.c\1035</Expression>
-        </Bp>
-        <Bp>
-          <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>279</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134228880</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\DaBai_Src\DaBai_usart.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\STM32L051C8T6\DaBai_Src/DaBai_usart.c\279</Expression>
-        </Bp>
-      </Breakpoint>
+      <Breakpoint/>
       <WatchWindow1>
         <Ww>
           <count>0</count>
@@ -216,167 +183,167 @@
         <Ww>
           <count>5</count>
           <WinNumber>1</WinNumber>
-          <ItemText>g_lightValue,0x0A</ItemText>
+          <ItemText>gTickDelta,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>6</count>
           <WinNumber>1</WinNumber>
-          <ItemText>g_Sht20Temp,0x0A</ItemText>
+          <ItemText>nb_timeoutCb,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>7</count>
           <WinNumber>1</WinNumber>
-          <ItemText>APP_STATE</ItemText>
+          <ItemText>dmaCfg</ItemText>
         </Ww>
         <Ww>
           <count>8</count>
           <WinNumber>1</WinNumber>
-          <ItemText>gTimeOpenFlag</ItemText>
+          <ItemText>gNBSendBuf</ItemText>
         </Ww>
         <Ww>
           <count>9</count>
           <WinNumber>1</WinNumber>
-          <ItemText>gTickStart,0x0A</ItemText>
+          <ItemText>hlpuart1</ItemText>
         </Ww>
         <Ww>
           <count>10</count>
           <WinNumber>1</WinNumber>
-          <ItemText>gTickDelta,0x0A</ItemText>
+          <ItemText>msgBuf</ItemText>
         </Ww>
         <Ww>
           <count>11</count>
           <WinNumber>1</WinNumber>
-          <ItemText>nb_timeoutCb,0x0A</ItemText>
+          <ItemText>g_event_regTable</ItemText>
         </Ww>
         <Ww>
           <count>12</count>
           <WinNumber>1</WinNumber>
-          <ItemText>dmaCfg</ItemText>
+          <ItemText>gNBReceBuf</ItemText>
         </Ww>
         <Ww>
           <count>13</count>
           <WinNumber>1</WinNumber>
-          <ItemText>gNBSendBuf</ItemText>
+          <ItemText>g_at_cmd</ItemText>
         </Ww>
         <Ww>
           <count>14</count>
           <WinNumber>1</WinNumber>
-          <ItemText>hlpuart1</ItemText>
+          <ItemText>g_nb_state</ItemText>
         </Ww>
         <Ww>
           <count>15</count>
           <WinNumber>1</WinNumber>
-          <ItemText>msgBuf</ItemText>
+          <ItemText>position_addr_start</ItemText>
         </Ww>
         <Ww>
           <count>16</count>
           <WinNumber>1</WinNumber>
-          <ItemText>g_event_regTable</ItemText>
+          <ItemText>g_at_cmd,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>17</count>
           <WinNumber>1</WinNumber>
-          <ItemText>gNBReceBuf</ItemText>
+          <ItemText>msgBuf</ItemText>
         </Ww>
         <Ww>
           <count>18</count>
           <WinNumber>1</WinNumber>
-          <ItemText>g_at_cmd</ItemText>
+          <ItemText>g_bc95_status</ItemText>
         </Ww>
         <Ww>
           <count>19</count>
           <WinNumber>1</WinNumber>
-          <ItemText>g_nb_state</ItemText>
+          <ItemText>gADCxConvertedData,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>20</count>
           <WinNumber>1</WinNumber>
-          <ItemText>position_addr_start</ItemText>
+          <ItemText>g_lightValue,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>21</count>
           <WinNumber>1</WinNumber>
-          <ItemText>g_at_cmd,0x0A</ItemText>
+          <ItemText>gBatVoltage,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>22</count>
           <WinNumber>1</WinNumber>
-          <ItemText>msgBuf</ItemText>
+          <ItemText>g_TaskTime100ms,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>23</count>
           <WinNumber>1</WinNumber>
-          <ItemText>g_bc95_status</ItemText>
+          <ItemText>g_TaskTime1000ms,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>24</count>
           <WinNumber>1</WinNumber>
-          <ItemText>gADCxConvertedData,0x0A</ItemText>
+          <ItemText>g_USB_insert</ItemText>
         </Ww>
         <Ww>
           <count>25</count>
           <WinNumber>1</WinNumber>
-          <ItemText>g_lightValue,0x0A</ItemText>
+          <ItemText>m_chargeState</ItemText>
         </Ww>
         <Ww>
           <count>26</count>
           <WinNumber>1</WinNumber>
-          <ItemText>gBatVoltage,0x0A</ItemText>
+          <ItemText>m_key_counter,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>27</count>
           <WinNumber>1</WinNumber>
-          <ItemText>g_TaskTime100ms,0x0A</ItemText>
+          <ItemText>g_TaskTime10ms,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>28</count>
           <WinNumber>1</WinNumber>
-          <ItemText>g_TaskTime1000ms,0x0A</ItemText>
+          <ItemText>g_lightValue,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>29</count>
           <WinNumber>1</WinNumber>
-          <ItemText>g_USB_insert</ItemText>
+          <ItemText>m_fullBatTimeCnt,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>30</count>
           <WinNumber>1</WinNumber>
-          <ItemText>m_chargeState</ItemText>
+          <ItemText>m_fullBatFlag</ItemText>
         </Ww>
         <Ww>
           <count>31</count>
           <WinNumber>1</WinNumber>
-          <ItemText>m_key_counter,0x0A</ItemText>
+          <ItemText>g_chargeing_flag</ItemText>
         </Ww>
         <Ww>
           <count>32</count>
           <WinNumber>1</WinNumber>
-          <ItemText>g_TaskTime10ms,0x0A</ItemText>
+          <ItemText>g_BatVoltage,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>33</count>
           <WinNumber>1</WinNumber>
-          <ItemText>g_lightValue,0x0A</ItemText>
+          <ItemText>g_Sht20Temp</ItemText>
         </Ww>
         <Ww>
           <count>34</count>
           <WinNumber>1</WinNumber>
-          <ItemText>m_fullBatTimeCnt,0x0A</ItemText>
+          <ItemText>g_Sht20RH</ItemText>
         </Ww>
         <Ww>
           <count>35</count>
           <WinNumber>1</WinNumber>
-          <ItemText>m_fullBatFlag</ItemText>
+          <ItemText>SystemCoreClock,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>36</count>
           <WinNumber>1</WinNumber>
-          <ItemText>g_chargeing_flag</ItemText>
+          <ItemText>msgBuf</ItemText>
         </Ww>
         <Ww>
           <count>37</count>
           <WinNumber>1</WinNumber>
-          <ItemText>g_BatVoltage,0x0A</ItemText>
+          <ItemText>g_lightValue,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>38</count>
@@ -391,12 +358,17 @@
         <Ww>
           <count>40</count>
           <WinNumber>1</WinNumber>
-          <ItemText>SystemCoreClock,0x0A</ItemText>
+          <ItemText>userPacket</ItemText>
         </Ww>
         <Ww>
           <count>41</count>
           <WinNumber>1</WinNumber>
-          <ItemText>msgBuf</ItemText>
+          <ItemText>g_BatVoltage,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>42</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>gADCxConvertedData,0x0A</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

@@ -289,9 +289,10 @@ void DaBaiSensorTask(void)
 {
 	
 	g_lightValue = getLightValue();
-	if(g_lightValue > 700 || g_Sht20Temp > 40 || g_Sht20RH > 80)//传感器数值超出设定的阈值
+	if(g_lightValue > LIGHT_THRESHOLD || g_Sht20Temp > TEMP_THRESHOLD || g_Sht20RH > RH_THRESHOLD)//传感器数值超出设定的阈值
 	{
-		g_BeepFreq = BEEP_FREQ_1500Hz;	
+		//g_BeepFreq = BEEP_FREQ_1500Hz;
+		BeepToggle(BEEP_FREQ_2500Hz);		
 	}
 	g_Sht20Temp = SHT20_Convert(SHT20_ReadTemp(),1);
 	g_Sht20RH   = SHT20_Convert(SHT20_ReadRH(),0);
@@ -362,7 +363,19 @@ void DaBai_1000msTask(void)
 
 }
 
+/*************************************
+fn : DaBai_60sTask
 
+brief : 60s任务
+param : none
+
+return : none
+
+*************************************/
+void DaBai_60sTask(void)
+{
+	APP_STATE = NB_CoAP_ST;
+}
 
 //******************************************************************************
 // fn : NB_MsgreportCb
