@@ -15,11 +15,13 @@
 #include "DaBai_APP.h"
 
 /* External variables --------------------------------------------------------*/
-extern uint16_t g_TaskTime10ms;
-extern uint16_t g_TaskTime100ms;
-extern uint16_t g_TaskTime500ms;
-extern uint16_t g_TaskTime1000ms;
-extern uint16_t g_TaskTime60s;
+extern volatile uint16_t g_TaskTime10ms;
+extern volatile uint16_t g_TaskTime100ms;
+extern volatile uint16_t g_TaskTime500ms;
+extern volatile uint16_t g_TaskTime1000ms;
+extern volatile uint32_t g_TaskTime1min;
+extern volatile uint32_t g_TaskTime10min;
+
 extern DMA_HandleTypeDef hdma_lpuart_rx;
 extern DMA_HandleTypeDef hdma_lpuart_tx;
 extern UART_HandleTypeDef hlpuart1;
@@ -104,7 +106,8 @@ void SysTick_Handler(void)
 	g_TaskTime100ms++;
 	g_TaskTime500ms++;
 	g_TaskTime1000ms++;
-	g_TaskTime60s++;
+	g_TaskTime1min++;
+	g_TaskTime10min++;
 	if(g_USB_insert == YES)//USB插入
 	{
 		if(g_chargeing_flag == YES)//电池在充电

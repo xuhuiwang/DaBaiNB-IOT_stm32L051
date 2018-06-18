@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\STM32L051C8T6.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\STM32L051C8T6.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Mon Jun 18 00:25:18 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Mon Jun 18 08:16:38 2018
 <BR><P>
 <H3>Maximum Stack Usage =        608 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -277,12 +277,12 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[51]"></a>__aeabi_dadd</STRONG> (Thumb, 328 bytes, Stack size 48 bytes, dadd.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = __aeabi_dadd &rArr; _double_epilogue &rArr; _double_round
+<BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = __aeabi_dadd &rArr; _double_epilogue &rArr; __aeabi_llsr
 </UL>
-<BR>[Calls]<UL><LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
-<LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
-<LI><a href="#[52]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_lasr
+<BR>[Calls]<UL><LI><a href="#[52]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_lasr
 <LI><a href="#[49]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsl
+<LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
+<LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
 </UL>
 <BR>[Called By]<UL><LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SHT20_Convert
 <LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_drsub
@@ -298,7 +298,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[57]"></a>__aeabi_dmul</STRONG> (Thumb, 202 bytes, Stack size 72 bytes, dmul.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 128<LI>Call Chain = __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
+<BR><BR>[Stack]<UL><LI>Max Depth = 128<LI>Call Chain = __aeabi_dmul &rArr; _double_epilogue &rArr; __aeabi_llsr
 </UL>
 <BR>[Calls]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
 </UL>
@@ -314,7 +314,7 @@ Global Symbols
 <P><STRONG><a name="[113]"></a>scalbn</STRONG> (Thumb, 0 bytes, Stack size 16 bytes, dscalb.o(.text), UNUSED)
 
 <P><STRONG><a name="[58]"></a>__aeabi_ui2d</STRONG> (Thumb, 24 bytes, Stack size 16 bytes, dfltui.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = __aeabi_ui2d &rArr; _double_epilogue &rArr; _double_round
+<BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = __aeabi_ui2d &rArr; _double_epilogue &rArr; __aeabi_llsr
 </UL>
 <BR>[Calls]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
 </UL>
@@ -341,8 +341,8 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = __aeabi_llsl
 </UL>
 <BR>[Called By]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dadd
-<LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
 <LI><a href="#[47]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
+<LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
 </UL>
 
 <P><STRONG><a name="[114]"></a>_ll_shift_l</STRONG> (Thumb, 0 bytes, Stack size 8 bytes, llshl.o(.text), UNUSED)
@@ -350,8 +350,8 @@ Global Symbols
 <P><STRONG><a name="[48]"></a>__aeabi_llsr</STRONG> (Thumb, 34 bytes, Stack size 8 bytes, llushr.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = __aeabi_llsr
 </UL>
-<BR>[Called By]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
-<LI><a href="#[47]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
+<BR>[Called By]<UL><LI><a href="#[47]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
+<LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
 </UL>
 
 <P><STRONG><a name="[115]"></a>_ll_ushift_r</STRONG> (Thumb, 0 bytes, Stack size 8 bytes, llushr.o(.text), UNUSED)
@@ -393,12 +393,12 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[53]"></a>_double_epilogue</STRONG> (Thumb, 164 bytes, Stack size 48 bytes, depilogue.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = _double_epilogue &rArr; _double_round
+<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = _double_epilogue &rArr; __aeabi_llsr
 </UL>
-<BR>[Calls]<UL><LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
-<LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__ARM_clz
+<BR>[Calls]<UL><LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__ARM_clz
 <LI><a href="#[48]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsr
 <LI><a href="#[49]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsl
+<LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
 </UL>
 <BR>[Called By]<UL><LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_ui2d
 <LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
@@ -431,7 +431,6 @@ Global Symbols
 
 <P><STRONG><a name="[6c]"></a>BeepToggle</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, dabai_app.o(i.BeepToggle))
 <BR><BR>[Called By]<UL><LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DaBai_100msTask
-<LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DaBaiSensorTask
 <LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ChargeTask
 </UL>
 
@@ -460,14 +459,13 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32l051xx.o(RESET)
 </UL>
-<P><STRONG><a name="[6e]"></a>DaBaiSensorTask</STRONG> (Thumb, 66 bytes, Stack size 8 bytes, dabai_app.o(i.DaBaiSensorTask))
-<BR><BR>[Stack]<UL><LI>Max Depth = 152<LI>Call Chain = DaBaiSensorTask &rArr; SHT20_Convert &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
+<P><STRONG><a name="[6e]"></a>DaBaiSensorTask</STRONG> (Thumb, 36 bytes, Stack size 8 bytes, dabai_app.o(i.DaBaiSensorTask))
+<BR><BR>[Stack]<UL><LI>Max Depth = 152<LI>Call Chain = DaBaiSensorTask &rArr; SHT20_Convert &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; __aeabi_llsr
 </UL>
 <BR>[Calls]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getLightValue
 <LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SHT20_ReadTemp
 <LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SHT20_ReadRH
 <LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SHT20_Convert
-<LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BeepToggle
 </UL>
 <BR>[Called By]<UL><LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DaBai_500msTask
 </UL>
@@ -485,6 +483,10 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[1a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
+<P><STRONG><a name="[f9]"></a>DaBai_10MinTask</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, dabai_app.o(i.DaBai_10MinTask))
+<BR><BR>[Called By]<UL><LI><a href="#[1a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+</UL>
+
 <P><STRONG><a name="[74]"></a>DaBai_10msTask</STRONG> (Thumb, 8 bytes, Stack size 8 bytes, dabai_app.o(i.DaBai_10msTask))
 <BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = DaBai_10msTask &rArr; KeyTask &rArr; PowerOffGpioConfig &rArr; HAL_GPIO_Init
 </UL>
@@ -494,17 +496,13 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[76]"></a>DaBai_500msTask</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, dabai_app.o(i.DaBai_500msTask))
-<BR><BR>[Stack]<UL><LI>Max Depth = 160<LI>Call Chain = DaBai_500msTask &rArr; DaBaiSensorTask &rArr; SHT20_Convert &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
+<BR><BR>[Stack]<UL><LI>Max Depth = 160<LI>Call Chain = DaBai_500msTask &rArr; DaBaiSensorTask &rArr; SHT20_Convert &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; __aeabi_llsr
 </UL>
 <BR>[Calls]<UL><LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_TogglePin
 <LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DaBaiSensorTask
 <LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BatManageTask
 </UL>
 <BR>[Called By]<UL><LI><a href="#[1a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-</UL>
-
-<P><STRONG><a name="[f9]"></a>DaBai_60sTask</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, dabai_app.o(i.DaBai_60sTask))
-<BR><BR>[Called By]<UL><LI><a href="#[1a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
 <P><STRONG><a name="[104]"></a>Fill_int16_To_int8</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, dabai_app.o(i.Fill_int16_To_int8))
@@ -1236,7 +1234,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[71]"></a>SHT20_Convert</STRONG> (Thumb, 64 bytes, Stack size 16 bytes, sht20_cfg.o(i.SHT20_Convert))
-<BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = SHT20_Convert &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
+<BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = SHT20_Convert &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; __aeabi_llsr
 </UL>
 <BR>[Calls]<UL><LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_ui2d
 <LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
@@ -1277,7 +1275,7 @@ Global Symbols
 <LI><a href="#[1a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[5]"></a>SysTick_Handler</STRONG> (Thumb, 82 bytes, Stack size 8 bytes, stm32l0xx_it.o(i.SysTick_Handler))
+<P><STRONG><a name="[5]"></a>SysTick_Handler</STRONG> (Thumb, 90 bytes, Stack size 8 bytes, stm32l0xx_it.o(i.SysTick_Handler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = SysTick_Handler
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_IncTick
@@ -1671,7 +1669,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DaBaiSensorTask
 </UL>
 
-<P><STRONG><a name="[1a]"></a>main</STRONG> (Thumb, 534 bytes, Stack size 24 bytes, main.o(i.main))
+<P><STRONG><a name="[1a]"></a>main</STRONG> (Thumb, 546 bytes, Stack size 24 bytes, main.o(i.main))
 <BR><BR>[Stack]<UL><LI>Max Depth = 608<LI>Call Chain = main &rArr; bc95_coapSendMsg &rArr; NB_SendCmd &rArr; cmd_generate &rArr; __2snprintf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NBModule_open
@@ -1692,9 +1690,9 @@ Global Symbols
 <LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Fill_u32_To_u8
 <LI><a href="#[105]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Fill_u16_To_u8
 <LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Fill_int16_To_int8
-<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DaBai_60sTask
 <LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DaBai_500msTask
 <LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DaBai_10msTask
+<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DaBai_10MinTask
 <LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DaBai_100msTask
 <LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DaBai_1000msTask
 <LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2uiz

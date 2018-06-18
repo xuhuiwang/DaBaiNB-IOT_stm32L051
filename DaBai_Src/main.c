@@ -104,8 +104,8 @@
 #define TASKTIME_100MS  	100
 #define TASKTIME_500MS  	500
 #define TASKTIME_1000MS   1000
-#define TASKTIME_60S      60000
-
+#define TASKTIME_1MIN     60000
+#define TASKTIME_10MIN    600000
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
@@ -115,13 +115,15 @@ static GPIO_InitTypeDef  GPIO_InitStruct;
 
 
 uint8_t  readFlag = 0;
-uint32_t 	Delay1msCnt = 0;
-uint16_t g_TaskTime10ms = 0;
-uint16_t g_TaskTime100ms = 0;
-uint16_t g_TaskTime500ms = 0;
-uint16_t g_TaskTime1000ms = 0;
-uint32_t g_TaskTime60s  = 0;
-char userPacket[40]= {0};
+volatile uint32_t 	Delay1msCnt = 0;
+volatile uint16_t g_TaskTime10ms = 0;
+volatile uint16_t g_TaskTime100ms = 0;
+volatile uint16_t g_TaskTime500ms = 0;
+volatile uint16_t g_TaskTime1000ms = 0;
+volatile uint32_t g_TaskTime1min  = 0;
+volatile uint32_t g_TaskTime10min = 0;
+
+char userPacket[30]= {0};
 
 /**
   * @brief  Main program.
@@ -143,8 +145,8 @@ int main(void)
 	MX_LPUART1_UART_Init();
 	
 	NBModule_open(&nb_config);
-  APP_STATE = NB_NONE;
-	
+  //APP_STATE = NB_NONE;
+	APP_STATE = NB_CoAP_SEVER;
 	start_tick = HAL_GetTick();
 	while((HAL_GetTick()- start_tick) <300)
 	{
@@ -186,10 +188,16 @@ int main(void)
 			g_TaskTime1000ms = 0;
 			DaBai_1000msTask();
 		}
-		if(g_TaskTime60s > TASKTIME_60S)
+		if(g_TaskTime1min > TASKTIME_1MIN)
 		{
-			g_TaskTime60s = 0;
-			DaBai_60sTask();
+			g_TaskTime1min = 0;
+			//DaBai_1MinTask();
+		}
+		
+		if(g_TaskTime10min > TASKTIME_10MIN)
+		{
+			g_TaskTime10min = 0;
+			DaBai_10MinTask();
 		}
 		
 		switch(APP_STATE)

@@ -109,7 +109,8 @@ void DaBai_10msTask(void);
 void DaBai_100msTask(void);
 void DaBai_500msTask(void);
 void DaBai_1000msTask(void);
-void DaBai_60sTask(void);
+void DaBai_1MinTask(void);
+void DaBai_10MinTask(void);
 #ifdef __cplusplus
 }
 #endif

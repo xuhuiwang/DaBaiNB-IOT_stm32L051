@@ -241,11 +241,11 @@ void ChargeTask(void)
 	{
 		if(g_chargeing_flag == YES)//电池在充电
 		{		
-			if(m_fullBatTimeCnt < 900000)//15分钟
+			if(m_fullBatTimeCnt < 1200000)//20分钟
 			{
 				HAL_GPIO_TogglePin(GPIOB,CHG_LED5_PIN);//在充电时1s闪烁一次
 			}	
-			else//电池电量达到100%后的15分钟，多充一会，让电量达到最高
+			else//电池电量达到100%后的20分钟，多充一会，让电量达到最高
 			{
 				g_chargeing_flag = NO;
 				m_fullBatFlag = 1;
@@ -318,7 +318,7 @@ void DaBaiSensorTask(void)
 	if(g_lightValue > LIGHT_THRESHOLD || g_Sht20Temp > TEMP_THRESHOLD || g_Sht20RH > RH_THRESHOLD)//传感器数值超出设定的阈值
 	{
 		//g_BeepFreq = BEEP_FREQ_1500Hz;
-		BeepToggle(BEEP_FREQ_2500Hz);		
+		//BeepToggle(BEEP_FREQ_2500Hz);		
 	}
 	g_Sht20Temp = SHT20_Convert(SHT20_ReadTemp(),1);
 	g_Sht20RH   = SHT20_Convert(SHT20_ReadRH(),0);
@@ -390,7 +390,7 @@ void DaBai_1000msTask(void)
 }
 
 /*************************************
-fn : DaBai_60sTask
+fn : DaBai_1MinTask
 
 brief : 60s任务
 param : none
@@ -398,7 +398,21 @@ param : none
 return : none
 
 *************************************/
-void DaBai_60sTask(void)
+void DaBai_1MinTask(void)
+{
+	APP_STATE = NB_CoAP_ST;
+}
+
+/*************************************
+fn : DaBai_10MinTask
+
+brief : 60s任务
+param : none
+
+return : none
+
+*************************************/
+void DaBai_10MinTask(void)
 {
 	APP_STATE = NB_CoAP_ST;
 }
