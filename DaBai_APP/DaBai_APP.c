@@ -13,6 +13,8 @@
 #include "DaBai_ADC.h"
 #include "sht20_cfg.h"
 #include "NB_Board.h"
+#include "DaBai_rtc.h"
+
 
 GPIO_PinState m_key[3] = {GPIO_PIN_RESET,GPIO_PIN_RESET,GPIO_PIN_RESET};
 volatile uint8_t  m_key_flag[3]= {0};
@@ -416,6 +418,11 @@ void DaBai_10MinTask(void)
 {
 	APP_STATE = NB_CoAP_ST;
 }
+
+
+
+
+
 
 //******************************************************************************
 // fn : NB_MsgreportCb

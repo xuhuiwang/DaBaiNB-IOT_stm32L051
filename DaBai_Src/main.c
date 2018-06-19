@@ -53,12 +53,14 @@
 		对BC28模块完全适用，开发者不必担心这个问题
 
 //////////////////////////////////////////////////////
-7、网络连接：
+7、TCP网络连接：
 	本例程提供的是：使用AT指令，让BC28通过TCP协议连接大白的测试服务器，发送数据，
 	服务器收到后返回发送出去的数据。
 	网络传输数据操作步骤：
 	1、BC28核心板插入NB物联网卡，核心板插入STM32板底座
+	
 	*****（注意：不要插反了否则会引起短路，烧坏线路板，请对照我们的图片接插）*****
+	
 	2、插入STM32板的MicroUSB线，电脑打开串口助手，选择这个USB的串口号和波特率（115200bps）,
 	打开此串口，这个串口可以看到单片机向BC28核心板发送的数据和核心板返回的数据。
 	3、系统开机后，短按一下key1(S1)按键，
@@ -82,8 +84,20 @@
 			  命令：AT+NSOCL=1
 
 
-	后续还会推出基于coap协议的网络连接，用于连接IOT平台。
+8、基于coap协议的网络连接
+
+我们的Coap示例连接的是华为IOT平台。
+
+小贴士：华为的IOP平台连接之前，需要将移远模块屏蔽罩上印的IMEI号绑定到华为的IOT平台，平台才会接收模块发过来的数据。
+				我们默认发货都是帮亲们绑定好的，并且测试没问题的。
+				
+				1、在DaBai_rtc.c文件中的HAL_RTC_AlarmAEventCallback函数里设置了每隔10分钟发送一次coap数据到IOT平台。
+				数据格式为：
+	数据	    m_batVol  m_temp    mRH       m_light   m_longitude   m_latitude   g_USB_insert  Reserve
+	数据类型  Uint8_t   Int16_t   Int16_t   Uint16_t  Uint32_t      Uint32_t     Uint8_t       Uint8_t
 	
+	系统开机后，会自动建立coap的连接，然后每隔10分钟上传一次板子上的传感器数据。
+
 //////////////////////////////////////////////////////
 
 * 版权归大白物联网所有。
@@ -99,6 +113,8 @@
 #include "DaBai_GPIO.h"
 #include "NB_Board_Cfg.h"
 #include "timer_user_poll.h"
+#include "DaBai_rtc.h"
+
 
 #define TASKTIME_10MS  		10
 #define TASKTIME_100MS  	100
@@ -125,6 +141,9 @@ volatile uint32_t g_TaskTime10min = 0;
 
 char userPacket[30]= {0};
 
+/* Buffer used for displaying Time */
+uint8_t aShowTime[50] = {0};
+
 /**
   * @brief  Main program.
   * @param  None
@@ -143,6 +162,7 @@ int main(void)
 	MX_ADC_Init();
 	MX_USART1_UART_Init();
 	MX_LPUART1_UART_Init();
+	MX_RTC_Init();
 	
 	NBModule_open(&nb_config);
   //APP_STATE = NB_NONE;
@@ -152,6 +172,9 @@ int main(void)
 	{
 		// power on beep remind
 	}
+	  /* Configure RTC Alarm */
+  RTC_AlarmConfig();
+	
 	LED1_OFF;
 	LED2_OFF;
 	LED3_OFF;
@@ -187,6 +210,7 @@ int main(void)
 		{
 			g_TaskTime1000ms = 0;
 			DaBai_1000msTask();
+			 //RTC_TimeShow(aShowTime);
 		}
 		if(g_TaskTime1min > TASKTIME_1MIN)
 		{
@@ -197,9 +221,13 @@ int main(void)
 		if(g_TaskTime10min > TASKTIME_10MIN)
 		{
 			g_TaskTime10min = 0;
-			DaBai_10MinTask();
+			//DaBai_10MinTask();
 		}
-		
+		if(g_RTCAlarmFlag == 1)
+		{
+			g_RTCAlarmFlag = 0;
+			APP_STATE = NB_CoAP_ST;
+		}
 		switch(APP_STATE)
     {
     case NB_NONE:
@@ -339,9 +367,10 @@ void SystemClock_Config(void)
 	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE|RCC_OSCILLATORTYPE_LSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;//open 8M晶振
   RCC_OscInitStruct.LSEState = RCC_LSE_ON;//open 32.768KHz晶振 
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-	RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL4;
+	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+  //RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  //RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+	//RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL4;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);

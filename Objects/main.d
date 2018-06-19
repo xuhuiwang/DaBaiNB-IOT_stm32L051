@@ -49,3 +49,4 @@
 .\objects\main.o: .\DaBai_Inc\DaBai_GPIO.h
 .\objects\main.o: .\NBxxModule\NB_Board_Cfg.h
 .\objects\main.o: .\DaBai_Inc\timer_user_poll.h
+.\objects\main.o: .\DaBai_Inc\DaBai_rtc.h

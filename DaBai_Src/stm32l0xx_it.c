@@ -26,6 +26,7 @@ extern DMA_HandleTypeDef hdma_lpuart_rx;
 extern DMA_HandleTypeDef hdma_lpuart_tx;
 extern UART_HandleTypeDef hlpuart1;
 extern DMA_HandleTypeDef hdma_adc;
+extern RTC_HandleTypeDef hrtc;
 /******************************************************************************/
 /*                 STM32L0xx Peripherals Interrupt Handlers                   */
 /*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */
@@ -160,6 +161,16 @@ void LPUART1_IRQHandler(void)
   /* USER CODE BEGIN LPUART1_IRQn 1 */
 
   /* USER CODE END LPUART1_IRQn 1 */
+}
+
+/**
+  * @brief  This function handles RTC Alarm interrupt request.
+  * @param  None
+  * @retval None
+  */
+void RTC_IRQHandler(void)
+{
+  HAL_RTC_AlarmIRQHandler(&hrtc);
 }
 
 

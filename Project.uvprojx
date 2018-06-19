@@ -466,6 +466,11 @@
               <FileType>1</FileType>
               <FilePath>.\DaBai_Src\timer_user_poll.c</FilePath>
             </File>
+            <File>
+              <FileName>DaBai_rtc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\DaBai_Src\DaBai_rtc.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1052,6 +1057,11 @@
               <FileName>timer_user_poll.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\DaBai_Src\timer_user_poll.c</FilePath>
+            </File>
+            <File>
+              <FileName>DaBai_rtc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\DaBai_Src\DaBai_rtc.c</FilePath>
             </File>
           </Files>
         </Group>

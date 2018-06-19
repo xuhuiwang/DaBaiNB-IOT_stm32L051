@@ -44,3 +44,4 @@
 .\objects\dabai_app.o: .\DaBai_Inc\DaBai_ADC.h
 .\objects\dabai_app.o: .\NBxxModule\NB_Board.h
 .\objects\dabai_app.o: .\NBxxModule\nb_types.h
+.\objects\dabai_app.o: .\DaBai_Inc\DaBai_rtc.h
