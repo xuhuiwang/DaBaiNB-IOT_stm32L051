@@ -4,37 +4,6 @@
   * Description        : This file provides code for the configuration
   *                      of the DABAI_ADC instances.
   ******************************************************************************
-  ** This notice applies to any and all portions of this file
-  * that are not between comment pairs USER CODE BEGIN and
-  * USER CODE END. Other portions of this file, whether 
-  * inserted by the user or by software development tools
-  * are owned by their respective copyright owners.
-  *
-  * COPYRIGHT(c) 2018 STMicroelectronics
-  *
-  * Redistribution and use in source and binary forms, with or without modification,
-  * are permitted provided that the following conditions are met:
-  *   1. Redistributions of source code must retain the above copyright notice,
-  *      this list of conditions and the following disclaimer.
-  *   2. Redistributions in binary form must reproduce the above copyright notice,
-  *      this list of conditions and the following disclaimer in the documentation
-  *      and/or other materials provided with the distribution.
-  *   3. Neither the name of STMicroelectronics nor the names of its contributors
-  *      may be used to endorse or promote products derived from this software
-  *      without specific prior written permission.
-  *
-  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  *
-  ******************************************************************************
   */
 
 /* Includes ------------------------------------------------------------------*/
@@ -52,8 +21,10 @@
 /* Private variables ---------------------------------------------------------*/
 /* ADC handler declaration */
 ADC_HandleTypeDef    AdcHandle;
+/* Variable used to get converted value */
+__IO uint32_t uwADCxConvertedValue = 0;
 
-
+uint16_t   gADCxConvertedData[ADC_DATA_BUFFER_SIZE];
 
 /* ADC init function */
  /* ### - 1 - Initialize ADC peripheral #################################### */
@@ -93,10 +64,12 @@ void MX_ADC_Init(void)
   AdcHandle.Init.ScanConvMode          = ADC_SCAN_DIRECTION_FORWARD;
   AdcHandle.Init.DataAlign             = ADC_DATAALIGN_RIGHT;
   AdcHandle.Init.ContinuousConvMode    = ENABLE;
-  AdcHandle.Init.DiscontinuousConvMode = DISABLE;
+  //AdcHandle.Init.DiscontinuousConvMode = DISABLE;
   AdcHandle.Init.ExternalTrigConvEdge  = ADC_EXTERNALTRIGCONVEDGE_NONE;
+	//AdcHandle.Init.ExternalTrigConv      = ADC_SOFTWARE_START;//add 20180609
   AdcHandle.Init.EOCSelection          = ADC_EOC_SINGLE_CONV;
-  AdcHandle.Init.DMAContinuousRequests = DISABLE;
+	//AdcHandle.Init.Overrun 							 = ADC_OVR_DATA_PRESERVED;//add 20180609
+  AdcHandle.Init.DMAContinuousRequests = ENABLE;
 
   /* Initialize ADC peripheral according to the passed parameters */
   if (HAL_ADC_Init(&AdcHandle) != HAL_OK)
@@ -111,14 +84,14 @@ void MX_ADC_Init(void)
     
   }
 
-  /* ### - 3 - Channel configuration ######################################## */
+  /* ### - Channel configuration ######################################## */
 	  /* Select Channel 8 to be converted */
-//  sConfig.Channel = ADC_CHANNEL_8; 
-//  sConfig.Rank = ADC_RANK_CHANNEL_NUMBER;	
-//  if (HAL_ADC_ConfigChannel(&AdcHandle, &sConfig) != HAL_OK)
-//  {
-//    
-//  }
+  sConfig.Channel = ADC_CHANNEL_8; 
+  sConfig.Rank = ADC_RANK_CHANNEL_NUMBER;	
+  if (HAL_ADC_ConfigChannel(&AdcHandle, &sConfig) != HAL_OK)
+  {
+    
+  }
   /* Select Channel 9 to be converted */
   sConfig.Channel = ADC_CHANNEL_9;    
   if (HAL_ADC_ConfigChannel(&AdcHandle, &sConfig) != HAL_OK)
@@ -126,13 +99,46 @@ void MX_ADC_Init(void)
     
   }
 
- /*##- 4- Start the conversion process #######################################*/  
-  if (HAL_ADC_Start(&AdcHandle) != HAL_OK)
-  {
-    /* Start Conversation Error */
-    
-  }
+// /*##- 4- Start the conversion process #######################################*/  
+//  if (HAL_ADC_Start(&AdcHandle) != HAL_OK)
+//  {
+//    /* Start Conversation Error */
+//    
+//  }
+	
+	  /* Start conversion in DMA mode ################################# */
+	HAL_ADC_Start_DMA(&AdcHandle,(uint32_t *)gADCxConvertedData,ADC_DATA_BUFFER_SIZE);
+}
 
+uint16_t getLightValue(void)
+{
+	uint8_t i = 0;
+	uint32_t sum = 0;
+	uint16_t averValue = 0;
+	for(i = 1; i < ADC_DATA_BUFFER_SIZE; i+=(ADC_DATA_BUFFER_SIZE/10))
+	{
+		sum += gADCxConvertedData[i]; 
+	}
+	averValue = (uint16_t)((sum / 8));
+	return averValue;
+}
+//电池电量低于10%需要充电
+uint8_t GetBatVoltage(void)
+{
+	uint8_t i = 0;
+	uint32_t sum = 0;
+	uint8_t preVBat = 0;//显示为电池电量的百分比
+	
+	for(i = 0; i < ADC_DATA_BUFFER_SIZE; i+=(ADC_DATA_BUFFER_SIZE/10))
+	{
+		sum += gADCxConvertedData[i]; 
+	}
+	preVBat = (((sum / 10) - FULL_3V3_ADC_VALUE)*100) / (FULL_4V2_ADC_VALUE - FULL_3V3_ADC_VALUE) ;
+
+	if(preVBat > 100)
+		preVBat =100;
+	
+	return preVBat; 
 }
 
 

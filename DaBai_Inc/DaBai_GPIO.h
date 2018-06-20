@@ -48,6 +48,7 @@
 
 
 
+<<<<<<< HEAD
 #define KEY1_Pin  GPIO_PIN_0
 
 #define KEY2_Pin  GPIO_PIN_12
@@ -59,10 +60,52 @@
 #define LED4			GPIO_PIN_6
 #define LED5			GPIO_PIN_7
 
+=======
+#define KEY1_PIN  GPIO_PIN_0
+
+#define KEY2_PIN  GPIO_PIN_12
+#define KEY3_PIN  GPIO_PIN_15
+
+#define LED1_PIN			GPIO_PIN_3
+#define LED2_PIN			GPIO_PIN_4
+#define LED3_PIN			GPIO_PIN_5
+#define LED4_PIN			GPIO_PIN_6
+
+//充电状态指示灯，灯1s闪烁一次表示正在充电，灯一直亮表示充满电，灯不亮表示不在充电
+#define CHG_LED5_PIN			GPIO_PIN_7
+
+#define CHARGE_CTRL_PIN				GPIO_PIN_12 //充电控制引脚
+
+#define CHG_DETECT_PIN				GPIO_PIN_11 //电池充电检测PIN
+
+#define SYS_PW_CTRL_PIN  			GPIO_PIN_15//系统电源控制引脚
+
+#define POWER_ON	  HAL_GPIO_WritePin(GPIOA, SYS_PW_CTRL_PIN, GPIO_PIN_SET)
+#define POWER_OFF   HAL_GPIO_WritePin(GPIOA, SYS_PW_CTRL_PIN, GPIO_PIN_RESET)
+
+#define CHARGE_ON		HAL_GPIO_WritePin(GPIOA, CHARGE_CTRL_PIN, GPIO_PIN_SET)
+#define CHARGE_OFF  HAL_GPIO_WritePin(GPIOA, CHARGE_CTRL_PIN, GPIO_PIN_RESET)
+
+
+#define LED1_ON			HAL_GPIO_WritePin(GPIOB,LED1_PIN, GPIO_PIN_RESET)
+#define LED1_OFF		HAL_GPIO_WritePin(GPIOB,LED1_PIN, GPIO_PIN_SET)
+#define LED2_ON			HAL_GPIO_WritePin(GPIOB,LED2_PIN, GPIO_PIN_RESET)
+#define LED2_OFF		HAL_GPIO_WritePin(GPIOB,LED2_PIN, GPIO_PIN_SET)
+#define LED3_ON			HAL_GPIO_WritePin(GPIOB,LED3_PIN, GPIO_PIN_RESET)
+#define LED3_OFF		HAL_GPIO_WritePin(GPIOB,LED3_PIN, GPIO_PIN_SET)
+#define LED4_ON			HAL_GPIO_WritePin(GPIOB,LED4_PIN, GPIO_PIN_RESET)
+#define LED4_OFF		HAL_GPIO_WritePin(GPIOB,LED4_PIN, GPIO_PIN_SET)
+#define CHG_LED5_ON			HAL_GPIO_WritePin(GPIOB,CHG_LED5_PIN, GPIO_PIN_RESET)
+#define CHG_LED5_OFF		HAL_GPIO_WritePin(GPIOB,CHG_LED5_PIN, GPIO_PIN_SET)
+>>>>>>> dev
 
 extern void _Error_Handler(char *, int);
 
 void MX_GPIO_Init(void);
+<<<<<<< HEAD
+=======
+void PowerOffGpioConfig(void);
+>>>>>>> dev
 #ifdef __cplusplus
 }
 #endif

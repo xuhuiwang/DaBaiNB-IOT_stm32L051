@@ -1,51 +1,44 @@
 /**
   ******************************************************************************
-  * @file    ADC/ADC_RegularConversion_Polling/Src/stm32l0xx_it.c
+  * @file    stm32l0xx_it.c
   * @author  MCD Application Team
   * @brief   Main Interrupt Service Routines.
   *          This file provides template for all exceptions handler and
   *          peripherals interrupt service routine.
   ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
-  *
-  * Redistribution and use in source and binary forms, with or without modification,
-  * are permitted provided that the following conditions are met:
-  *   1. Redistributions of source code must retain the above copyright notice,
-  *      this list of conditions and the following disclaimer.
-  *   2. Redistributions in binary form must reproduce the above copyright notice,
-  *      this list of conditions and the following disclaimer in the documentation
-  *      and/or other materials provided with the distribution.
-  *   3. Neither the name of STMicroelectronics nor the names of its contributors
-  *      may be used to endorse or promote products derived from this software
-  *      without specific prior written permission.
-  *
-  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  *
-  ******************************************************************************
   */
 
 /* Includes ------------------------------------------------------------------*/
+<<<<<<< HEAD
 
 #include "stm32l0xx_it.h"
+=======
+>>>>>>> dev
 
-/** @addtogroup STM32L0xx_HAL_Examples
-  * @{
-  */
+#include "stm32l0xx_it.h"
+#include "stm32l0xx_hal.h"
+#include "DaBai_APP.h"
 
-/** @addtogroup ADC_RegularConversion_Polling
-  * @{
-  */
+/* External variables --------------------------------------------------------*/
+extern volatile uint16_t g_TaskTime10ms;
+extern volatile uint16_t g_TaskTime100ms;
+extern volatile uint16_t g_TaskTime500ms;
+extern volatile uint16_t g_TaskTime1000ms;
+extern volatile uint32_t g_TaskTime1min;
+extern volatile uint32_t g_TaskTime10min;
+
+extern DMA_HandleTypeDef hdma_lpuart_rx;
+extern DMA_HandleTypeDef hdma_lpuart_tx;
+extern UART_HandleTypeDef hlpuart1;
+extern DMA_HandleTypeDef hdma_adc;
+extern RTC_HandleTypeDef hrtc;
+/******************************************************************************/
+/*                 STM32L0xx Peripherals Interrupt Handlers                   */
+/*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */
+/*  available peripheral interrupt handler's name please refer to the startup */
+/*  file (startup_stm32l0xx.s).                                               */
+/******************************************************************************/
+
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -115,27 +108,75 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   HAL_IncTick();
+	g_TaskTime10ms++;
+	g_TaskTime100ms++;
+	g_TaskTime500ms++;
+	g_TaskTime1000ms++;
+	g_TaskTime1min++;
+	g_TaskTime10min++;
+	if(g_USB_insert == YES)//USB插入
+	{
+		if(g_chargeing_flag == YES)//电池在充电
+		{
+			if(g_BatVoltage == 100)
+			{
+				m_fullBatTimeCnt ++;
+			}
+			else
+			{
+				m_fullBatTimeCnt = 0;
+			}
+		}
+	}
+	else
+	{
+		m_fullBatTimeCnt = 0;
+	}
 }
 
-/******************************************************************************/
-/*                 STM32L0xx Peripherals Interrupt Handlers                   */
-/*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */
-/*  available peripheral interrupt handler's name please refer to the startup */
-/*  file (startup_stm32l0xx.s).                                               */
-/******************************************************************************/
+/**
+* @brief This function handles DMA1 channel 1 interrupt.
+*/
+void DMA1_Channel1_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
+
+  /* USER CODE END DMA1_Channel1_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_adc);
+  /* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
+
+  /* USER CODE END DMA1_Channel1_IRQn 1 */
+}
+
+void DMA1_Channel2_3_IRQHandler(void)
+{
+	HAL_DMA_IRQHandler(&hdma_lpuart_rx);
+	HAL_DMA_IRQHandler(&hdma_lpuart_tx);
+}
 
 /**
-  * @brief  This function handles PPP interrupt request.
+* @brief This function handles LPUART1 global interrupt.
+*/
+void LPUART1_IRQHandler(void)
+{
+  /* USER CODE BEGIN LPUART1_IRQn 0 */
+
+  /* USER CODE END LPUART1_IRQn 0 */
+  HAL_UART_IRQHandler(&hlpuart1);
+  /* USER CODE BEGIN LPUART1_IRQn 1 */
+
+  /* USER CODE END LPUART1_IRQn 1 */
+}
+
+/**
+  * @brief  This function handles RTC Alarm interrupt request.
   * @param  None
   * @retval None
   */
-/*void PPP_IRQHandler(void)
+void RTC_IRQHandler(void)
 {
-}*/
-
-/**
-  * @}
-  */
+  HAL_RTC_AlarmIRQHandler(&hrtc);
+}
 
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

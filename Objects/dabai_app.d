@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 .\objects\dabai_app.o: APP\DaBai_APP.c
 .\objects\dabai_app.o: APP\DaBai_APP.h
+=======
+.\objects\dabai_app.o: DaBai_APP\DaBai_APP.c
+.\objects\dabai_app.o: DaBai_APP\DaBai_APP.h
+>>>>>>> dev
 .\objects\dabai_app.o: .\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal.h
 .\objects\dabai_app.o: .\DaBai_Inc\stm32l0xx_hal_conf.h
 .\objects\dabai_app.o: .\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_rcc.h
@@ -37,5 +42,16 @@
 .\objects\dabai_app.o: .\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_uart_ex.h
 .\objects\dabai_app.o: .\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_usart.h
 .\objects\dabai_app.o: .\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_usart_ex.h
+<<<<<<< HEAD
 .\objects\dabai_app.o: .\DaBai_Inc\main.h
 .\objects\dabai_app.o: .\DaBai_Inc\DaBai_GPIO.h
+=======
+.\objects\dabai_app.o: .\DaBai_Inc\sht20_cfg.h
+.\objects\dabai_app.o: .\DaBai_Inc\DaBai_i2c.h
+.\objects\dabai_app.o: .\DaBai_Inc\DaBai_GPIO.h
+.\objects\dabai_app.o: .\DaBai_Inc\DaBai_tim.h
+.\objects\dabai_app.o: .\DaBai_Inc\DaBai_ADC.h
+.\objects\dabai_app.o: .\NBxxModule\NB_Board.h
+.\objects\dabai_app.o: .\NBxxModule\nb_types.h
+.\objects\dabai_app.o: .\DaBai_Inc\DaBai_rtc.h
+>>>>>>> dev

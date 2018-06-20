@@ -48,6 +48,7 @@ void MX_GPIO_Init(void)
   GPIO_InitTypeDef GPIO_InitStruct;
 
   /*Configure GPIO pins : KEY1 */
+<<<<<<< HEAD
   GPIO_InitStruct.Pin = KEY1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
@@ -61,12 +62,67 @@ void MX_GPIO_Init(void)
 	
 	/*Configure GPIO pins : LED1 LED2 LED3 LED4 LED5 */
 	GPIO_InitStruct.Pin = LED1 | LED2 | LED3 | LED4 |LED5;
+=======
+  GPIO_InitStruct.Pin = KEY1_PIN;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : KEY2 KEY3 */
+  GPIO_InitStruct.Pin = KEY2_PIN | KEY3_PIN;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+	
+	  /*Configure GPIO pins : CHG_DETECT_PIN */
+  GPIO_InitStruct.Pin = CHG_DETECT_PIN;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+	
+	/*Configure GPIO pins : LED1 LED2 LED3 LED4 LED5 */
+	GPIO_InitStruct.Pin = LED1_PIN | LED2_PIN | LED3_PIN | LED4_PIN |CHG_LED5_PIN;
+>>>>>>> dev
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;  
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct); 
+<<<<<<< HEAD
 
 }
 
 
+=======
+	
+	
+	LED1_ON;
+	LED2_ON;
+	LED3_ON;
+	LED4_ON;
+	CHG_LED5_ON;
+
+	/*Configure GPIO pins :SYS_PW_CTRL */
+	GPIO_InitStruct.Pin = SYS_PW_CTRL_PIN | CHARGE_CTRL_PIN;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;  
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct); 
+	
+	POWER_ON;
+	CHARGE_ON;
+}
+
+
+void PowerOffGpioConfig(void)
+{
+	  GPIO_InitTypeDef GPIO_InitStruct;
+	
+		GPIO_InitStruct.Pin = LED1_PIN | LED2_PIN | LED3_PIN | LED4_PIN |CHG_LED5_PIN;
+		GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+		GPIO_InitStruct.Pull = GPIO_PULLUP;
+		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;  
+		HAL_GPIO_Init(GPIOB, &GPIO_InitStruct); 
+}
+
+>>>>>>> dev
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

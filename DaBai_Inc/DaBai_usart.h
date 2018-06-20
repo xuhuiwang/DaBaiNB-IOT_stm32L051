@@ -45,7 +45,11 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l0xx_hal.h"
+<<<<<<< HEAD
 
+=======
+#include "NB_BC95_28.h"
+>>>>>>> dev
 
 /* USER CODE BEGIN Includes */
 
@@ -53,7 +57,7 @@
 
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart2;
-
+extern UART_HandleTypeDef hlpuart1;
 /* USER CODE BEGIN Private defines */
 
 //定义串口用户回调函数
@@ -76,15 +80,6 @@ void MX_LPUART1_UART_Init(void);
 //
 // return : none
 void HAL_UART_Log(uint8_t *pData,uint16_t size);
-//***************************************************************
-// fn : HAL_UART_RegisterCb
-//
-// brief : 设置串口回调函数指针
-//
-// param : cb -> 回调函数指针
-//
-// return : none
-void HAL_UART_RegisterCb(UART_UserCb cb);
 
 //***************************************************************
 // fn : HAL_UART_Write
@@ -109,27 +104,55 @@ void HAL_UART2_Write(uint8_t *pData,uint16_t size);
 // return : none
 void HAL_LPUART1_Write(uint8_t *pData,uint16_t size);
 
-//***************************************************************
-// fn : HAL_UART_Read
+void HAL_UARTDMA_Init(bc95_receive_cb cb,uint32_t baud);
+//******************************************************************************
+// fn : USART1_UART_Write
 //
-// brief : 用串口发送指令长度数据
+// brief : 通过串口向外发送指定数据
 //
-// param : pData -> 发送数据指针
-//         size  -> 数据长度
+// param : buf -> 数据缓存地址
+//         len -> 数据长度
 //
-// return : 已经接收到的数据长度
-uint16_t HAL_UART_Read(uint8_t *pData,uint16_t size);
-
-//***********************************************
-// fn : HAL_UART_Poll
+// return : none
+void HAL_UART_Write(uint8_t*buf,uint16_t len);
+//******************************************************************************
+// fn : USART1_UART_Read
 //
-// brief : 轮询串口接收数据，直到帧结束
+// brief : 通过串口读取数据
+//
+// param : buf -> 数据缓存地址
+//         len -> 数据长度
+//
+// return : none
+uint16_t HAL_UART_Read(uint8_t*buf,uint16_t len);
+//******************************************************************************
+// fn : USART1_UART_Poll
+//
+// brief : 轮询串口事件
 //
 // param : none
 //
-// return : !=0 this frame is end,others 
+// return : 事件。见dma_rece_cfg.h中定义
 uint8_t HAL_UART_Poll(void);
-/* USER CODE END Prototypes */
+//******************************************************************************
+// fn : USART1_UART_RxBufLen
+//
+// brief : 返回当前接收缓存区中有效的数据长度
+//
+// param : none
+//
+// return : none
+uint16_t HAL_UART_RxBufLen(void);
+
+//******************************************************************************
+// fn : HAL_UART_Close
+//
+// brief : 关闭使用
+//
+// param : none
+//
+// return : none
+void HAL_UART_Close(void);
 
 #ifdef __cplusplus
 }

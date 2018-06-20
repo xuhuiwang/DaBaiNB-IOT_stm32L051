@@ -1,14 +1,28 @@
 --cpu Cortex-M0+
+<<<<<<< HEAD
 ".\objects\dabai_app_1.o"
+=======
+".\objects\dabai_app.o"
+".\objects\nb_bc95_28.o"
+".\objects\nb_board.o"
+".\objects\nb_board_cfg.o"
+>>>>>>> dev
 ".\objects\main.o"
 ".\objects\stm32l0xx_hal_msp.o"
 ".\objects\stm32l0xx_it.o"
-".\objects\sht20_cfg.o"
+".\objects\dabai_gpio.o"
 ".\objects\dabai_i2c.o"
 ".\objects\dabai_usart.o"
 ".\objects\dabai_adc.o"
 ".\objects\dabai_tim.o"
+<<<<<<< HEAD
 ".\objects\dabai_gpio.o"
+=======
+".\objects\sht20_cfg.o"
+".\objects\_dma_cfg.o"
+".\objects\timer_user_poll.o"
+".\objects\dabai_rtc.o"
+>>>>>>> dev
 ".\objects\startup_stm32l051xx.o"
 ".\objects\system_stm32l0xx.o"
 ".\objects\stm32l0xx_hal_adc.o"
@@ -26,6 +40,8 @@
 ".\objects\stm32l0xx_hal_usart.o"
 ".\objects\stm32l0xx_hal_tim.o"
 ".\objects\stm32l0xx_hal_tim_ex.o"
+".\objects\stm32l0xx_hal_rtc.o"
+".\objects\stm32l0xx_hal_rtc_ex.o"
 --library_type=microlib --strict --scatter ".\Objects\STM32L051C8T6.sct"
 --diag_suppress=L6329 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
