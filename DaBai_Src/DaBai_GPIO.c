@@ -88,6 +88,12 @@ void MX_GPIO_Init(void)
 	
 	POWER_ON;
 	CHARGE_ON;
+	
+	
+//  GPIO_InitStruct.Pin = GPIO_PIN_1;
+//  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+//  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+//  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 }
 
 

@@ -100,7 +100,7 @@ extern float    g_Sht20RH;
 extern float g_longitude;//¾­¶È
 extern float g_latitude;//Î³¶È
 
-
+void sysWakeUpConfig(void);
 void Fill_u16_To_u8(uint16_t x, char* h, char* l);
 void Fill_int16_To_int8(int16_t x, char* h, char* l);
 void Fill_u32_To_u8(uint32_t x, char* hh, char* hl, char* lh, char* ll);

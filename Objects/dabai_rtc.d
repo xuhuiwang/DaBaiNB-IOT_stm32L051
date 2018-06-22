@@ -37,5 +37,12 @@
 .\objects\dabai_rtc.o: .\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_uart_ex.h
 .\objects\dabai_rtc.o: .\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_usart.h
 .\objects\dabai_rtc.o: .\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_usart_ex.h
-.\objects\dabai_rtc.o: .\DaBai_Inc\main.h
+.\objects\dabai_rtc.o: .\DaBai_APP\main.h
 .\objects\dabai_rtc.o: .\DaBai_Inc\DaBai_GPIO.h
+.\objects\dabai_rtc.o: .\DaBai_Inc\DaBai_usart.h
+.\objects\dabai_rtc.o: .\NBxxModule\NB_BC95_28.h
+.\objects\dabai_rtc.o: .\NBxxModule\NB_Board.h
+.\objects\dabai_rtc.o: .\NBxxModule\nb_types.h
+.\objects\dabai_rtc.o: .\DaBai_APP\DaBai_APP.h
+.\objects\dabai_rtc.o: .\DaBai_Inc\sht20_cfg.h
+.\objects\dabai_rtc.o: .\DaBai_Inc\DaBai_i2c.h

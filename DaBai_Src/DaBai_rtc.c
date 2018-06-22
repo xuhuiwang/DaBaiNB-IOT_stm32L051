@@ -10,9 +10,11 @@
 #include "DaBai_rtc.h"
 #include "main.h"
 #include "DaBai_GPIO.h"
+#include "DaBai_usart.h"
+#include "DaBai_APP.h"
 
 #define ALARM_10MIN  1
-
+//#define ALARM_20S  1
 volatile uint8_t g_RTCAlarmFlag = 0;
 
 /* USER CODE BEGIN 0 */
@@ -40,7 +42,8 @@ void MX_RTC_Init(void)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
-
+  /* Disable all used wakeup sources*/
+  HAL_RTCEx_DeactivateWakeUpTimer(&hrtc);
 }
 
 
@@ -70,8 +73,8 @@ void RTC_AlarmConfig(void)
   /*##-2- Configure the Time #################################################*/
   /* Set Time: 18:30:00 */
   stimestructure.Hours = 0x23;
-  stimestructure.Minutes = 0x58;
-  stimestructure.Seconds = 0x45;
+  stimestructure.Minutes = 0x30;
+  stimestructure.Seconds = 0x00;
   stimestructure.TimeFormat = RTC_HOURFORMAT12_PM;
   stimestructure.DayLightSaving = RTC_DAYLIGHTSAVING_NONE ;
   stimestructure.StoreOperation = RTC_STOREOPERATION_RESET;
@@ -91,8 +94,8 @@ void RTC_AlarmConfig(void)
   salarmstructure.AlarmSubSecondMask = RTC_ALARMSUBSECONDMASK_NONE;
   salarmstructure.AlarmTime.TimeFormat = RTC_HOURFORMAT12_AM;
   salarmstructure.AlarmTime.Hours = 0x23;
-  salarmstructure.AlarmTime.Minutes = 0x58;
-  salarmstructure.AlarmTime.Seconds = 0x50;
+  salarmstructure.AlarmTime.Minutes = 0x40;
+  salarmstructure.AlarmTime.Seconds = 0x00;
   salarmstructure.AlarmTime.SubSeconds = 0x56;
   
   if(HAL_RTC_SetAlarm_IT(&hrtc,&salarmstructure,RTC_FORMAT_BCD) != HAL_OK)
@@ -134,6 +137,9 @@ void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc)
   RTC_TimeTypeDef stimestructureget;
 	RTC_AlarmTypeDef salarmstructure;
 	
+		/**sysWakeUpConfig**/
+	sysWakeUpConfig();
+	
 	  /* Get the RTC current Time */
   HAL_RTC_GetTime(hrtc, &stimestructureget, RTC_FORMAT_BIN);
   /* Get the RTC current Date */
@@ -141,6 +147,7 @@ void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc)
 	sprintf((char*)m_ShowTime,"year=20%02d,Month=%02d,Data=%02d,%02d:%02d:%02d",
 					sdatestructureget.Year,sdatestructureget.Month,sdatestructureget.Date,
 					stimestructureget.Hours, stimestructureget.Minutes, stimestructureget.Seconds);
+
 	printf("\r\nRTC AlarmA time = %s\r\n",m_ShowTime);
 	
   /*RTC Alarm Generation: Alarm on Hours, Minutes and Seconds */
@@ -153,27 +160,24 @@ void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc)
   salarmstructure.AlarmTime.Hours = stimestructureget.Hours;
   salarmstructure.AlarmTime.Minutes = stimestructureget.Minutes;
 	
-	#ifdef ALARM_5S
-////10分钟发送一次数据	
-//	if((stimestructureget.Seconds + 5)>=60)
-//	{
-//	  salarmstructure.AlarmTime.Seconds = 0;
-//		salarmstructure.AlarmTime.Minutes = stimestructureget.Minutes + 1;
-//		if(salarmstructure.AlarmTime.Minutes >= 60)
-//		{
-//			salarmstructure.AlarmTime.Minutes = 0;
-//			salarmstructure.AlarmTime.Hours = stimestructureget.Hours + 1;
-//			if((salarmstructure.AlarmTime.Hours = stimestructureget.Hours + 1) >= 24)
-//			{
-//				salarmstructure.AlarmTime.Hours = 0;
-//				
-//			}
-//		}
-//	}
-//	else
-//	{
-//		salarmstructure.AlarmTime.Seconds = stimestructureget.Seconds + 5;
-//	}
+	#ifdef ALARM_20S
+//20S发送一次数据	
+	salarmstructure.AlarmTime.Seconds = stimestructureget.Seconds + 20;
+	if(salarmstructure.AlarmTime.Seconds >= 60)
+	{
+	  salarmstructure.AlarmTime.Seconds = 0;
+		salarmstructure.AlarmTime.Minutes = stimestructureget.Minutes + 1;
+		if(salarmstructure.AlarmTime.Minutes >= 60)
+		{
+			salarmstructure.AlarmTime.Minutes = 0;
+			salarmstructure.AlarmTime.Hours = stimestructureget.Hours + 1;
+			if((salarmstructure.AlarmTime.Hours = stimestructureget.Hours + 1) >= 24)
+			{
+				salarmstructure.AlarmTime.Hours = 0;
+				
+			}
+		}
+	}
 #endif
 
 #ifdef ALARM_10MIN

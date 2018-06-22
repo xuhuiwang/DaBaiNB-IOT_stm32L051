@@ -84,13 +84,15 @@ void SetBeepFreq(uint16_t freq_param)//freq < BEEP_MAX_FREQ Hz
 	
 	if(freq_param >= 400)
 	{ 
-		TIM2->CR1 |= TIM_CR1_CEN; /* Enable the TIM Counter */
+		//TIM2->CR1 |= TIM_CR1_CEN; /* Enable the TIM Counter */
 		period = 1000000 / freq_param;//1000000为TIM3的预分频 
-
+		
 	}
 	else
 	{
-		TIM2->CR1 &= (uint16_t)(~((uint16_t)TIM_CR1_CEN));//TIM1 Disable 
+		TIM2->ARR = 1000;
+		TIM2->CCR2 = 0; //输出低电平，蜂鸣器不通电
+		//TIM2->CR1 &= (uint16_t)(~((uint16_t)TIM_CR1_CEN));//TIM1 Disable 
 	}
 	if(TIM2->CNT >= TIM2->ARR)
 	{

@@ -54,6 +54,27 @@ DMA_HandleTypeDef hdma_lpuart_rx;
 DMA_HandleTypeDef hdma_lpuart_tx;
 DMA_HandleTypeDef hdma_adc;
 
+/**
+  * @brief  System Power Configuration
+  *         The system Power is configured as follow :
+  *            + VREFINT OFF, with fast wakeup enabled
+  *            + No IWDG
+  *            + Automatic Wakeup using RTC clocked by LSI (after ~4s)
+  * @param  None
+  * @retval None
+  */
+static void SystemPower_Config(void)
+{
+  /* Enable Power Control clock */
+  __HAL_RCC_PWR_CLK_ENABLE();
+
+  /* Enable Ultra low power mode */
+  HAL_PWREx_EnableUltraLowPower();
+
+  /* Enable the fast wake up from Ultra low power mode */
+  HAL_PWREx_EnableFastWakeUp();
+}
+
 
 void HAL_MspInit(void)
 {
@@ -100,6 +121,8 @@ void HAL_MspInit(void)
   /* SysTick_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(SysTick_IRQn, 1, 0);
   /* USER CODE END MspInit 1 */
+	
+	SystemPower_Config();
 }
 
 /** @defgroup ADC_RegularConversion_Polling

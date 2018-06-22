@@ -8,13 +8,18 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "DaBai_APP.h"
-#include "DaBai_GPIO.h"
-#include "DaBai_tim.h"
-#include "DaBai_ADC.h"
 #include "sht20_cfg.h"
 #include "NB_Board.h"
+#include "main.h"
+#include "DaBai_i2c.h"
+#include "DaBai_usart.h"
+#include "DaBai_ADC.h"
+#include "DaBai_tim.h"
+#include "DaBai_APP.h"
+#include "DaBai_GPIO.h"
+#include "NB_Board_Cfg.h"
+#include "timer_user_poll.h"
 #include "DaBai_rtc.h"
-
 
 GPIO_PinState m_key[3] = {GPIO_PIN_RESET,GPIO_PIN_RESET,GPIO_PIN_RESET};
 volatile uint8_t  m_key_flag[3]= {0};
@@ -47,6 +52,35 @@ uint32_t m_coapSendTimes = 0;
 
 volatile NB_STATE_e  APP_STATE= NB_NONE;
 
+
+void sysStandbyModeConfig(void)
+{
+	SetBeepFreq(0);
+	HAL_Delay(300);
+	LED1_OFF;
+	//LED2_OFF;
+	LED3_OFF;
+	LED4_OFF;
+	CHG_LED5_OFF;
+	POWER_ON;
+	CHARGE_ON;
+}
+
+void sysWakeUpConfig(void)
+{
+	HAL_Init();
+  SystemClock_Config();
+	MX_TIM_Init();
+	//HAL_Delay(300);	
+	MX_GPIO_Init();
+	MX_I2C2_Init();
+	MX_ADC_Init();
+	MX_USART1_UART_Init();
+	MX_LPUART1_UART_Init();
+	//MX_RTC_Init();
+	
+	NBModule_open(&nb_config);
+}
 
 void Fill_u16_To_u8(uint16_t x, char* h, char* l)
 {
@@ -441,7 +475,7 @@ int  NB_MsgreportCb(msg_types_t types,int len,char* msg)
       printf("\r\nINIT = %s\r\n",msg);
       if(*msg == 'S')
       {
-        LED2_ON;
+        
         APP_STATE = NB_SIGN;
       }
     }
@@ -550,8 +584,17 @@ int  NB_MsgreportCb(msg_types_t types,int len,char* msg)
     break;
   case MSG_COAP_SEND:
     {
+			if( msg[0] == 'S')
+			{
+				LED2_OFF;
+				//HAL_GPIO_TogglePin(GPIOB,LED2_PIN);
+			}
 			m_coapSendTimes++;
       printf("\r\nCOAP_SENT = %s ,times = %d\r\n",msg,m_coapSendTimes);
+			sysStandbyModeConfig();
+			HAL_PWR_EnterSTANDBYMode();
+			HAL_PWR_EnterSTANDBYMode();
+			HAL_PWR_EnterSTANDBYMode();
     }
     break;
     

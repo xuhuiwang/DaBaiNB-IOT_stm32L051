@@ -39,9 +39,14 @@
 .\objects\dabai_app.o: .\Drivers\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_usart_ex.h
 .\objects\dabai_app.o: .\DaBai_Inc\sht20_cfg.h
 .\objects\dabai_app.o: .\DaBai_Inc\DaBai_i2c.h
-.\objects\dabai_app.o: .\DaBai_Inc\DaBai_GPIO.h
-.\objects\dabai_app.o: .\DaBai_Inc\DaBai_tim.h
-.\objects\dabai_app.o: .\DaBai_Inc\DaBai_ADC.h
 .\objects\dabai_app.o: .\NBxxModule\NB_Board.h
 .\objects\dabai_app.o: .\NBxxModule\nb_types.h
+.\objects\dabai_app.o: DaBai_APP\main.h
+.\objects\dabai_app.o: .\DaBai_Inc\DaBai_usart.h
+.\objects\dabai_app.o: .\NBxxModule\NB_BC95_28.h
+.\objects\dabai_app.o: .\DaBai_Inc\DaBai_ADC.h
+.\objects\dabai_app.o: .\DaBai_Inc\DaBai_tim.h
+.\objects\dabai_app.o: .\DaBai_Inc\DaBai_GPIO.h
+.\objects\dabai_app.o: .\NBxxModule\NB_Board_Cfg.h
+.\objects\dabai_app.o: .\DaBai_Inc\timer_user_poll.h
 .\objects\dabai_app.o: .\DaBai_Inc\DaBai_rtc.h

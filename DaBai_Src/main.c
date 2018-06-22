@@ -153,12 +153,12 @@ uint8_t aShowTime[50] = {0};
   */
 int main(void)
 {
-	static  uint32_t start_tick = 0;
-	static uint32_t cur_tick = 0;
- 
   HAL_Init();
   SystemClock_Config();
 	MX_TIM_Init();
+	
+	//SetBeepFreq(g_BeepFreq);
+	
 	MX_GPIO_Init();
 	MX_I2C2_Init();
 	MX_ADC_Init();
@@ -169,19 +169,30 @@ int main(void)
 	NBModule_open(&nb_config);
   //APP_STATE = NB_NONE;
 	APP_STATE = NB_CoAP_SEVER;
-	start_tick = HAL_GetTick();
-	while((HAL_GetTick()- start_tick) <300)
-	{
-		// power on beep remind
-	}
+	
+	  /* Check and handle if the system was resumed from StandBy mode */ 
+  if(__HAL_PWR_GET_FLAG(PWR_FLAG_SB) != RESET)
+  {
+    /* Clear Standby flag */
+    __HAL_PWR_CLEAR_FLAG(PWR_FLAG_SB); 
+  }
+  /* Clear all related wakeup flags */
+  __HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
+
+	
+	HAL_Delay(300);
+	SetBeepFreq(0);
+	//HAL_Delay(300);
+
 	  /* Configure RTC Alarm */
   RTC_AlarmConfig();
 	
 	LED1_OFF;
-	LED2_OFF;
+	//LED2_OFF;
 	LED3_OFF;
 	LED4_OFF;
 	CHG_LED5_OFF;
+
 	printf("\r\nDaBai Init OK \r\n");
 	
   /* Infinite loop */
@@ -228,7 +239,9 @@ int main(void)
 		if(g_RTCAlarmFlag == 1)
 		{
 			g_RTCAlarmFlag = 0;
+			//APP_STATE = NB_CoAP_SEVER;
 			APP_STATE = NB_CoAP_ST;
+			HAL_GPIO_TogglePin(GPIOB,LED4_PIN);
 		}
 		switch(APP_STATE)
     {
@@ -295,13 +308,13 @@ int main(void)
         APP_STATE = NB_END; 
       }
       break;
-			 case NB_CoAP_SEVER:
-      {
-        printf("\r\n<---- CoAP Server set ---->\r\n");
-        NBModule_CoAPServer(&nb_config,1,NULL);
-        APP_STATE = NB_END;
-      }
-      break;
+		case NB_CoAP_SEVER:
+			{
+				printf("\r\n<---- CoAP Server set ---->\r\n");
+				NBModule_CoAPServer(&nb_config,1,NULL);
+				APP_STATE = NB_END;
+			}
+		break;
     case NB_CoAP_ST:
       {
 				uint8_t  m_batVol;
@@ -316,6 +329,7 @@ int main(void)
 				m_longitude = (uint32_t)g_longitude*1000000;
 				m_latitude  = (uint32_t)g_latitude*1000000; 
 				
+/* test data	*/			
 //				m_batVol = 1;
 //				m_temp = -2;
 //				m_RH   = 0x03;
@@ -388,7 +402,7 @@ void SystemClock_Config(void)
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0)!= HAL_OK)
   {
     /* Initialization Error */
-    while(1); 
+   // while(1); 
   }
   /* Enable Power Control clock */
   __HAL_RCC_PWR_CLK_ENABLE();
@@ -432,7 +446,7 @@ void _Error_Handler(char *file, int line)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-  while(1)
+  //while(1)
   {
   }
   /* USER CODE END Error_Handler_Debug */

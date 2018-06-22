@@ -196,6 +196,7 @@ const char* AT_CEER      = "AT+CEER";
 const char* AT_CEDRXRDP  = "AT+CEDRXRDP";
 const char* AT_CTZR      = "AT+CTZR";
 
+
 /* ETSI Commands* (127.005)  <Under development> */
 /*
 const char* AT_CSMS     = "AT+CSMS";
