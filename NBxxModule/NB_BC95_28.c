@@ -377,7 +377,6 @@ typedef enum
   SUB_NONE,
   SUB_SYNC,
 	#ifdef DABI_UDP
-  SUB_CMEE,
   SUB_CFUN,
 	SUB_CGSN,
 	
@@ -385,6 +384,7 @@ typedef enum
 	SUB_NSMI,
   SUB_NNMI,
 	#endif
+	SUB_CMEE,
 	SUB_CEREG,
   SUB_CIMI, 
 
@@ -411,7 +411,7 @@ typedef enum
 //******************************************************************************
 // bc95 初始化流程 
 //
-const uint8_t nb95_init_process[] = {SUB_NONE,SUB_SYNC,SUB_CIMI,                               
+const uint8_t nb95_init_process[] = {SUB_NONE,SUB_SYNC,SUB_CMEE,SUB_CEREG,SUB_CIMI,                               
                                      SUB_CGATT,SUB_CGATT_QUERY,SUB_END};
 
 //******************************************************************************
@@ -646,7 +646,12 @@ static Bool cmd_next()
       }
       break;
 		
-		#endif	
+		#endif
+    case SUB_CMEE:
+      {
+        cmd_param_init(&g_at_cmd,AT_CMEE,"1",CMD_SET);
+      }
+      break;		
 		case SUB_CEREG:
 		{
 			cmd_param_init(&g_at_cmd,AT_CEREG,"1",CMD_SET);

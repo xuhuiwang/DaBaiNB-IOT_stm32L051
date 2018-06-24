@@ -48,6 +48,7 @@
 /* Exported functions ------------------------------------------------------- */
 void _Error_Handler(char *file, int line);
 void SystemClock_Config(void);
+void standbyInitConfig(void);
 #endif /* __MAIN_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

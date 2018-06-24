@@ -55,8 +55,9 @@ volatile NB_STATE_e  APP_STATE= NB_NONE;
 
 void sysStandbyModeConfig(void)
 {
+	SetBeepFreq(2500);
+	HAL_Delay(100);
 	SetBeepFreq(0);
-	HAL_Delay(300);
 	LED1_OFF;
 	//LED2_OFF;
 	LED3_OFF;
@@ -71,13 +72,15 @@ void sysWakeUpConfig(void)
 	HAL_Init();
   SystemClock_Config();
 	MX_TIM_Init();
-	//HAL_Delay(300);	
 	MX_GPIO_Init();
 	MX_I2C2_Init();
 	MX_ADC_Init();
 	MX_USART1_UART_Init();
 	MX_LPUART1_UART_Init();
 	//MX_RTC_Init();
+	standbyInitConfig();
+
+	SetBeepFreq(0);
 	
 	NBModule_open(&nb_config);
 }
@@ -493,7 +496,7 @@ int  NB_MsgreportCb(msg_types_t types,int len,char* msg)
   case MSG_SIGN:
     {
       printf("\r\n%sdbm\r\n",msg);
-			APP_STATE = NB_TCP_CR;
+			APP_STATE = NB_CoAP_SEVER;
     }
     break;
   case MSG_MODULE_INFO:
@@ -592,8 +595,6 @@ int  NB_MsgreportCb(msg_types_t types,int len,char* msg)
 			m_coapSendTimes++;
       printf("\r\nCOAP_SENT = %s ,times = %d\r\n",msg,m_coapSendTimes);
 			sysStandbyModeConfig();
-			HAL_PWR_EnterSTANDBYMode();
-			HAL_PWR_EnterSTANDBYMode();
 			HAL_PWR_EnterSTANDBYMode();
     }
     break;

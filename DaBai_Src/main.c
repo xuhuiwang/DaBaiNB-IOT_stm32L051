@@ -165,28 +165,16 @@ int main(void)
 	MX_USART1_UART_Init();
 	MX_LPUART1_UART_Init();
 	MX_RTC_Init();
+	/* Configure RTC Alarm */
+  RTC_AlarmConfig();
+	standbyInitConfig();
 	
 	NBModule_open(&nb_config);
-  //APP_STATE = NB_NONE;
-	APP_STATE = NB_CoAP_SEVER;
-	
-	  /* Check and handle if the system was resumed from StandBy mode */ 
-  if(__HAL_PWR_GET_FLAG(PWR_FLAG_SB) != RESET)
-  {
-    /* Clear Standby flag */
-    __HAL_PWR_CLEAR_FLAG(PWR_FLAG_SB); 
-  }
-  /* Clear all related wakeup flags */
-  __HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
-
 	
 	HAL_Delay(300);
 	SetBeepFreq(0);
 	//HAL_Delay(300);
 
-	  /* Configure RTC Alarm */
-  RTC_AlarmConfig();
-	
 	LED1_OFF;
 	//LED2_OFF;
 	LED3_OFF;
@@ -194,6 +182,11 @@ int main(void)
 	CHG_LED5_OFF;
 
 	printf("\r\nDaBai Init OK \r\n");
+	
+	  //APP_STATE = NB_NONE;
+	APP_STATE = NB_CoAP_SEVER;
+	APP_STATE = NB_INIT;
+	
 	
   /* Infinite loop */
   while (1)
@@ -228,6 +221,9 @@ int main(void)
 		if(g_TaskTime1min > TASKTIME_1MIN)
 		{
 			g_TaskTime1min = 0;
+			//唤醒后一分钟还没有进入休眠状态，则自动进入休眠状态
+			HAL_PWR_EnterSTANDBYMode();
+			//APP_STATE = NB_CoAP_ST;
 			//DaBai_1MinTask();
 		}
 		
@@ -367,6 +363,17 @@ int main(void)
 	
 }
 
+void standbyInitConfig(void)
+{
+	/* Check and handle if the system was resumed from StandBy mode */ 
+  if(__HAL_PWR_GET_FLAG(PWR_FLAG_SB) != RESET)
+  {
+    /* Clear Standby flag */
+    __HAL_PWR_CLEAR_FLAG(PWR_FLAG_SB); 
+  }
+  /* Clear all related wakeup flags */
+  __HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
+}
 /**
   * @brief  System Clock Configuration
   *         The system Clock is configured as follow : 
