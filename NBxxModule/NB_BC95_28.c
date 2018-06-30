@@ -1732,13 +1732,20 @@ int bc95_coapSendMsg(NB_Handle handle,int len,char*msg)
   
   uint16_t msg_len = snprintf(buf,NB_UART_SEND_BUF_MAX_LEN - 40,"%d,",str_len);
   
+//  for(uint16_t i = 0 ; i < str_len ; i++)
+//  {
+//    sprintf(&buf[msg_len + (i << 1)],"%02X,%s",(uint8)msg[i],"0X0101");
+//  }
+// 	cmd_param_init(&g_at_cmd,AT_QLWULDATAEX,buf,CMD_SET); 
+ 
+	//cmd_param_init(&g_at_cmd,AT_NMGS,buf,CMD_SET);
+
   for(uint16_t i = 0 ; i < str_len ; i++)
   {
-    sprintf(&buf[msg_len + (i << 1)],"%02X,%s",(uint8)msg[i],"0X0101");
+    sprintf(&buf[msg_len + (i << 1)],"%02X",(uint8)msg[i]);
   }
-  
-  //cmd_param_init(&g_at_cmd,AT_NMGS,buf,CMD_SET);
-	cmd_param_init(&g_at_cmd,AT_QLWULDATAEX,buf,CMD_SET);
+ 	cmd_param_init(&g_at_cmd,AT_QLWULDATA,buf,CMD_SET); 
+	
   g_at_cmd.max_timeout = 2000;
   
   //更改NBiot操作进程，进入PROCESS_COAP_ST状态

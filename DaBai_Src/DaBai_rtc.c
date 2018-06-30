@@ -13,11 +13,12 @@
 #include "DaBai_usart.h"
 #include "DaBai_APP.h"
 
+extern volatile uint16_t g_TaskTime2000ms;
 extern volatile uint32_t g_TaskTime1min;
 
 //注意说明：只支持单独设置小时、分钟、秒钟的步长，不支持时分秒三者搭配设置。否则会引起闹钟间隔误差
 #define  HOUR_STEP  			0
-#define  MINUTE_STEP			10
+#define  MINUTE_STEP			1
 #define	 SECOND_STEP			0
 
 
@@ -220,7 +221,10 @@ void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc)
 
 	//HAL_GPIO_TogglePin(GPIOB,LED3_PIN);
 	g_RTCAlarmFlag = 1;
-	g_TaskTime1min = 0;
+	APP_STATE = NB_NONE;
+	g_TaskTime1min = 0;//唤醒1分钟后如果还没休眠，则强制进入休眠模式
+	g_TaskTime2000ms = 0;//唤醒后等待2s传感器数据稳定后再上传数据
+	g_enterStandbyFlag = 0;
 }
 
 

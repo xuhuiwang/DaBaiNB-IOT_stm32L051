@@ -44,10 +44,10 @@
 
 /* USER CODE BEGIN 0 */
 #define UART_BUF_LEN     128
-static uint8_t gBuf[UART_BUF_LEN];
+
 volatile uint8_t  msgLenIndex = 0;
 
-static UART_UserCb  pHalUartCb = NULL;
+//static UART_UserCb  pHalUartCb = NULL;
 static bc95_receive_cb  nb_receCb = NULL;
  uint8_t msgBuf[256];//static
 

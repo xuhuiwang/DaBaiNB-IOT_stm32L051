@@ -49,6 +49,7 @@ uint8_t g_BatVoltageLow = 0;//电量低于10%标志位
 uint8_t m_fullBatFlag = 0;
 uint8_t m_fullBatHintCnt = 0;
 uint32_t m_coapSendTimes = 0;
+uint8_t g_enterStandbyFlag = 0;
 
 volatile NB_STATE_e  APP_STATE= NB_NONE;
 
@@ -77,12 +78,11 @@ void sysWakeUpConfig(void)
 	MX_ADC_Init();
 	MX_USART1_UART_Init();
 	MX_LPUART1_UART_Init();
-	//MX_RTC_Init();
 	standbyInitConfig();
 
 	SetBeepFreq(0);
 	
-	NBModule_open(&nb_config);
+	//NBModule_open(&nb_config);
 }
 
 void Fill_u16_To_u8(uint16_t x, char* h, char* l)
@@ -394,6 +394,10 @@ void DaBai_100msTask(void)
 		BeepToggle(BEEP_FREQ_1000Hz);
 		HAL_GPIO_TogglePin(GPIOB,CHG_LED5_PIN);
 	}
+	if(g_enterStandbyFlag == 1)
+	{
+		HAL_PWR_EnterSTANDBYMode();
+	}
 }
 
 /*************************************
@@ -424,6 +428,21 @@ return : none
 *************************************/
 
 void DaBai_1000msTask(void)
+{
+
+}
+
+/*************************************
+fn : DaBai_2000msTask
+
+brief : 2000ms任务
+param : none
+
+return : none
+
+*************************************/
+
+void DaBai_2000msTask(void)
 {
 
 }
@@ -594,8 +613,12 @@ int  NB_MsgreportCb(msg_types_t types,int len,char* msg)
 			}
 			m_coapSendTimes++;
       printf("\r\nCOAP_SENT = %s ,times = %d\r\n",msg,m_coapSendTimes);
+
+#ifdef STANDBY_MODE
 			sysStandbyModeConfig();
+			g_enterStandbyFlag = 1;
 			HAL_PWR_EnterSTANDBYMode();
+#endif			
     }
     break;
     

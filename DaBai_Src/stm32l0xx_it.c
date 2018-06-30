@@ -19,9 +19,11 @@ extern volatile uint16_t g_TaskTime10ms;
 extern volatile uint16_t g_TaskTime100ms;
 extern volatile uint16_t g_TaskTime500ms;
 extern volatile uint16_t g_TaskTime1000ms;
+extern volatile uint16_t g_TaskTime2000ms;
+extern volatile uint16_t g_TaskTime4000ms;
 extern volatile uint32_t g_TaskTime1min;
 extern volatile uint32_t g_TaskTime10min;
-
+extern volatile uint8_t g_RTCAlarmFlag ;
 extern DMA_HandleTypeDef hdma_lpuart_rx;
 extern DMA_HandleTypeDef hdma_lpuart_tx;
 extern UART_HandleTypeDef hlpuart1;
@@ -108,6 +110,11 @@ void SysTick_Handler(void)
 	g_TaskTime100ms++;
 	g_TaskTime500ms++;
 	g_TaskTime1000ms++;
+//	if(g_RTCAlarmFlag == 1)
+		g_TaskTime2000ms++;
+//	if(g_RTCAlarmFlag == 1)
+		g_TaskTime4000ms++;
+		
 	g_TaskTime1min++;
 	g_TaskTime10min++;
 	if(g_USB_insert == YES)//USB≤Â»Î

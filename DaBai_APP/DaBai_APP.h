@@ -47,6 +47,7 @@
 #include "stm32l0xx_hal.h"
 #include "sht20_cfg.h"
 
+//#define  STANDBY_MODE
 
 #define KEY1		  0
 #define KEY2		  1
@@ -99,7 +100,7 @@ extern float    g_Sht20Temp;
 extern float    g_Sht20RH;
 extern float g_longitude;//¾­¶È
 extern float g_latitude;//Î³¶È
-
+extern uint8_t g_enterStandbyFlag;
 void sysWakeUpConfig(void);
 void Fill_u16_To_u8(uint16_t x, char* h, char* l);
 void Fill_int16_To_int8(int16_t x, char* h, char* l);

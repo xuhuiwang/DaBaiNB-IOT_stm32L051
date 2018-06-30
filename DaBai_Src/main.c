@@ -122,6 +122,9 @@
 #define TASKTIME_100MS  	100
 #define TASKTIME_500MS  	500
 #define TASKTIME_1000MS   1000
+#define TASKTIME_2000MS   2000
+#define TASKTIME_4000MS   4000
+#define TASKTIME_6000MS   6000
 #define TASKTIME_1MIN     60000
 #define TASKTIME_10MIN    600000
 
@@ -138,6 +141,8 @@ volatile uint16_t g_TaskTime10ms = 0;
 volatile uint16_t g_TaskTime100ms = 0;
 volatile uint16_t g_TaskTime500ms = 0;
 volatile uint16_t g_TaskTime1000ms = 0;
+volatile uint16_t g_TaskTime2000ms = 0;
+volatile uint16_t g_TaskTime4000ms = 0;
 volatile uint32_t g_TaskTime1min  = 0;
 volatile uint32_t g_TaskTime10min = 0;
 
@@ -164,10 +169,13 @@ int main(void)
 	MX_ADC_Init();
 	MX_USART1_UART_Init();
 	MX_LPUART1_UART_Init();
+	
+#ifdef STANDBY_MODE
 	MX_RTC_Init();
 	/* Configure RTC Alarm */
   RTC_AlarmConfig();
 	standbyInitConfig();
+#endif
 	
 	NBModule_open(&nb_config);
 	
@@ -184,7 +192,7 @@ int main(void)
 	printf("\r\nDaBai Init OK \r\n");
 	
 	  //APP_STATE = NB_NONE;
-	APP_STATE = NB_CoAP_SEVER;
+	//APP_STATE = NB_CoAP_SEVER;
 	APP_STATE = NB_INIT;
 	
 	
@@ -218,11 +226,30 @@ int main(void)
 			DaBai_1000msTask();
 			 //RTC_TimeShow(aShowTime);
 		}
+		if(g_TaskTime2000ms > TASKTIME_2000MS)
+		{
+			g_TaskTime2000ms = 0;
+		}
+		
+		if(g_TaskTime4000ms > TASKTIME_6000MS)
+		{
+			g_TaskTime4000ms = 0;
+			if(g_RTCAlarmFlag == 1)
+			{
+				g_RTCAlarmFlag = 0;
+				//APP_STATE = NB_CoAP_SEVER;
+				APP_STATE = NB_CoAP_ST;
+				HAL_GPIO_TogglePin(GPIOB,LED4_PIN);
+			}
+		}
+		
 		if(g_TaskTime1min > TASKTIME_1MIN)
 		{
 			g_TaskTime1min = 0;
+#ifdef STANDBY_MODE			
 			//唤醒后一分钟还没有进入休眠状态，则自动进入休眠状态
 			HAL_PWR_EnterSTANDBYMode();
+#endif			
 			//APP_STATE = NB_CoAP_ST;
 			//DaBai_1MinTask();
 		}
@@ -232,13 +259,7 @@ int main(void)
 			g_TaskTime10min = 0;
 			//DaBai_10MinTask();
 		}
-		if(g_RTCAlarmFlag == 1)
-		{
-			g_RTCAlarmFlag = 0;
-			//APP_STATE = NB_CoAP_SEVER;
-			APP_STATE = NB_CoAP_ST;
-			HAL_GPIO_TogglePin(GPIOB,LED4_PIN);
-		}
+		
 		switch(APP_STATE)
     {
     case NB_NONE:
@@ -346,6 +367,11 @@ int main(void)
       }
       break;
     case NB_CoAP_RE:
+      {
+        
+      }
+      break;
+		case NB_END:
       {
         
       }
